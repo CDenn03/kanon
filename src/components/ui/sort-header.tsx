@@ -11,11 +11,6 @@ interface SortHeaderProps {
   onClick: () => void;
 }
 
-/**
- * SortHeader — sortable table column header.
- * Shows direction indicator when active, subtle icon on hover when inactive.
- * Hover is CSS-driven via `group-hover` (no JS state).
- */
 export function SortHeader({ label, state, onClick }: SortHeaderProps) {
   const active = state === "asc" || state === "desc";
 

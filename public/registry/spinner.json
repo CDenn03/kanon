@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/components/ui/spinner.tsx",
-      "content": "import { Loader2 } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\n\ntype SpinnerSize = \"sm\" | \"md\" | \"lg\";\n\nconst SIZE: Record<SpinnerSize, number> = { sm: 14, md: 18, lg: 24 };\n\ninterface SpinnerProps {\n  size?: SpinnerSize;\n  /** Accessible label for screen readers. */\n  label?: string;\n  className?: string;\n}\n\n/**\n * Spinner — an indeterminate loading indicator. Announces a status label to\n * assistive tech; the icon itself is aria-hidden.\n */\nexport function Spinner({ size = \"md\", label = \"Loading\", className }: SpinnerProps) {\n  return (\n    <span role=\"status\" className={cn(\"inline-flex items-center gap-2 text-text-secondary\", className)}>\n      <Loader2 size={SIZE[size]} className=\"animate-spin text-accent\" aria-hidden />\n      <span className=\"sr-only\">{label}</span>\n    </span>\n  );\n}\n"
+      "content": "import { Loader2 } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\n\ntype SpinnerSize = \"sm\" | \"md\" | \"lg\";\n\nconst SIZE: Record<SpinnerSize, number> = { sm: 14, md: 18, lg: 24 };\n\ninterface SpinnerProps {\n  size?: SpinnerSize;\n\n  label?: string;\n  className?: string;\n}\n\nexport function Spinner({ size = \"md\", label = \"Loading\", className }: SpinnerProps) {\n  return (\n    <span role=\"status\" className={cn(\"inline-flex items-center gap-2 text-text-secondary\", className)}>\n      <Loader2 size={SIZE[size]} className=\"animate-spin text-accent\" aria-hidden />\n      <span className=\"sr-only\">{label}</span>\n    </span>\n  );\n}\n"
     },
     {
       "path": "src/lib/utils.ts",

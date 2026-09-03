@@ -11,9 +11,6 @@ interface ChipProps {
   className?: string;
 }
 
-/**
- * Chip — a compact tag/token, optionally removable.
- */
 export function Chip({ children, onRemove, className }: ChipProps) {
   return (
     <span className={cn("inline-flex items-center gap-1 rounded-md bg-accent-light px-2 py-0.5 text-xs font-medium text-accent", className)}>
@@ -43,10 +40,6 @@ interface TagInputProps {
   disabled?: boolean;
 }
 
-/**
- * TagInput — type + Enter (or comma) to add a chip; Backspace on an empty
- * input removes the last. Built on Field.
- */
 export function TagInput({ id, label, hint, error, value, onChange, placeholder = "Add tag…", disabled }: TagInputProps) {
   const [draft, setDraft] = useState("");
 

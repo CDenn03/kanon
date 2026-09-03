@@ -8,17 +8,13 @@ interface EmptyStateProps {
   icon?: LucideIcon;
   title: string;
   body?: string;
-  /** Action slot — usually one or two Buttons. */
+
   actions?: ReactNode;
-  /** Compact reduces vertical padding for inline use. */
+
   compact?: boolean;
   className?: string;
 }
 
-/**
- * EmptyState — a general page-level empty/zero state: icon, title, body and
- * actions, centered. Use Blank for table-scoped empties.
- */
 export function EmptyState({ icon: Icon, title, body, actions, compact, className }: EmptyStateProps) {
   return (
     <div

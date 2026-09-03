@@ -77,7 +77,7 @@ export function SearchCombobox<T = ComboboxOption>({
       } finally { if (live) setLoading(false); }
     }, 300);
     return () => { live = false; clearTimeout(t); controller.abort(); };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [isRemote, open, query, belowMin, nonce]);
 
   const items = useMemo(() => {
@@ -173,7 +173,6 @@ export function SearchCombobox<T = ComboboxOption>({
   );
 }
 
-/* Extracted dropdown to keep main component readable */
 function ComboboxDropdown<T>({ items, loading, fetchError, belowMin, minChars, query, active, selectedValues, position, getOptionValue, getOptionLabel, getOptionMeta, onPick, onSetActive, onRetry }: {
   items: T[]; loading: boolean; fetchError: string | null; belowMin: boolean; minChars: number;
   query: string; active: number; selectedValues: Set<string>; position: { style: React.CSSProperties };

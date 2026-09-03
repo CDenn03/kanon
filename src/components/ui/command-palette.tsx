@@ -7,17 +7,17 @@ import { cn } from "@/lib/utils";
 import { useMounted } from "@/hooks";
 
 export interface CommandItem {
-  /** Stable id. */
+
   id: string;
-  /** Primary label. */
+
   title: string;
-  /** Optional secondary line. */
+
   subtitle?: string;
-  /** Optional trailing tag (e.g. category / type). */
+
   tag?: string;
-  /** Optional leading icon. */
+
   icon?: ReactNode;
-  /** Free-text keywords to match against, in addition to title/subtitle. */
+
   keywords?: string;
 }
 
@@ -25,18 +25,13 @@ interface CommandPaletteProps {
   open: boolean;
   onClose: () => void;
   items: CommandItem[];
-  /** Called with the chosen item's id. */
+
   onSelect: (id: string) => void;
   placeholder?: string;
-  /** Heading shown above results when the query is empty. */
+
   emptyHeading?: string;
 }
 
-/**
- * CommandPalette — a generic ⌘K overlay. Filters `items` by title/subtitle/
- * keywords and calls `onSelect(id)`. Keyboard: ↑/↓ to move, Enter to choose,
- * Esc to close. Pair with {@link useCommandPalette} for the ⌘K shortcut.
- */
 export function CommandPalette({
   open,
   onClose,
@@ -97,7 +92,7 @@ export function CommandPalette({
         aria-label="Command palette"
         className="fixed left-1/2 top-[15%] z-[1001] flex w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 flex-col overflow-hidden rounded-2xl border border-border bg-bg shadow-overlay"
       >
-        {/* Input */}
+        {}
         <div className="flex items-center gap-3 border-b border-border p-4">
           <Search size={20} className="shrink-0 text-text-tertiary" aria-hidden />
           <input
@@ -106,7 +101,8 @@ export function CommandPalette({
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={onKeyDown}
             placeholder={placeholder}
-            className="flex-1 bg-transparent text-base text-text outline-none placeholder:text-text-tertiary"
+            style={{ outline: "none" }}
+            className="flex-1 border-0 bg-transparent text-base text-text placeholder:text-text-tertiary focus:outline-none focus:ring-0"
           />
           <button
             onClick={onClose}
@@ -117,7 +113,7 @@ export function CommandPalette({
           </button>
         </div>
 
-        {/* Results */}
+        {}
         <div className="max-h-[50vh] min-h-0 flex-1 overflow-y-auto p-2">
           {!query.trim() && (
             <p className="px-3 py-2 text-xs font-medium uppercase tracking-wider text-text-tertiary">
@@ -157,7 +153,7 @@ export function CommandPalette({
           )}
         </div>
 
-        {/* Footer hints */}
+        {}
         <div className="flex items-center justify-center gap-4 border-t border-border p-3 text-xs text-text-tertiary">
           <span><kbd className="rounded bg-bg-secondary px-1.5 py-0.5">↑↓</kbd> Navigate</span>
           <span><kbd className="rounded bg-bg-secondary px-1.5 py-0.5">↵</kbd> Open</span>
@@ -169,9 +165,6 @@ export function CommandPalette({
   );
 }
 
-/**
- * useCommandPalette — open/close state + the global ⌘K / Ctrl+K shortcut.
- */
 export function useCommandPalette() {
   const [open, setOpen] = useState(false);
   const openPalette = useCallback(() => setOpen(true), []);

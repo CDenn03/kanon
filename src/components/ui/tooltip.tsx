@@ -6,23 +6,13 @@ import { usePopoverPosition } from "@/hooks/use-popover-position";
 import { useMounted } from "@/hooks/use-mounted";
 
 export interface TooltipProps {
-  /** Tooltip content — plain string or React node. */
+
   content: React.ReactNode;
   children: React.ReactElement;
-  /** Delay before the tooltip appears, in ms. Default: 400. */
+
   delayMs?: number;
 }
 
-/**
- * Tooltip — wraps any single child and shows a dark label above or below it.
- * Placement auto-flips when near the bottom of the viewport (same logic as
- * the popover hook used by Button, SearchCombobox, etc.).
- *
- * Usage:
- *   <Tooltip content="Remove this item">
- *     <button>×</button>
- *   </Tooltip>
- */
 export function Tooltip({ content, children, delayMs = 400 }: TooltipProps) {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLSpanElement>(null);

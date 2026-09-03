@@ -1,15 +1,11 @@
 import { cn } from "@/lib/utils";
 
 interface KbdProps {
-  /** Keys to render; a string is shown as-is, an array renders each key. */
+
   keys: string | string[];
   className?: string;
 }
 
-/**
- * Kbd — renders keyboard shortcut keys as small caps-style key caps.
- * e.g. <Kbd keys={["⌘", "K"]} /> or <Kbd keys="Esc" />.
- */
 export function Kbd({ keys, className }: KbdProps) {
   const list = Array.isArray(keys) ? keys : [keys];
   return (

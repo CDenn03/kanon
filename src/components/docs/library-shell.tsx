@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Package, LayoutGrid } from "lucide-react";
+import { LayoutGrid } from "lucide-react";
+import { KanonLogo } from "@/components/ui/kanon-logo";
 import {
   Sidebar,
   SidebarNav,
@@ -60,11 +61,11 @@ export function LibraryShell({
       <Sidebar
         logo={
           <Link href="/" className="flex items-center gap-2">
-            <Package size={20} className="text-accent" />
+            <KanonLogo size={20} className="text-accent" />
             <span className="text-sm font-semibold text-text">Kanon</span>
           </Link>
         }
-        logoCollapsed={<Package size={20} className="text-accent" />}
+        logoCollapsed={<KanonLogo size={20} className="text-accent" />}
         collapsed={collapsed}
         onCollapsedChange={setCollapsed}
         mobileOpen={mobileOpen}

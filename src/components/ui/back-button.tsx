@@ -5,21 +5,14 @@ import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BackButtonProps {
-  /** Destination URL. */
+
   href: string;
-  /** Visible label, e.g. "Users", "Dashboard". */
+
   label: string;
-  /** Optional extra classes for layout (e.g. margin). */
+
   className?: string;
 }
 
-/**
- * BackButton — a clear, discoverable back-navigation affordance.
- *
- * Rendered as a bordered pill (not a faint text link) so it reads as a
- * tappable control — recognition over recall, with an adequate target size
- * (min-h-9 ≈ 36px) per Fitts's Law.
- */
 export function BackButton({ href, label, className }: BackButtonProps) {
   return (
     <Link

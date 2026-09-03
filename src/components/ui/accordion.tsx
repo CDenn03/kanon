@@ -12,16 +12,12 @@ export interface AccordionItem {
 
 interface AccordionProps {
   items: AccordionItem[];
-  /** Allow multiple panels open at once. Default false (single). */
+
   multiple?: boolean;
-  /** Ids open initially. */
+
   defaultOpen?: string[];
 }
 
-/**
- * Accordion — expandable sections. Single-open by default, or multiple.
- * Each header is a button toggling its region (aria-expanded + region).
- */
 export function Accordion({ items, multiple = false, defaultOpen = [] }: AccordionProps) {
   const [open, setOpen] = useState<Set<string>>(new Set(defaultOpen));
 

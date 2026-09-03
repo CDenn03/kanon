@@ -16,7 +16,6 @@ interface StatCardProps {
   compact?: boolean;
 }
 
-/** tone → text color utility class */
 const TONE_TEXT: Record<StatTone, string> = {
   pine: "text-accent",
   amber: "text-warning",
@@ -24,7 +23,6 @@ const TONE_TEXT: Record<StatTone, string> = {
   neutral: "text-text",
 };
 
-/** tone → CSS variable (for SVG stroke, which needs a concrete value) */
 const TONE_STROKE: Record<StatTone, string> = {
   pine: "var(--color-accent)",
   amber: "var(--color-warning)",
@@ -32,10 +30,6 @@ const TONE_STROKE: Record<StatTone, string> = {
   neutral: "var(--color-text)",
 };
 
-/**
- * StatCard — exception metric card with optional ring indicator.
- * Ring variant ONLY for metrics with a real ceiling (e.g. percentage).
- */
 export function StatCard({
   label,
   value,

@@ -14,20 +14,11 @@ interface FieldProps {
   required?: boolean;
   htmlFor?: string;
   counter?: FieldCounter;
-  /** id applied to the hint/error message, for aria-describedby wiring. */
+
   messageId?: string;
   children: React.ReactNode;
 }
 
-/**
- * Field — the shared wrapper for every form control.
- * Provides label, hint/error message slot, and optional counter.
- * Error replaces hint to prevent layout shift.
- *
- * Per Mathesis "Text Input" guideline: label is always visible above the
- * field (never placeholder-as-label), errors show inline below, and the
- * message is linked to the control via `messageId` + aria-describedby.
- */
 export function Field({
   label,
   hint,
@@ -77,10 +68,6 @@ export function Field({
   );
 }
 
-/**
- * Shared base classes for form controls that sit inside Field.
- * Per guideline: 40px height (h-10), 8px radius (rounded-lg), 1px border.
- */
 export const controlBase = cn(
   "w-full rounded-lg border text-sm bg-surface text-text transition-colors",
   "placeholder:text-text-tertiary",
@@ -89,10 +76,6 @@ export const controlBase = cn(
   "read-only:bg-bg-secondary"
 );
 
-/**
- * State classes for a control: border/color per error & disabled state.
- * Returns Tailwind classes (token-backed) — no inline styles.
- */
 export function controlClasses(error?: string, disabled?: boolean, readOnly?: boolean) {
   return cn(
     error ? "border-error focus-visible:ring-error/25 focus-visible:border-error" : "border-border",

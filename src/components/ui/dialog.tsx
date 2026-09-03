@@ -19,19 +19,14 @@ interface DialogProps {
   onClose: () => void;
   title?: ReactNode;
   description?: ReactNode;
-  /** Footer slot — usually the action buttons. */
+
   footer?: ReactNode;
   size?: DialogSize;
-  /** Close when the backdrop is clicked. Default true. */
+
   closeOnBackdrop?: boolean;
   children?: ReactNode;
 }
 
-/**
- * Dialog — a generic modal with header/body/footer, focus trap, Esc and
- * backdrop close, and a portal. For confirmations prefer ConfirmDialog,
- * which is built for that specific flow.
- */
 export function Dialog({
   open,
   onClose,

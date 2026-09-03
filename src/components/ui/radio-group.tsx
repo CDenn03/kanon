@@ -15,15 +15,11 @@ interface RadioGroupProps {
   options: RadioOption[];
   value: string | null;
   onChange: (value: string) => void;
-  /** "list" (default) renders stacked radios; "card" renders bordered option cards. */
+
   variant?: "list" | "card";
   disabled?: boolean;
 }
 
-/**
- * RadioGroup — accessible fieldset of radio buttons. Supports a simple
- * stacked list and a card variant with descriptions.
- */
 export function RadioGroup({
   name,
   label,

@@ -1,29 +1,11 @@
 import { cn } from "@/lib/utils";
 
-/**
- * Card family — a rounded, bordered surface with optional sub-sections.
- *
- * Per Mathesis "Content Card" guideline:
- *   sizing: 12px radius (rounded-xl), 1px border, 16px padding
- *   states: default / hover (accent border + elevation, interactive only) /
- *           selected (accent border + light tint) / loading (skeleton)
- *   a11y:   interactive cards render as <a>/<button> and expose the same
- *           visual treatment on keyboard focus as on hover.
- *
- * Composition:
- *   <Card>
- *     <CardHeader title="Active users" action={<Button>Add</Button>} />
- *     <CardBody>…</CardBody>
- *     <CardFooter>…</CardFooter>
- *   </Card>
- */
-
 interface CardProps {
   className?: string;
   children: React.ReactNode;
-  /** Adds hover elevation + focus treatment; card should also be a link/button. */
+
   interactive?: boolean;
-  /** Selected/active visual state (accent border + light tint). */
+
   selected?: boolean;
 }
 
@@ -46,7 +28,7 @@ export function Card({ className, children, interactive, selected }: CardProps) 
 
 export interface CardHeaderProps {
   title: React.ReactNode;
-  /** Optional right-side slot — a Button, a menu trigger, a badge, etc. */
+
   action?: React.ReactNode;
   className?: string;
 }

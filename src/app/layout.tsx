@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Kanon",
   description: "A personal component library",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 // Applies the persisted theme before first paint to avoid a flash.

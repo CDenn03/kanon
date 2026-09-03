@@ -17,18 +17,13 @@ interface AlertProps {
   tone?: AlertTone;
   title?: ReactNode;
   children?: ReactNode;
-  /** Show a dismiss button. */
+
   dismissible?: boolean;
   onDismiss?: () => void;
-  /** Optional action slot (e.g. a link or button). */
+
   action?: ReactNode;
 }
 
-/**
- * Alert (Callout) — a static, inline message block. Pairs an icon with tone
- * so meaning is never colour-only. Distinct from Toast (transient) and
- * Banner (table-scoped).
- */
 export function Alert({ tone = "info", title, children, dismissible, onDismiss, action }: AlertProps) {
   const [open, setOpen] = useState(true);
   const cfg = TONE[tone];

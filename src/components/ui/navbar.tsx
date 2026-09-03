@@ -6,36 +6,10 @@ import { cn } from "@/lib/utils";
 import { Avatar } from "./avatar";
 import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuLabel } from "./menu";
 
-/**
- * Navbar — the top utility bar.
- *
- * Distinct from Sidebar: Sidebar is primary navigation ("where am I in the
- * app"), Navbar is page-level context and utility actions (search,
- * notifications, account). The two shouldn't be merged into one "nav"
- * component just because they're both chrome.
- *
- * Composition:
- *   <Navbar
- *     left={<Breadcrumb items={…} />}
- *     onMenuClick={() => setSidebarOpen(true)}   ← wire to Sidebar mobileOpen
- *     notificationCount={3}
- *     onNotificationsClick={…}
- *     account={{ name: "Amina Wanjiru", email: "amina@…" }}
- *     onAccountSettings={…}
- *     onSignOut={…}
- *   />
- */
 export interface NavbarProps {
-  /**
-   * Left slot — usually a <Breadcrumb> or page title that anchors
-   * "where am I" for the current page.
-   */
+
   left?: React.ReactNode;
-  /**
-   * Renders a hamburger button, visible only below `md`, that calls this —
-   * wire it to your Sidebar's onMobileOpenChange(true). Omit entirely on
-   * a layout that has no Sidebar.
-   */
+
   onMenuClick?: () => void;
   onSearchClick?: () => void;
   notificationCount?: number;
@@ -59,7 +33,7 @@ export function Navbar({
         className
       )}
     >
-      {/* Left slot */}
+      {}
       <div className="flex min-w-0 flex-1 items-center gap-3">
         {onMenuClick && (
           <NavIconButton label="Open menu" onClick={onMenuClick} className="md:hidden">
@@ -69,7 +43,7 @@ export function Navbar({
         <div className="min-w-0">{left}</div>
       </div>
 
-      {/* Right slot */}
+      {}
       <div className="flex shrink-0 items-center gap-1">
         {onSearchClick && (
           <NavIconButton label="Search" onClick={onSearchClick}>
@@ -128,7 +102,6 @@ export function Navbar({
   );
 }
 
-/* ── Internal icon button ─────────────────────────────────── */
 function NavIconButton({
   label, onClick, children, className,
 }: {

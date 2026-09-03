@@ -1,0 +1,21 @@
+import { SVGProps } from "react";
+
+export function KanonLogo({ size = 24, ...props }: { size?: number } & SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="64 48 360 320"
+      fill="currentColor"
+      width={size}
+      height={size}
+      aria-label="Kanon logo"
+      {...props}
+    >
+      <rect x="92" y="76" width="112" height="112" rx="22" />
+      <rect x="92" y="204" width="112" height="140" rx="22" />
+      <path d="M238 184 C230 184 225 177 229 168 L296 84 C302 77 310 76 319 76 H386 C396 76 402 84 397 93 L329 177 C323 184 316 188 306 188 Z" />
+      <path d="M238 216 C230 216 225 224 230 231 L297 315 C303 323 311 328 321 328 H386 C397 328 402 320 396 311 L329 228 C323 220 316 216 306 216 Z" />
+      <rect x="218" y="300" width="48" height="44" rx="10" />
+    </svg>
+  );
+}

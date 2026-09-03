@@ -8,22 +8,17 @@ import { usePopoverPosition, useMounted, useOutsideClick } from "@/hooks";
 interface PopoverProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** The clickable anchor (button, etc.). */
+
   trigger: ReactNode;
-  /** Panel contents. */
+
   children: ReactNode;
   align?: "start" | "center" | "end";
   minWidth?: number;
-  /** Match the panel width to the trigger. */
+
   matchWidth?: boolean;
   className?: string;
 }
 
-/**
- * Popover — a generic anchored floating panel. Portalled, auto-positioned
- * (flips near the viewport edge) via usePopoverPosition, closes on outside
- * click and Escape. Additive primitive — Menu and Tooltip remain standalone.
- */
 export function Popover({
   open,
   onOpenChange,

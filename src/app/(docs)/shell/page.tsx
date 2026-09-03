@@ -18,6 +18,7 @@ import {
   Tooltip,
 } from "@/components/ui";
 import { Toolbar, ButtonGroup } from "@/components/ui/button-group";
+import { KanonLogo } from "@/components/ui/kanon-logo";
 
 /* ═══════════════════════════════════════════════════════════════
    Shell page — composed demo of all the new components working
@@ -101,20 +102,12 @@ const NAV_CONFIG: NavSection[] = [
 /* ── Logo slots ─────────────────────────────────────────────── */
 const FullLogo = (
   <span className="flex items-center gap-2">
-    <span
-      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-sm font-bold bg-accent text-on-accent"
-    >
-      K
-    </span>
+    <KanonLogo size={24} className="text-accent shrink-0" />
     <span className="truncate text-sm font-semibold text-text">Kanon</span>
   </span>
 );
 const MarkLogo = (
-  <span
-    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-sm font-bold bg-accent text-on-accent"
-  >
-    K
-  </span>
+  <KanonLogo size={24} className="text-accent shrink-0" />
 );
 
 /* ── User row ───────────────────────────────────────────────── */

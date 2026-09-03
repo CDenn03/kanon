@@ -3,16 +3,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/* ═══════════════════════════════════════════════════════════════
-   Pagination — simplified two-zone layout.
-
-   Left  : "126–150 of 1,284  |  Rows [25 ▾]"
-   Right : "‹  1  …  5  [6]  7  …  52  ›   Go to [__]"
-
-   Removed: first/last double-chevron buttons (cluttered, rarely used)
-            ellipsis-click-to-jump-input (Go-to field covers this)
-   ═══════════════════════════════════════════════════════════════ */
-
 export interface PaginationMeta {
   page: number;
   perPage: number;
@@ -77,7 +67,7 @@ export function Pagination({
         className
       )}
     >
-      {/* ── Zone 1 — position in data ──────────────────────── */}
+      {}
       <div className="flex items-center gap-3 text-sm text-text-secondary">
         <span className="tabular-nums">
           <span className="font-medium text-text">
@@ -100,9 +90,9 @@ export function Pagination({
         </label>
       </div>
 
-      {/* ── Zone 2 — navigation ────────────────────────────── */}
+      {}
       <nav aria-label="Pagination" className="flex items-center justify-between gap-1 lg:justify-end">
-        {/* Previous */}
+        {}
         <button
           type="button"
           onClick={() => page > 1 && onPageChange(page - 1)}
@@ -113,7 +103,7 @@ export function Pagination({
           <ChevronLeft size={15} aria-hidden />
         </button>
 
-        {/* Numbered page buttons — md+ */}
+        {}
         <span className="hidden items-center gap-1 md:flex">
           {buildPages(page, totalPages).map((p, i) =>
             p === "…" ? (
@@ -144,13 +134,13 @@ export function Pagination({
           )}
         </span>
 
-        {/* Mobile — page indicator */}
+        {}
         <span className="px-2 text-sm tabular-nums text-text-secondary md:hidden">
           <span className="font-medium text-text">{page}</span>
           {" / "}{totalPages}
         </span>
 
-        {/* Next */}
+        {}
         <button
           type="button"
           onClick={() => page < totalPages && onPageChange(page + 1)}
@@ -161,7 +151,7 @@ export function Pagination({
           <ChevronRight size={15} aria-hidden />
         </button>
 
-        {/* Go to page ───────────────────────────────────────── */}
+        {}
         <span className="ml-3 hidden items-center gap-1.5 border-l border-border pl-3 text-sm md:flex">
           <label htmlFor="pagination-jump" className="whitespace-nowrap text-xs text-text-tertiary">
             Go to

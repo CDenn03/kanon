@@ -222,10 +222,10 @@ export function DatePicker({ id, label, hint, value, onChange, min, max }: DateP
   const position = usePopoverPosition(anchorRef, open, { minWidth: 260, preferredHeight: 340 });
   const mounted = useMounted();
 
-  // When rendered inside a modal/dialog, portaling to document.body puts the
-  // popover outside the dialog's focus scope and scroll lock, which blocks
-  // pointer/scroll interaction. Portal into the dialog content when present so
-  // it stays interactive; otherwise fall back to document.body.
+
+
+
+
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
 
   const toggleOpen = () => {

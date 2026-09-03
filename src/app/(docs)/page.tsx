@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getCategories, registry, buildNav } from "@/lib/docs/registry";
 import { HeroSearch, type HeroSearchItem } from "@/components/docs/hero-search";
+import { KanonLogo } from "@/components/ui/kanon-logo";
 
 export default function OverviewPage() {
   const categories = getCategories();
@@ -18,7 +19,10 @@ export default function OverviewPage() {
     <div className="mx-auto max-w-350 px-8 py-6">
       {/* Hero — one clear primary element to land on */}
       <header className="mb-8 border-b border-border pb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-text">Kanon</h1>
+        <div className="flex items-center gap-2.5">
+          <KanonLogo size={32} className="text-accent" />
+          <h1 className="text-2xl font-bold tracking-tight text-text">Kanon</h1>
+        </div>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-text-secondary">
           A personal component library. Browse a component to see live examples, copy the usage
           snippet, and read the full source.

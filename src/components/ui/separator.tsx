@@ -2,15 +2,11 @@ import { cn } from "@/lib/utils";
 
 interface SeparatorProps {
   orientation?: "horizontal" | "vertical";
-  /** Optional centered label (horizontal only). */
+
   label?: string;
   className?: string;
 }
 
-/**
- * Separator — a thin divider line. Horizontal by default; vertical for
- * inline groups. Decorative unless a label is provided.
- */
 export function Separator({ orientation = "horizontal", label, className }: SeparatorProps) {
   if (orientation === "vertical") {
     return <span role="separator" aria-orientation="vertical" className={cn("inline-block h-4 w-px bg-border", className)} />;

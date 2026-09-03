@@ -3,23 +3,18 @@
 export type AvatarSize = "sm" | "md" | "lg";
 
 export interface AvatarProps {
-  /** Full name — used to derive initials and pick a colour palette slot. */
+
   name: string;
-  /** Optional image URL. Falls back to initials when omitted or on error. */
+
   src?: string;
   size?: AvatarSize;
-  /**
-   * When true, picks a stable hue from a set of coloured palettes based on
-   * the name hash. When false (default), renders a neutral grey that works
-   * anywhere without visual noise.
-   */
+
   colourful?: boolean;
 }
 
 const SIZE_PX: Record<AvatarSize, number> = { sm: 24, md: 32, lg: 40 };
 const FONT_PX: Record<AvatarSize, number> = { sm: 10, md: 12, lg: 14 };
 
-/** Six distinct, on-brand hues that are accessible at small sizes. */
 const PALETTES: Array<{ bg: string; fg: string }> = [
   { bg: "var(--color-accent-light)", fg: "var(--color-accent)" },
   { bg: "var(--color-warning-light)", fg: "var(--color-warning)" },
@@ -47,7 +42,7 @@ export function Avatar({ name, src, size = "md", colourful }: AvatarProps) {
 
   if (src) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element
+
       <img
         src={src}
         alt={name}
@@ -56,7 +51,7 @@ export function Avatar({ name, src, size = "md", colourful }: AvatarProps) {
         className="shrink-0 rounded-full object-cover"
         style={{ width: px, height: px }}
         onError={(e) => {
-          // On load error fall back to the initials span — swap the element.
+
           const img = e.currentTarget;
           const span = document.createElement("span");
           span.setAttribute("aria-label", name);

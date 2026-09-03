@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/components/ui/kbd.tsx",
-      "content": "import { cn } from \"@/lib/utils\";\n\ninterface KbdProps {\n  /** Keys to render; a string is shown as-is, an array renders each key. */\n  keys: string | string[];\n  className?: string;\n}\n\n/**\n * Kbd — renders keyboard shortcut keys as small caps-style key caps.\n * e.g. <Kbd keys={[\"⌘\", \"K\"]} /> or <Kbd keys=\"Esc\" />.\n */\nexport function Kbd({ keys, className }: KbdProps) {\n  const list = Array.isArray(keys) ? keys : [keys];\n  return (\n    <span className={cn(\"inline-flex items-center gap-1\", className)}>\n      {list.map((k, i) => (\n        <kbd\n          key={i}\n          className=\"inline-flex h-5 min-w-5 items-center justify-center rounded border border-border bg-bg-secondary px-1.5 font-mono text-[11px] font-medium text-text-secondary\"\n        >\n          {k}\n        </kbd>\n      ))}\n    </span>\n  );\n}\n"
+      "content": "import { cn } from \"@/lib/utils\";\n\ninterface KbdProps {\n\n  keys: string | string[];\n  className?: string;\n}\n\nexport function Kbd({ keys, className }: KbdProps) {\n  const list = Array.isArray(keys) ? keys : [keys];\n  return (\n    <span className={cn(\"inline-flex items-center gap-1\", className)}>\n      {list.map((k, i) => (\n        <kbd\n          key={i}\n          className=\"inline-flex h-5 min-w-5 items-center justify-center rounded border border-border bg-bg-secondary px-1.5 font-mono text-[11px] font-medium text-text-secondary\"\n        >\n          {k}\n        </kbd>\n      ))}\n    </span>\n  );\n}\n"
     },
     {
       "path": "src/lib/utils.ts",

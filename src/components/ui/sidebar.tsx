@@ -8,41 +8,6 @@ import { Tooltip } from "./tooltip";
 import { Badge } from "./badge";
 import { Avatar } from "./avatar";
 
-/* ═══════════════════════════════════════════════════════════════
-   Sidebar
-
-   Key design decisions:
-
-   1. Collapse toggle is a small floating icon pinned to the top-right
-      edge of the sidebar — not a full-width bar. It sits at the logo
-      row height so it's always findable without scrolling, and is small
-      enough not to compete with the logo or nav items visually.
-
-   2. Logo slot is flexible: pass any ReactNode. The component constrains
-      height (56 px header) and clips overflow, but imposes no width —
-      wide wordmarks and square marks both work. Pass `logoCollapsed` for
-      the icon-only rail view; it falls back to `logo` if omitted.
-
-   3. Mobile is a full-width overlay. The collapsed icon-rail is
-      a desktop-only density affordance; mobile users get the full
-      sidebar or nothing.
-
-   4. SidebarFooter no longer contains user account info — that belongs
-      in the Navbar's account dropdown where session controls live.
-      The footer is kept for logout or any other persistent action you
-      want anchored at the bottom.
-
-   5. SidebarGroup supports collapsible children with animated chevron.
-      In collapsed-rail mode clicking the icon expands the sidebar
-      rather than spawning a flyout submenu. Groups auto-expand when
-      they contain the active route.
-
-   6. Permission-based visibility: Items can specify `permissions` array
-      and use the `hasPermission` prop on Sidebar to filter visibility.
-      Items can also use `hidden` prop for conditional rendering.
-   ═══════════════════════════════════════════════════════════════ */
-
-/* ── Context ──────────────────────────────────────────────── */
 interface SidebarContextValue {
   collapsed: boolean;
   requestExpand: () => void;
@@ -53,26 +18,16 @@ const SidebarContext = React.createContext<SidebarContextValue>({
   requestExpand: () => {},
 });
 
-/* ── Sidebar ──────────────────────────────────────────────── */
 export interface SidebarProps {
-  /**
-   * Full logo — shown when expanded. Any ReactNode: image, SVG, styled
-   * span. The header row is 56 px tall; width is unconstrained.
-   */
+
   logo: React.ReactNode;
-  /**
-   * Icon-only version for the collapsed 64 px rail. Falls back to `logo`
-   * if omitted — useful when your logo is already a square mark.
-   */
+
   logoCollapsed?: React.ReactNode;
   collapsed: boolean;
   onCollapsedChange: (collapsed: boolean) => void;
   mobileOpen: boolean;
   onMobileOpenChange: (open: boolean) => void;
-  /**
-   * Optional permission checker. If provided, items with `permissions`
-   * prop will only render if this returns true.
-   */
+
   hasPermission?: (permissions: string[]) => boolean;
   className?: string;
   children: React.ReactNode;
@@ -91,7 +46,7 @@ export function Sidebar({
 
   return (
     <SidebarContext.Provider value={{ collapsed, requestExpand: () => onCollapsedChange(false), hasPermission }}>
-      {/* Mobile backdrop */}
+      {}
       {mobileOpen && (
         <button
           type="button"
@@ -111,9 +66,9 @@ export function Sidebar({
           className
         )}
       >
-        {/* ── Logo row with floating collapse pin ─────────── */}
+        {}
         <div className="relative flex h-14 shrink-0 items-center border-b border-border px-3">
-          {/* Logo — clipped to available width */}
+          {}
           <span className={cn(
             "flex min-w-0 flex-1 items-center overflow-hidden",
             collapsed ? "justify-center" : "px-1"
@@ -121,7 +76,7 @@ export function Sidebar({
             {collapsed ? (logoCollapsed ?? logo) : logo}
           </span>
 
-          {/* Mobile close button */}
+          {}
           <button
             type="button"
             onClick={() => onMobileOpenChange(false)}
@@ -131,7 +86,7 @@ export function Sidebar({
             <X size={18} aria-hidden />
           </button>
 
-          {/* Desktop collapse pin — floats at right edge of logo row */}
+          {}
           <Tooltip content={collapsed ? "Expand sidebar" : "Collapse sidebar"}>
             <button
               type="button"
@@ -155,15 +110,13 @@ export function Sidebar({
   );
 }
 
-/* ── SidebarNav ───────────────────────────────────────────── */
 export function SidebarNav({ children }: { children: React.ReactNode }) {
   return <nav className="flex-1 overflow-y-auto py-2">{children}</nav>;
 }
 
-/* ── SidebarSection ───────────────────────────────────────── */
 export interface SidebarSectionProps {
   label?: string;
-  /** Hide this section entirely */
+
   hidden?: boolean;
   children: React.ReactNode;
 }
@@ -185,18 +138,17 @@ export function SidebarSection({ label, hidden, children }: SidebarSectionProps)
   );
 }
 
-/* ── SidebarItem ──────────────────────────────────────────── */
 export interface SidebarItemProps {
   icon: React.ReactNode;
   active?: boolean;
   count?: number;
   href?: string;
   onClick?: () => void;
-  /** Tooltip shown when item is locked/disabled */
+
   locked?: string;
-  /** Hide this item entirely */
+
   hidden?: boolean;
-  /** Required permissions — checked against Sidebar's hasPermission */
+
   permissions?: string[];
   children: React.ReactNode;
 }
@@ -206,7 +158,7 @@ export function SidebarItem({
 }: SidebarItemProps) {
   const { collapsed, hasPermission } = React.useContext(SidebarContext);
 
-  // Permission check
+
   if (permissions?.length && hasPermission && !hasPermission(permissions)) {
     return null;
   }
@@ -262,16 +214,15 @@ export function SidebarItem({
   return collapsed ? <Tooltip content={children}>{content}</Tooltip> : content;
 }
 
-/* ── SidebarGroup ─────────────────────────────────────────── */
 export interface SidebarGroupProps {
   icon: React.ReactNode;
   label: string;
   defaultOpen?: boolean;
-  /** When true, group auto-expands (e.g., when a child route is active) */
+
   hasActiveChild?: boolean;
-  /** Hide this group entirely */
+
   hidden?: boolean;
-  /** Required permissions — checked against Sidebar's hasPermission */
+
   permissions?: string[];
   children: React.ReactNode;
 }
@@ -281,14 +232,14 @@ export function SidebarGroup({
 }: SidebarGroupProps) {
   const { collapsed, requestExpand, hasPermission } = React.useContext(SidebarContext);
 
-  // Permission check
+
   if (permissions?.length && hasPermission && !hasPermission(permissions)) {
     return null;
   }
 
   if (hidden) return null;
 
-  // Derive open state: open if defaultOpen, hasActiveChild, or user toggled
+
   const [userToggled, setUserToggled] = React.useState<boolean | null>(null);
 
   const effectiveOpen = userToggled !== null ? userToggled : (defaultOpen || hasActiveChild || false);
@@ -339,21 +290,20 @@ export function SidebarGroup({
   );
 }
 
-/* ── SidebarSubItem ───────────────────────────────────────── */
 export interface SidebarSubItemProps {
-  /** Optional icon for the sub-item (smaller than parent items) */
+
   icon?: React.ReactNode;
   active?: boolean;
   count?: number;
   href?: string;
   onClick?: () => void;
-  /** Tooltip shown when item is locked/disabled */
+
   locked?: string;
-  /** Hide this item entirely */
+
   hidden?: boolean;
-  /** Required permissions — checked against Sidebar's hasPermission */
+
   permissions?: string[];
-  /** Label shown next to item (e.g., "soon" for upcoming features) */
+
   badge?: string;
   children: React.ReactNode;
 }
@@ -363,7 +313,7 @@ export function SidebarSubItem({
 }: SidebarSubItemProps) {
   const { hasPermission } = React.useContext(SidebarContext);
 
-  // Permission check
+
   if (permissions?.length && hasPermission && !hasPermission(permissions)) {
     return null;
   }
@@ -419,7 +369,6 @@ export function SidebarSubItem({
   );
 }
 
-/* ── SidebarFooter ────────────────────────────────────────── */
 export function SidebarFooter({ children }: { children: React.ReactNode }) {
   return (
     <div className="shrink-0 border-t border-border p-2">
@@ -428,8 +377,6 @@ export function SidebarFooter({ children }: { children: React.ReactNode }) {
   );
 }
 
-/* ── SidebarAccount ───────────────────────────────────────── */
-/** @deprecated User account info belongs in the Navbar. Kept for backward compat. */
 export function SidebarAccount({
   name, email, avatarSrc,
 }: { name: string; email?: string; avatarSrc?: string }) {
@@ -450,7 +397,6 @@ export function SidebarAccount({
     : row;
 }
 
-/* ── SidebarLogoutButton ──────────────────────────────────── */
 export function SidebarLogoutButton({ onClick }: { onClick: () => void }) {
   const { collapsed } = React.useContext(SidebarContext);
   const btn = (

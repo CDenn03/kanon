@@ -7,17 +7,6 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { usePopoverPosition, useMounted } from "@/hooks";
 
-/*
- * Button — per Mathesis "Primary Button" asset guideline:
- *   sizing: height 40px (md), paddingX 16 / paddingY 10, iconGap 8, iconSize 18
- *   states: default / hover (darker) / active (darker still) / disabled
- *           (reduced, no hover) / loading (spinner replaces content)
- *   a11y:   real <button>, 44px touch target, 2px focus ring w/ 2px offset,
- *           aria-disabled + explanation when blocked.
- *
- * All interactive states are CSS-driven (:hover / :active / :focus-visible /
- * :disabled) — no JS hover state.
- */
 const button = cva(
   [
     "relative inline-flex items-center justify-center gap-2 whitespace-nowrap",
@@ -41,7 +30,7 @@ const button = cva(
         link: "bg-transparent text-accent underline-offset-2 hover:underline p-0 h-auto active:scale-100",
       },
       size: {
-        // 44px min touch target enforced via min-h/min-w utilities on non-link sizes
+
         sm: "h-8 min-h-8 px-2.5 text-sm",
         md: "h-10 min-h-10 px-4 text-sm",
         lg: "h-11 min-h-11 px-5 text-base",
@@ -67,7 +56,7 @@ interface ButtonProps {
   title?: string;
   type?: "button" | "submit" | "reset";
   className?: string;
-  /** Accessible label — required when the button is icon-only. */
+
   ariaLabel?: string;
 }
 

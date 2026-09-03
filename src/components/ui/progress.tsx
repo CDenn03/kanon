@@ -11,19 +11,15 @@ const TONE: Record<ProgressTone, string> = {
 };
 
 interface ProgressProps {
-  /** 0–100. Omit (or pass null) for an indeterminate bar. */
+
   value?: number | null;
   tone?: ProgressTone;
-  /** Show the numeric percentage label above the bar. */
+
   showValue?: boolean;
   label?: string;
   className?: string;
 }
 
-/**
- * Progress — a linear progress bar. Determinate when `value` is a number
- * (0–100); indeterminate (looping) when `value` is null/undefined.
- */
 export function Progress({ value, tone = "accent", showValue, label, className }: ProgressProps) {
   const indeterminate = value === null || value === undefined;
   const pct = indeterminate ? 0 : Math.max(0, Math.min(100, value));

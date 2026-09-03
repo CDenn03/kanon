@@ -25,11 +25,6 @@ interface SelectProps {
   placeholder?: string;
 }
 
-/**
- * Select — a single-select dropdown built on Field. Keyboard: Enter/Space
- * or ↓ to open, ↑/↓ to move, Enter to choose, Esc to close. For search-first
- * selection use SearchCombobox instead.
- */
 export function Select({
   id,
   label,

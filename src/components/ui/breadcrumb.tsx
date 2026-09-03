@@ -2,7 +2,7 @@ import { ChevronRight } from "lucide-react";
 
 export interface BreadcrumbItem {
   label: string;
-  /** Omit on the last (current) item. */
+
   href?: string;
 }
 
@@ -10,11 +10,6 @@ export interface BreadcrumbProps {
   items: BreadcrumbItem[];
 }
 
-/**
- * Breadcrumb — a lightweight `<nav>` rendering a ChevronRight-separated
- * trail. The last item is rendered as plain text (current page); all
- * others are anchor links.
- */
 export function Breadcrumb({ items }: BreadcrumbProps) {
   return (
     <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm">

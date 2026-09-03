@@ -20,7 +20,7 @@ interface InputProps {
   placeholder?: string;
   value?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-  /** autocomplete hint for common fields (email, name, etc.). */
+
   autoComplete?: string;
 }
 

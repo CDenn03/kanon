@@ -23,11 +23,6 @@ const TONE_TEXT: Record<ExceptionTone, string> = {
   neutral: "text-text",
 };
 
-/**
- * ExceptionStrip — single-line compact stat bar.
- * 44px instead of 118px. The only form that should render below sm,
- * where stacked cards would push the table off-screen.
- */
 export function ExceptionStrip({ items, loading, errored, asOf }: ExceptionStripProps) {
   return (
     <div className="flex flex-wrap items-center gap-x-1 gap-y-1 rounded-lg border border-border bg-surface px-2 py-1.5">

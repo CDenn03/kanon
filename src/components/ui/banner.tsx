@@ -19,11 +19,6 @@ const TONE_CLASS: Record<BannerTone, string> = {
   neutral: "bg-bg-secondary text-text-secondary",
 };
 
-/**
- * Banner — table-level status message. Sits between the caption strip
- * and the table body. Pairs a Lucide icon with color so meaning is not
- * conveyed by color alone.
- */
 export function Banner({ tone, icon: Icon, children, action, onAction }: BannerProps) {
   return (
     <div

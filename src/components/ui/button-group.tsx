@@ -16,10 +16,6 @@ interface ButtonGroupProps {
   className?: string;
 }
 
-/**
- * ButtonGroup — a segmented set of connected buttons for a single choice
- * (like a compact toggle group). For tab-like navigation use Tabs.
- */
 export function ButtonGroup({ options, value, onChange, className, ...rest }: ButtonGroupProps) {
   return (
     <div
@@ -51,10 +47,6 @@ export function ButtonGroup({ options, value, onChange, className, ...rest }: Bu
   );
 }
 
-/**
- * Toolbar — a horizontal container that groups actions/controls with
- * consistent spacing and keyboard semantics.
- */
 export function Toolbar({ children, className, "aria-label": ariaLabel }: { children: React.ReactNode; className?: string; "aria-label"?: string }) {
   return (
     <div

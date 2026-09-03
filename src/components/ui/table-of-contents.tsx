@@ -4,26 +4,21 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export interface TocItem {
-  /** Target element id (without #). */
+
   id: string;
-  /** Label to display. */
+
   label: string;
-  /** Nesting level: 2 = h2, 3 = h3 (indented). */
+
   level?: 2 | 3;
 }
 
 interface TableOfContentsProps {
   items: TocItem[];
-  /** Heading above the list. */
+
   title?: string;
   className?: string;
 }
 
-/**
- * TableOfContents — an in-page scroll-spy contents list. Highlights the
- * section currently in view and smooth-scrolls to a heading on click.
- * Uses IntersectionObserver; falls back gracefully if unsupported.
- */
 export function TableOfContents({ items, title = "On this page", className }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string | null>(items[0]?.id ?? null);
 

@@ -11,17 +11,13 @@ interface SliderProps {
   max?: number;
   step?: number;
   disabled?: boolean;
-  /** Show the current value beside the label. */
+
   showValue?: boolean;
-  /** Format the displayed value (e.g. (v) => `${v}%`). */
+
   format?: (value: number) => string;
   className?: string;
 }
 
-/**
- * Slider — a range input styled to the design tokens (`.ui-slider` in
- * globals.css). The fill reflects progress via a gradient background.
- */
 export function Slider({
   label,
   value,

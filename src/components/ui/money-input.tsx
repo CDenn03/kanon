@@ -27,17 +27,6 @@ function moneyToNumber(s: string): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-/**
- * Group the integer part of a sanitized numeric string with locale
- * thousand separators, preserving a trailing "." and any typed fraction
- * digits (including trailing zeros) exactly as entered.
- *
- * Examples (en-KE / en-US grouping):
- *   "1234"     -> "1,234"
- *   "1234."    -> "1,234."
- *   "1234.5"   -> "1,234.5"
- *   "-1234.50" -> "-1,234.50"
- */
 function groupMoney(s: string, locale: string): string {
   if (s === "" || s === "-") return s;
 
@@ -60,7 +49,6 @@ function groupMoney(s: string, locale: string): string {
   return out;
 }
 
-/** Count digits in a string up to (not including) index `pos`. */
 function digitsBefore(s: string, pos: number): number {
   let n = 0;
   for (let i = 0; i < pos && i < s.length; i++) {
@@ -69,10 +57,9 @@ function digitsBefore(s: string, pos: number): number {
   return n;
 }
 
-/** Find the string index just after the `count`-th digit. */
 function indexAfterDigits(s: string, count: number): number {
   if (count <= 0) {
-    // Place caret before the first digit (after an optional leading "-").
+
     return s.startsWith("-") ? 1 : 0;
   }
   let seen = 0;
@@ -132,8 +119,8 @@ export function MoneyInput({
           maximumFractionDigits: decimals,
         });
 
-  // While editing, show the grouped draft (thousand separators applied
-  // live); otherwise show the fully formatted value.
+
+
   const display = editing ? groupMoney(draft, locale) : format(value);
 
   return (
@@ -161,8 +148,8 @@ export function MoneyInput({
             const el = e.target;
             const prevGrouped = el.value;
             const caret = el.selectionStart ?? prevGrouped.length;
-            // Digits before the caret drive where the caret should land
-            // after re-grouping (separators are ignored in the count).
+
+
             const digitsLeft = digitsBefore(prevGrouped, caret);
 
             const cleaned = sanitizeMoney(prevGrouped, allowNegative, decimals);
@@ -171,7 +158,7 @@ export function MoneyInput({
 
             const grouped = groupMoney(cleaned, locale);
             const nextCaret = indexAfterDigits(grouped, digitsLeft);
-            // Restore caret after React writes the grouped value.
+
             requestAnimationFrame(() => {
               const node = inputRef.current;
               if (node) node.setSelectionRange(nextCaret, nextCaret);

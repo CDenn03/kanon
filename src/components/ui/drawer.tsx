@@ -30,10 +30,6 @@ interface DrawerProps {
   children?: ReactNode;
 }
 
-/**
- * Drawer (Sheet) — a slide-in panel anchored to an edge, for filters,
- * detail views or forms. Focus-trapped, Esc + backdrop close, portalled.
- */
 export function Drawer({
   open,
   onClose,

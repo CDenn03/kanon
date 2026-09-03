@@ -8,27 +8,6 @@ import { usePopoverPosition } from "@/hooks/use-popover-position";
 import { useMounted } from "@/hooks/use-mounted";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 
-/* ═══════════════════════════════════════════════════════════════
-   Menu — compound component
-
-   Anatomy:
-     <Menu open={open} onOpenChange={setOpen}>
-       <MenuTrigger><button>…</button></MenuTrigger>
-       <MenuContent align="end">
-         <MenuLabel>Section</MenuLabel>
-         <MenuItem icon={<Edit size={15}/>} onSelect={…}>Edit</MenuItem>
-         <MenuCheckboxItem checked={v} onCheckedChange={setV}>Show email</MenuCheckboxItem>
-         <MenuSeparator />
-         <MenuItem destructive onSelect={…}>Delete</MenuItem>
-       </MenuContent>
-     </Menu>
-
-   The dropdown is portalled to <body> so it escapes any overflow:hidden
-   ancestor. Positioning is handled by usePopoverPosition (the same
-   hook used by Button's tooltip, SearchCombobox, and DatePicker).
-   ═══════════════════════════════════════════════════════════════ */
-
-/* ── Context ──────────────────────────────────────────────── */
 interface MenuContextValue {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -42,7 +21,6 @@ function useMenuContext(): MenuContextValue {
   return ctx;
 }
 
-/* ── Types ────────────────────────────────────────────────── */
 export interface MenuProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -50,16 +28,16 @@ export interface MenuProps {
 }
 
 export interface MenuContentProps {
-  /** Align the dropdown to the start or end of the trigger. Default: "start". */
+
   align?: "start" | "end" | "center";
-  /** Minimum dropdown width in px. Default: 180. */
+
   minWidth?: number;
   children: React.ReactNode;
 }
 
 export interface MenuItemProps {
   icon?: React.ReactNode;
-  /** Renders in rose/danger colours. */
+
   destructive?: boolean;
   disabled?: boolean;
   onSelect?: () => void;
@@ -69,12 +47,11 @@ export interface MenuItemProps {
 export interface MenuCheckboxItemProps {
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
-  /** When true, renders the item as read-only with an "always on" label. */
+
   locked?: boolean;
   children: React.ReactNode;
 }
 
-/* ── Menu (root) ──────────────────────────────────────────── */
 export function Menu({ open, onOpenChange, children }: MenuProps) {
   const triggerRef = React.useRef<HTMLElement | null>(null);
   return (
@@ -84,11 +61,6 @@ export function Menu({ open, onOpenChange, children }: MenuProps) {
   );
 }
 
-/* ── MenuTrigger ──────────────────────────────────────────── */
-/**
- * Wraps the trigger element and forwards the ref to it.
- * Accepts a single React element child.
- */
 export function MenuTrigger({ children }: { children: React.ReactElement }) {
   const { open, onOpenChange, triggerRef } = useMenuContext();
 
@@ -103,7 +75,6 @@ export function MenuTrigger({ children }: { children: React.ReactElement }) {
   return child;
 }
 
-/* ── MenuContent ──────────────────────────────────────────── */
 export function MenuContent({ align = "start", minWidth = 180, children }: MenuContentProps) {
   const { open, onOpenChange, triggerRef } = useMenuContext();
   const contentRef = React.useRef<HTMLDivElement>(null);
@@ -116,14 +87,14 @@ export function MenuContent({ align = "start", minWidth = 180, children }: MenuC
     gap: 4,
   });
 
-  // Close on outside click (shared primitive)
+
   useOutsideClick(
     [triggerRef, contentRef],
     open,
     React.useCallback(() => onOpenChange(false), [onOpenChange])
   );
 
-  // Keyboard navigation
+
   React.useEffect(() => {
     if (!open) return;
     const items = () =>
@@ -165,7 +136,6 @@ export function MenuContent({ align = "start", minWidth = 180, children }: MenuC
   );
 }
 
-/* ── MenuItem ─────────────────────────────────────────────── */
 export function MenuItem({ icon, destructive, disabled, onSelect, children }: MenuItemProps) {
   const { onOpenChange, triggerRef } = useMenuContext();
 
@@ -195,7 +165,6 @@ export function MenuItem({ icon, destructive, disabled, onSelect, children }: Me
   );
 }
 
-/* ── MenuCheckboxItem ─────────────────────────────────────── */
 export function MenuCheckboxItem({ checked, onCheckedChange, locked, children }: MenuCheckboxItemProps) {
   return (
     <button
@@ -225,12 +194,10 @@ export function MenuCheckboxItem({ checked, onCheckedChange, locked, children }:
   );
 }
 
-/* ── MenuSeparator ────────────────────────────────────────── */
 export function MenuSeparator() {
   return <div role="separator" className="my-1 h-px bg-border" />;
 }
 
-/* ── MenuLabel ────────────────────────────────────────────── */
 export function MenuLabel({ children }: { children: React.ReactNode }) {
   return (
     <p className="px-3 pb-1 pt-1.5 text-xs font-medium uppercase tracking-wider text-text-tertiary">

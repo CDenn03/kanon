@@ -24,10 +24,6 @@ const TONE_TEXT: Record<BlankTone, string> = {
   neutral: "text-text-tertiary",
 };
 
-/**
- * Blank — empty/error state for tables.
- * Use when the table has no rows to show (empty, filtered-empty, error, forbidden).
- */
 export function Blank({
   icon: Icon,
   title,

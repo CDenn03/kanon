@@ -5,21 +5,13 @@ import { cn } from "@/lib/utils";
 export interface SwitchProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
-  /** "sm" is 28×16, "md" (default) is 36×20. */
+
   size?: "sm" | "md";
   disabled?: boolean;
-  /** aria-label — required when there's no visible label beside the switch. */
+
   label?: string;
 }
 
-/**
- * Toggle switch. Stateless — the parent owns `checked`.
- *
- * For a labelled row use <SwitchRow>:
- *   <SwitchRow label="Email notifications" hint="Daily digest only">
- *     <Switch checked={v} onChange={setV} />
- *   </SwitchRow>
- */
 export function Switch({ checked, onChange, size = "md", disabled, label }: SwitchProps) {
   const trackW = size === "sm" ? 28 : 36;
   const trackH = size === "sm" ? 16 : 20;
@@ -58,14 +50,10 @@ export interface SwitchRowProps {
   label: React.ReactNode;
   hint?: string;
   children: React.ReactNode;
-  /** Renders the label on the right instead of the left of the switch. */
+
   labelRight?: boolean;
 }
 
-/**
- * Labelled switch row — places a label/hint block next to a <Switch>.
- * Clicking the label toggles the switch.
- */
 export function SwitchRow({ label, hint, children, labelRight }: SwitchRowProps) {
   return (
     <label

@@ -5,10 +5,6 @@ interface SkeletonRowsProps {
   colCount?: number;
 }
 
-/**
- * SkeletonRows — loading placeholder rows for tables.
- * Renders n rows with animated pulse skeletons.
- */
 export function SkeletonRows({ n = 8, colCount = 3 }: SkeletonRowsProps) {
   return (
     <>

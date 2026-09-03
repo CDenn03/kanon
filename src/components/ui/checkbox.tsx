@@ -8,14 +8,10 @@ interface CheckboxProps {
   indeterminate?: boolean;
   disabled?: boolean;
   onChange?: () => void;
-  /** Accessible label when used without an adjacent visible label. */
+
   ariaLabel?: string;
 }
 
-/**
- * Checkbox — used for row selection in tables.
- * Supports checked, indeterminate, and disabled states.
- */
 export function Checkbox({ checked, indeterminate, disabled, onChange, ariaLabel }: CheckboxProps) {
   const on = checked || indeterminate;
   return (

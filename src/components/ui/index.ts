@@ -97,3 +97,6 @@ export type { SidebarProps, SidebarItemProps, SidebarGroupProps } from "./sideba
 
 export { Navbar } from "./navbar";
 export type { NavbarProps } from "./navbar";
+
+// ── Brand ──────────────────────────────────────────────────────
+export { KanonLogo } from "./kanon-logo";
