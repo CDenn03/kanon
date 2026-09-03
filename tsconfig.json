@@ -6,7 +6,7 @@
       "dom.iterable",
       "esnext"
     ],
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -37,7 +37,6 @@
   ],
   "exclude": [
     "node_modules",
-    "sidebar-pgae header..etc.",
     "tsup.config.ts",
     "dist",
     "scripts"

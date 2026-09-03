@@ -8,8 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate:registry": "node scripts/generate-registry.mjs",
-    "prebuild": "node scripts/generate-registry.mjs",
+    "generate:registry": "tsx scripts/generate-registry.ts",
+    "prebuild": "tsx scripts/generate-registry.ts",
     "build:pkg": "tsup"
   },
   "exports": {
@@ -28,9 +28,9 @@
     "**/*.css"
   ],
   "peerDependencies": {
+    "lucide-react": ">=0.5",
     "react": ">=19",
-    "react-dom": ">=19",
-    "lucide-react": ">=0.5"
+    "react-dom": ">=19"
   },
   "dependencies": {
     "class-variance-authority": "0.7.1",
@@ -51,6 +51,7 @@
     "esbuild-plugin-preserve-directives": "0.0.11",
     "tailwindcss": "^4.1.0",
     "tsup": "8.5.0",
+    "tsx": "4.19.2",
     "typescript": "^5.8.0"
   }
 }
