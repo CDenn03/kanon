@@ -1,0 +1,17 @@
+{
+  "slug": "switch",
+  "name": "Switch",
+  "description": "Toggle switch, standalone or as a labelled row.",
+  "category": "Forms",
+  "exports": [
+    "Switch",
+    "SwitchRow"
+  ],
+  "dependsOn": [],
+  "files": [
+    {
+      "path": "src/components/ui/switch.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"@/lib/utils\";\n\nexport interface SwitchProps {\n  checked: boolean;\n  onChange: (checked: boolean) => void;\n  /** \"sm\" is 28×16, \"md\" (default) is 36×20. */\n  size?: \"sm\" | \"md\";\n  disabled?: boolean;\n  /** aria-label — required when there's no visible label beside the switch. */\n  label?: string;\n}\n\n/**\n * Toggle switch. Stateless — the parent owns `checked`.\n *\n * For a labelled row use <SwitchRow>:\n *   <SwitchRow label=\"Email notifications\" hint=\"Daily digest only\">\n *     <Switch checked={v} onChange={setV} />\n *   </SwitchRow>\n */\nexport function Switch({ checked, onChange, size = \"md\", disabled, label }: SwitchProps) {\n  const trackW = size === \"sm\" ? 28 : 36;\n  const trackH = size === \"sm\" ? 16 : 20;\n  const thumbPx = size === \"sm\" ? 12 : 16;\n  const onX = trackW - thumbPx - 2;\n\n  return (\n    <button\n      type=\"button\"\n      role=\"switch\"\n      aria-checked={checked}\n      aria-label={label}\n      disabled={disabled}\n      onClick={() => !disabled && onChange(!checked)}\n      className={cn(\n        \"relative inline-flex shrink-0 items-center rounded-full transition-colors duration-150\",\n        \"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1\",\n        checked ? \"bg-accent\" : \"bg-border\",\n        disabled && \"cursor-not-allowed opacity-50\"\n      )}\n      style={{ width: trackW, height: trackH }}\n    >\n      <span\n        className=\"inline-block rounded-full bg-surface shadow transition-transform duration-150\"\n        style={{\n          width: thumbPx,\n          height: thumbPx,\n          transform: `translateX(${checked ? onX : 2}px)`,\n        }}\n      />\n    </button>\n  );\n}\n\nexport interface SwitchRowProps {\n  label: React.ReactNode;\n  hint?: string;\n  children: React.ReactNode;\n  /** Renders the label on the right instead of the left of the switch. */\n  labelRight?: boolean;\n}\n\n/**\n * Labelled switch row — places a label/hint block next to a <Switch>.\n * Clicking the label toggles the switch.\n */\nexport function SwitchRow({ label, hint, children, labelRight }: SwitchRowProps) {\n  return (\n    <label\n      className={cn(\n        \"flex cursor-pointer items-center gap-3\",\n        labelRight ? \"flex-row\" : \"flex-row-reverse justify-end\"\n      )}\n    >\n      {children}\n      <span className=\"min-w-0\">\n        <span className=\"block text-sm font-medium text-text\">{label}</span>\n        {hint && <span className=\"block text-xs text-text-tertiary\">{hint}</span>}\n      </span>\n    </label>\n  );\n}\n"
+    }
+  ]
+}

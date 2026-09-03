@@ -1,0 +1,20 @@
+{
+  "slug": "slider",
+  "name": "Slider",
+  "description": "Range input styled to the tokens, with an optional value label and formatter.",
+  "category": "Forms",
+  "exports": [
+    "Slider"
+  ],
+  "dependsOn": [],
+  "files": [
+    {
+      "path": "src/components/ui/slider.tsx",
+      "content": "\"use client\";\n\nimport { useId } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\ninterface SliderProps {\n  label?: string;\n  value: number;\n  onChange: (value: number) => void;\n  min?: number;\n  max?: number;\n  step?: number;\n  disabled?: boolean;\n  /** Show the current value beside the label. */\n  showValue?: boolean;\n  /** Format the displayed value (e.g. (v) => `${v}%`). */\n  format?: (value: number) => string;\n  className?: string;\n}\n\n/**\n * Slider — a range input styled to the design tokens (`.ui-slider` in\n * globals.css). The fill reflects progress via a gradient background.\n */\nexport function Slider({\n  label,\n  value,\n  onChange,\n  min = 0,\n  max = 100,\n  step = 1,\n  disabled,\n  showValue,\n  format = (v) => String(v),\n  className,\n}: SliderProps) {\n  const id = useId();\n  const pct = ((value - min) / (max - min)) * 100;\n\n  return (\n    <div className={cn(\"w-full\", className)}>\n      {(label || showValue) && (\n        <div className=\"mb-1.5 flex items-center justify-between text-[13px]\">\n          {label && <label htmlFor={id} className=\"font-medium text-text\">{label}</label>}\n          {showValue && <span className=\"tabular-nums text-text-secondary\">{format(value)}</span>}\n        </div>\n      )}\n      <input\n        id={id}\n        type=\"range\"\n        min={min}\n        max={max}\n        step={step}\n        value={value}\n        disabled={disabled}\n        aria-label={label}\n        onChange={(e) => onChange(Number(e.target.value))}\n        className={cn(\"ui-slider w-full\", disabled && \"cursor-not-allowed opacity-50\")}\n        style={{\n          background: `linear-gradient(to right, var(--color-accent) ${pct}%, var(--color-bg-active) ${pct}%)`,\n        }}\n      />\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\n/**\n * Merge class names with clsx semantics + Tailwind conflict resolution.\n * Prefer this in all components.\n */\nexport function cn(...inputs: ClassValue[]): string {\n  return twMerge(clsx(inputs));\n}\n\n/**\n * Concatenate class names, filtering out falsy values.\n * @deprecated Prefer {@link cn} — it also resolves Tailwind class conflicts.\n */\nexport function cx(...args: (string | false | null | undefined)[]): string {\n  return args.filter(Boolean).join(\" \");\n}\n\n/**\n * Focus ring style helper.\n * @deprecated Focus rings are now handled globally via the\n * `:focus-visible` rule in `globals.css` and the `focus-visible:*`\n * utilities. This remains only for backwards compatibility.\n */\nexport function ring(color: string = \"var(--color-accent)\") {\n  return { outlineColor: color };\n}\n"
+    }
+  ]
+}

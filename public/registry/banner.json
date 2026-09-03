@@ -1,0 +1,16 @@
+{
+  "slug": "banner",
+  "name": "Banner",
+  "description": "Inline status message pairing a Lucide icon with tone (icon + colour, never colour alone).",
+  "category": "Feedback",
+  "exports": [
+    "Banner"
+  ],
+  "dependsOn": [],
+  "files": [
+    {
+      "path": "src/components/ui/banner.tsx",
+      "content": "\"use client\";\n\nimport type { LucideIcon } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\n\ntype BannerTone = \"amber\" | \"rose\" | \"neutral\";\n\ninterface BannerProps {\n  tone: BannerTone;\n  icon: LucideIcon;\n  children: React.ReactNode;\n  action?: string;\n  onAction?: () => void;\n}\n\nconst TONE_CLASS: Record<BannerTone, string> = {\n  amber: \"bg-warning-light text-warning\",\n  rose: \"bg-error-light text-error\",\n  neutral: \"bg-bg-secondary text-text-secondary\",\n};\n\n/**\n * Banner — table-level status message. Sits between the caption strip\n * and the table body. Pairs a Lucide icon with color so meaning is not\n * conveyed by color alone.\n */\nexport function Banner({ tone, icon: Icon, children, action, onAction }: BannerProps) {\n  return (\n    <div\n      role=\"status\"\n      className={cn(\n        \"flex flex-wrap items-center gap-2 border-b border-border px-4 py-2.5 text-sm\",\n        TONE_CLASS[tone]\n      )}\n    >\n      <Icon size={15} className=\"shrink-0\" aria-hidden />\n      <span className=\"flex-1\">{children}</span>\n      {action && (\n        <button\n          onClick={onAction}\n          className=\"rounded px-2 py-0.5 text-sm font-medium underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current\"\n        >\n          {action}\n        </button>\n      )}\n    </div>\n  );\n}\n"
+    }
+  ]
+}

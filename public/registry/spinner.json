@@ -1,0 +1,20 @@
+{
+  "slug": "spinner",
+  "name": "Spinner",
+  "description": "Indeterminate loading indicator with an accessible status label.",
+  "category": "Feedback",
+  "exports": [
+    "Spinner"
+  ],
+  "dependsOn": [],
+  "files": [
+    {
+      "path": "src/components/ui/spinner.tsx",
+      "content": "import { Loader2 } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\n\ntype SpinnerSize = \"sm\" | \"md\" | \"lg\";\n\nconst SIZE: Record<SpinnerSize, number> = { sm: 14, md: 18, lg: 24 };\n\ninterface SpinnerProps {\n  size?: SpinnerSize;\n  /** Accessible label for screen readers. */\n  label?: string;\n  className?: string;\n}\n\n/**\n * Spinner — an indeterminate loading indicator. Announces a status label to\n * assistive tech; the icon itself is aria-hidden.\n */\nexport function Spinner({ size = \"md\", label = \"Loading\", className }: SpinnerProps) {\n  return (\n    <span role=\"status\" className={cn(\"inline-flex items-center gap-2 text-text-secondary\", className)}>\n      <Loader2 size={SIZE[size]} className=\"animate-spin text-accent\" aria-hidden />\n      <span className=\"sr-only\">{label}</span>\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\n/**\n * Merge class names with clsx semantics + Tailwind conflict resolution.\n * Prefer this in all components.\n */\nexport function cn(...inputs: ClassValue[]): string {\n  return twMerge(clsx(inputs));\n}\n\n/**\n * Concatenate class names, filtering out falsy values.\n * @deprecated Prefer {@link cn} — it also resolves Tailwind class conflicts.\n */\nexport function cx(...args: (string | false | null | undefined)[]): string {\n  return args.filter(Boolean).join(\" \");\n}\n\n/**\n * Focus ring style helper.\n * @deprecated Focus rings are now handled globally via the\n * `:focus-visible` rule in `globals.css` and the `focus-visible:*`\n * utilities. This remains only for backwards compatibility.\n */\nexport function ring(color: string = \"var(--color-accent)\") {\n  return { outlineColor: color };\n}\n"
+    }
+  ]
+}

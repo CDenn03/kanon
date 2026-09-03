@@ -1,0 +1,16 @@
+{
+  "slug": "page-header",
+  "name": "PageHeader",
+  "description": "Consistent H1 + description + actions row above page content.",
+  "category": "Layout",
+  "exports": [
+    "PageHeader"
+  ],
+  "dependsOn": [],
+  "files": [
+    {
+      "path": "src/components/ui/page-header.tsx",
+      "content": "export interface PageHeaderProps {\n  title: React.ReactNode;\n  description?: React.ReactNode;\n  /** Right-side slot — typically one or two <Button>s. */\n  actions?: React.ReactNode;\n}\n\n/**\n * PageHeader — the H1 + description + CTA row that sits above the\n * main content of a page. Keeps the spacing and sizing consistent\n * everywhere without duplicating flex layout per page.\n *\n * Usage:\n *   <PageHeader\n *     title=\"Users\"\n *     description=\"People with access to this organisation.\"\n *     actions={<Button icon={Plus}>Add user</Button>}\n *   />\n */\nexport function PageHeader({ title, description, actions }: PageHeaderProps) {\n  return (\n    <div className=\"mb-6 flex items-start justify-between gap-6\">\n      <div className=\"min-w-0\">\n        <h1 className=\"text-2xl font-semibold tracking-tight text-text\">{title}</h1>\n        {description && (\n          <p className=\"mt-1 max-w-xl text-sm leading-relaxed text-text-secondary\">\n            {description}\n          </p>\n        )}\n      </div>\n      {actions && <div className=\"flex shrink-0 items-center gap-2\">{actions}</div>}\n    </div>\n  );\n}\n"
+    }
+  ]
+}

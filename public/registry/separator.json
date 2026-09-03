@@ -1,0 +1,20 @@
+{
+  "slug": "separator",
+  "name": "Separator",
+  "description": "Thin divider line — horizontal, vertical, or with a centered label.",
+  "category": "Layout",
+  "exports": [
+    "Separator"
+  ],
+  "dependsOn": [],
+  "files": [
+    {
+      "path": "src/components/ui/separator.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\ninterface SeparatorProps {\n  orientation?: \"horizontal\" | \"vertical\";\n  /** Optional centered label (horizontal only). */\n  label?: string;\n  className?: string;\n}\n\n/**\n * Separator — a thin divider line. Horizontal by default; vertical for\n * inline groups. Decorative unless a label is provided.\n */\nexport function Separator({ orientation = \"horizontal\", label, className }: SeparatorProps) {\n  if (orientation === \"vertical\") {\n    return <span role=\"separator\" aria-orientation=\"vertical\" className={cn(\"inline-block h-4 w-px bg-border\", className)} />;\n  }\n\n  if (label) {\n    return (\n      <div className={cn(\"flex items-center gap-3\", className)}>\n        <span className=\"h-px flex-1 bg-border\" />\n        <span className=\"text-xs font-medium uppercase tracking-wider text-text-tertiary\">{label}</span>\n        <span className=\"h-px flex-1 bg-border\" />\n      </div>\n    );\n  }\n\n  return <hr className={cn(\"border-0 border-t border-border\", className)} />;\n}\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\n/**\n * Merge class names with clsx semantics + Tailwind conflict resolution.\n * Prefer this in all components.\n */\nexport function cn(...inputs: ClassValue[]): string {\n  return twMerge(clsx(inputs));\n}\n\n/**\n * Concatenate class names, filtering out falsy values.\n * @deprecated Prefer {@link cn} — it also resolves Tailwind class conflicts.\n */\nexport function cx(...args: (string | false | null | undefined)[]): string {\n  return args.filter(Boolean).join(\" \");\n}\n\n/**\n * Focus ring style helper.\n * @deprecated Focus rings are now handled globally via the\n * `:focus-visible` rule in `globals.css` and the `focus-visible:*`\n * utilities. This remains only for backwards compatibility.\n */\nexport function ring(color: string = \"var(--color-accent)\") {\n  return { outlineColor: color };\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "slug": "back-button",
+  "name": "BackButton",
+  "description": "Discoverable bordered back-navigation pill with an adequate touch target.",
+  "category": "Navigation",
+  "exports": [
+    "BackButton"
+  ],
+  "dependsOn": [],
+  "files": [
+    {
+      "path": "src/components/ui/back-button.tsx",
+      "content": "\"use client\";\n\nimport Link from \"next/link\";\nimport { ArrowLeft } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\n\ninterface BackButtonProps {\n  /** Destination URL. */\n  href: string;\n  /** Visible label, e.g. \"Users\", \"Dashboard\". */\n  label: string;\n  /** Optional extra classes for layout (e.g. margin). */\n  className?: string;\n}\n\n/**\n * BackButton — a clear, discoverable back-navigation affordance.\n *\n * Rendered as a bordered pill (not a faint text link) so it reads as a\n * tappable control — recognition over recall, with an adequate target size\n * (min-h-9 ≈ 36px) per Fitts's Law.\n */\nexport function BackButton({ href, label, className }: BackButtonProps) {\n  return (\n    <Link\n      href={href}\n      className={cn(\n        \"group inline-flex min-h-9 items-center gap-2 rounded-lg border border-border bg-bg px-3 text-sm font-medium text-text-secondary no-underline shadow-sm transition-colors\",\n        \"hover:border-accent hover:bg-accent-light hover:text-accent\",\n        \"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2\",\n        className\n      )}\n    >\n      <ArrowLeft size={16} className=\"transition-transform group-hover:-translate-x-0.5\" aria-hidden />\n      <span>{label}</span>\n    </Link>\n  );\n}\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\n/**\n * Merge class names with clsx semantics + Tailwind conflict resolution.\n * Prefer this in all components.\n */\nexport function cn(...inputs: ClassValue[]): string {\n  return twMerge(clsx(inputs));\n}\n\n/**\n * Concatenate class names, filtering out falsy values.\n * @deprecated Prefer {@link cn} — it also resolves Tailwind class conflicts.\n */\nexport function cx(...args: (string | false | null | undefined)[]): string {\n  return args.filter(Boolean).join(\" \");\n}\n\n/**\n * Focus ring style helper.\n * @deprecated Focus rings are now handled globally via the\n * `:focus-visible` rule in `globals.css` and the `focus-visible:*`\n * utilities. This remains only for backwards compatibility.\n */\nexport function ring(color: string = \"var(--color-accent)\") {\n  return { outlineColor: color };\n}\n"
+    }
+  ]
+}

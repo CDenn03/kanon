@@ -1,0 +1,16 @@
+{
+  "slug": "hold-to-confirm",
+  "name": "HoldToConfirm",
+  "description": "Press-and-hold destructive action button with a keyboard fallback.",
+  "category": "Buttons & Actions",
+  "exports": [
+    "HoldToConfirm"
+  ],
+  "dependsOn": [],
+  "files": [
+    {
+      "path": "src/components/ui/hold-to-confirm.tsx",
+      "content": "\"use client\";\n\nimport { useState, useRef, useEffect } from \"react\";\nimport { Trash2 } from \"lucide-react\";\n\ninterface HoldToConfirmProps {\n  label?: string;\n  duration?: number;\n  onConfirm: () => void;\n  onKeyboardFallback: () => void;\n  disabled?: boolean;\n}\n\nexport function HoldToConfirm({\n  label = \"Hold to delete\",\n  duration = 1200,\n  onConfirm,\n  onKeyboardFallback,\n  disabled,\n}: HoldToConfirmProps) {\n  const [pct, setPct] = useState(0);\n  const timer = useRef<ReturnType<typeof setInterval> | null>(null);\n  const start = useRef(0);\n\n  const stop = () => {\n    if (timer.current) clearInterval(timer.current);\n    timer.current = null;\n    setPct(0);\n  };\n\n  const begin = () => {\n    if (disabled || timer.current) return;\n    start.current = Date.now();\n    timer.current = setInterval(() => {\n      const p = Math.min(100, ((Date.now() - start.current) / duration) * 100);\n      setPct(p);\n      if (p >= 100) { stop(); onConfirm(); }\n    }, 16);\n  };\n\n  useEffect(() => () => { if (timer.current) clearInterval(timer.current); }, []);\n\n  return (\n    <button\n      disabled={disabled}\n      onPointerDown={begin}\n      onPointerUp={stop}\n      onPointerLeave={stop}\n      onPointerCancel={stop}\n      onKeyDown={(e) => { if (e.key === \"Enter\" || e.key === \" \") { e.preventDefault(); onKeyboardFallback(); } }}\n      aria-label={`${label}. Press Enter for a confirmation dialog instead.`}\n      className=\"relative inline-flex h-10 select-none items-center justify-center gap-1.5 overflow-hidden rounded-lg bg-error px-4 text-sm font-medium text-on-error shadow-sm transition-[color,background-color,box-shadow] hover:bg-error-hover hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45 disabled:shadow-none\"\n      style={{ touchAction: \"none\" }}\n    >\n      <span\n        className=\"absolute inset-y-0 left-0 bg-black/30 transition-none\"\n        style={{ width: `${pct}%` }}\n        aria-hidden\n      />\n      <span className=\"relative inline-flex items-center gap-1.5\">\n        <Trash2 size={15} aria-hidden />\n        {pct > 0 ? \"Keep holding\\u2026\" : label}\n      </span>\n    </button>\n  );\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "slug": "alert",
+  "name": "Alert",
+  "description": "Static inline message block with tones + icon (icon paired with colour, never colour alone).",
+  "category": "Feedback",
+  "exports": [
+    "Alert"
+  ],
+  "dependsOn": [],
+  "files": [
+    {
+      "path": "src/components/ui/alert.tsx",
+      "content": "\"use client\";\n\nimport { useState, type ReactNode } from \"react\";\nimport { Info, CheckCircle2, AlertTriangle, XCircle, X, type LucideIcon } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\n\ntype AlertTone = \"info\" | \"success\" | \"warning\" | \"error\";\n\nconst TONE: Record<AlertTone, { icon: LucideIcon; wrap: string; icon_: string }> = {\n  info: { icon: Info, wrap: \"border-border bg-bg-secondary\", icon_: \"text-text-secondary\" },\n  success: { icon: CheckCircle2, wrap: \"border-accent-muted bg-accent-light\", icon_: \"text-accent\" },\n  warning: { icon: AlertTriangle, wrap: \"border-warning/30 bg-warning-light\", icon_: \"text-warning\" },\n  error: { icon: XCircle, wrap: \"border-error/30 bg-error-light\", icon_: \"text-error\" },\n};\n\ninterface AlertProps {\n  tone?: AlertTone;\n  title?: ReactNode;\n  children?: ReactNode;\n  /** Show a dismiss button. */\n  dismissible?: boolean;\n  onDismiss?: () => void;\n  /** Optional action slot (e.g. a link or button). */\n  action?: ReactNode;\n}\n\n/**\n * Alert (Callout) — a static, inline message block. Pairs an icon with tone\n * so meaning is never colour-only. Distinct from Toast (transient) and\n * Banner (table-scoped).\n */\nexport function Alert({ tone = \"info\", title, children, dismissible, onDismiss, action }: AlertProps) {\n  const [open, setOpen] = useState(true);\n  const cfg = TONE[tone];\n  const Icon = cfg.icon;\n\n  if (!open) return null;\n\n  return (\n    <div\n      role={tone === \"error\" ? \"alert\" : \"status\"}\n      className={cn(\"flex items-start gap-3 rounded-lg border p-3.5\", cfg.wrap)}\n    >\n      <Icon size={18} className={cn(\"mt-0.5 shrink-0\", cfg.icon_)} aria-hidden />\n      <div className=\"min-w-0 flex-1\">\n        {title && <p className=\"text-sm font-semibold text-text\">{title}</p>}\n        {children && <div className={cn(\"text-sm text-text-secondary\", title && \"mt-0.5\")}>{children}</div>}\n        {action && <div className=\"mt-2\">{action}</div>}\n      </div>\n      {dismissible && (\n        <button\n          type=\"button\"\n          onClick={() => { setOpen(false); onDismiss?.(); }}\n          aria-label=\"Dismiss\"\n          className=\"-mr-1 -mt-1 shrink-0 rounded p-1 text-text-tertiary hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent\"\n        >\n          <X size={15} aria-hidden />\n        </button>\n      )}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\n/**\n * Merge class names with clsx semantics + Tailwind conflict resolution.\n * Prefer this in all components.\n */\nexport function cn(...inputs: ClassValue[]): string {\n  return twMerge(clsx(inputs));\n}\n\n/**\n * Concatenate class names, filtering out falsy values.\n * @deprecated Prefer {@link cn} — it also resolves Tailwind class conflicts.\n */\nexport function cx(...args: (string | false | null | undefined)[]): string {\n  return args.filter(Boolean).join(\" \");\n}\n\n/**\n * Focus ring style helper.\n * @deprecated Focus rings are now handled globally via the\n * `:focus-visible` rule in `globals.css` and the `focus-visible:*`\n * utilities. This remains only for backwards compatibility.\n */\nexport function ring(color: string = \"var(--color-accent)\") {\n  return { outlineColor: color };\n}\n"
+    }
+  ]
+}

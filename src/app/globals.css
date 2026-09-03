@@ -1,0 +1,317 @@
+@import "tailwindcss";
+
+/*
+ * Kanon — semantic design tokens.
+ *
+ * Structure adopted from the Mathesis design system (semantic naming,
+ * elevation scale, focus ring), but the brand palette remains Kanon's
+ * pine-green. Components reference these semantic tokens as Tailwind
+ * utilities (bg-accent, text-text-secondary, border-border, …) rather
+ * than raw hex values.
+ */
+@theme {
+  /* ── Surfaces ─────────────────────────────────────────── */
+  --color-bg: #F3F6F6;             /* tinted page background (plane behind cards) */
+  --color-bg-secondary: #E8EDEC;
+  --color-bg-elevated: #FFFFFF;
+  --color-bg-hover: #E8EDEC;
+  --color-bg-active: #DCE4E2;
+  --color-surface: #FFFFFF;
+
+  /* ── Borders ──────────────────────────────────────────── */
+  --color-border: #E2E9E7;
+  --color-border-hover: #CED9D6;
+
+  /* ── Text (green-tinted near-neutrals) ────────────────── */
+  --color-text: #172622;           /* ink   — primary */
+  --color-text-secondary: #4B635D; /* ink2  — secondary */
+  --color-text-tertiary: #57706A;  /* ink3  — tertiary/placeholder (WCAG AA) */
+
+  /* ── Accent (pine green — Kanon brand) ──────────────── */
+  --color-accent: #0B5D4E;
+  --color-accent-hover: #094C40;
+  --color-accent-active: #073D34;
+  --color-accent-light: #EAF5F3;   /* soft tint background */
+  --color-accent-muted: #CCE6E1;
+  --color-accent-tint: rgba(11, 93, 78, 0.12); /* chip tint on dark surfaces */
+  --color-on-accent: #FFFFFF;
+
+  /* ── Status: success (reuses pine family) ─────────────── */
+  --color-success: #0B5D4E;
+  --color-success-light: #EAF5F3;
+
+  /* ── Status: warning (amber) ──────────────────────────── */
+  --color-warning: #8A5A00;
+  --color-warning-hover: #6F4900;
+  --color-warning-light: #FBF0DC;
+
+  /* ── Status: error / danger (rose) ────────────────────── */
+  --color-error: #8C2F39;
+  --color-error-hover: #75262E;
+  --color-error-light: #FBEBEC;
+  --color-on-error: #FFFFFF;
+
+  /* ── Inverted / dark surfaces (tooltips, code, emphasis) ─ */
+  --color-surface-dark: #0F1513;
+  --color-on-dark: #EBF0EE;
+
+  /* Scrim behind modals and slide-out panels */
+  --color-overlay: rgba(15, 21, 19, 0.45);
+
+  /* Scrollbar thumb (light) */
+  --color-scrollbar: #C3D0CC;
+  --color-scrollbar-hover: #A6B6B1;
+
+  /*
+   * Elevation scale — single top-down light source, two-part shadows
+   * (ambient + direct) per the visual-design depth guideline. Placed in
+   * @theme so they generate `shadow-sm/md/lg/xl/overlay/accent` utilities.
+   */
+  --shadow-sm: 0 1px 2px rgba(15, 21, 19, 0.06);
+  --shadow-md: 0 1px 3px rgba(15, 21, 19, 0.08), 0 4px 8px rgba(15, 21, 19, 0.06);
+  --shadow-lg: 0 2px 6px rgba(15, 21, 19, 0.08), 0 8px 20px rgba(15, 21, 19, 0.08);
+  --shadow-xl: 0 4px 10px rgba(15, 21, 19, 0.10), 0 16px 36px rgba(15, 21, 19, 0.12);
+  --shadow-overlay: 0 25px 50px -12px rgba(15, 21, 19, 0.28);
+  /* Pine glow for prominent primary CTAs */
+  --shadow-accent: 0 4px 12px rgba(11, 93, 78, 0.28), 0 2px 4px rgba(11, 93, 78, 0.2);
+}
+
+/*
+ * Dark theme — overrides the semantic color variables when
+ * <html data-theme="dark">. Utilities reference var(--color-*), so the
+ * whole UI re-themes without touching component classes. Brand accent
+ * lightens slightly to stay legible on dark surfaces.
+ */
+[data-theme="dark"] {
+  --color-bg: #0F1513;
+  --color-bg-secondary: #131A18;
+  --color-bg-elevated: #1E2723;
+  --color-bg-hover: #242E2B;
+  --color-bg-active: #2D3936;
+  --color-surface: #18201E;
+
+  --color-border: #2D3936;
+  --color-border-hover: #3F504C;
+
+  --color-text: #EBF0EE;
+  --color-text-secondary: #ABBAB6;
+  --color-text-tertiary: #859994;
+
+  --color-accent: #51B8A3;
+  --color-accent-hover: #6CC6B4;
+  --color-accent-active: #88D3C4;
+  --color-accent-light: #17362F;
+  --color-accent-muted: #244C44;
+  --color-accent-tint: rgba(81, 184, 163, 0.16);
+  --color-on-accent: #08211C;
+
+  --color-success: #51B8A3;
+  --color-success-light: #17362F;
+
+  --color-warning: #E0A64C;
+  --color-warning-hover: #EBB666;
+  --color-warning-light: #33280F;
+
+  --color-error: #E27680;
+  --color-error-hover: #EC8A93;
+  --color-error-light: #38191D;
+  --color-on-error: #150609;
+
+  --color-surface-dark: #060A09;
+  --color-on-dark: #EBF0EE;
+
+  --color-overlay: rgba(0, 0, 0, 0.6);
+
+  /* Scrollbar thumb (dark) */
+  --color-scrollbar: #3A4A46;
+  --color-scrollbar-hover: #4E605B;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.5), 0 8px 20px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 4px 10px rgba(0, 0, 0, 0.55), 0 16px 36px rgba(0, 0, 0, 0.6);
+  --shadow-overlay: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  --shadow-accent: 0 4px 12px rgba(81, 184, 163, 0.28), 0 2px 4px rgba(81, 184, 163, 0.2);
+}
+
+/*
+ * Elevation system — single top-down light source. Use these tokens
+ * instead of ad-hoc rgba() shadow values.
+ */
+:root {
+  /* Focus ring for inputs/surfaces (soft) */
+  --shadow-focus: 0 0 0 3px var(--color-accent-light);
+
+  /* Extra avatar hues (used by the colourful Avatar variant) */
+  --avatar-1-bg: #E8ECFB; --avatar-1-fg: #3B4FBF;
+  --avatar-2-bg: #F3E8FB; --avatar-2-fg: #7A3FBF;
+  --avatar-3-bg: #E8F7F3; --avatar-3-fg: #0F8F6B;
+}
+
+[data-theme="dark"] {
+  --avatar-1-bg: #1E2547; --avatar-1-fg: #A9B4F0;
+  --avatar-2-bg: #2C1E44; --avatar-2-fg: #C9A6F0;
+  --avatar-3-bg: #123028; --avatar-3-fg: #6FD0B4;
+}
+
+/* ── Base ───────────────────────────────────────────────── */
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Interactive elements get pointer / not-allowed cursors */
+button:not(:disabled),
+[role="button"]:not(:disabled),
+a {
+  cursor: pointer;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+/* Consistent keyboard focus indicator (2px ring, 2px offset) */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background-color: var(--color-accent-muted);
+  color: var(--color-text);
+}
+
+/*
+ * Scrollbars — themed to the token layer, subtle by default and slightly
+ * stronger on hover. WebKit (Chrome/Safari/Edge) uses ::-webkit-scrollbar;
+ * Firefox uses scrollbar-width/scrollbar-color. Track stays transparent so
+ * it blends with any surface.
+ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scrollbar) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-scrollbar);
+  border-radius: 9999px;
+  /* Padding effect: transparent border reveals track around the thumb. */
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-scrollbar-hover);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Thin variant for dense areas (e.g. dropdowns, code blocks). */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  border-width: 2px;
+}
+
+/*
+ * Autofill — browsers force a light background + dark text on autofilled
+ * inputs, which breaks dark mode (and makes overlaid icons like the password
+ * reveal button vanish on hover). Pin autofilled fields to the surface/text
+ * tokens so everything stays legible in both themes.
+ */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-text);
+  caret-color: var(--color-text);
+  /* The huge inset shadow paints over the UA yellow/white autofill fill. */
+  -webkit-box-shadow: 0 0 0 1000px var(--color-surface) inset;
+  box-shadow: 0 0 0 1000px var(--color-surface) inset;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* ── Drawer slide-in animations ──────────────────────────── */
+@keyframes drawer-in-right { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes drawer-in-left  { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes drawer-in-bottom { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+/* ── Progress indeterminate loop ─────────────────────────── */
+@keyframes progress-indeterminate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
+
+/* ── Slider (range input) ────────────────────────────────── */
+.ui-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  outline: none;
+  cursor: pointer;
+}
+.ui-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 2px solid var(--color-accent);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+.ui-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 2px solid var(--color-accent);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+.ui-slider:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+.ui-slider:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+
+/* ── Docs: shiki code blocks ─────────────────────────────── */
+.code-block pre.shiki {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 12.5px;
+  line-height: 1.6;
+  background: var(--color-surface-dark) !important;
+  border-radius: 0;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* Use shiki's dark theme colors on our dark surface */
+.code-block pre.shiki,
+.code-block pre.shiki span {
+  color: var(--shiki-dark, inherit) !important;
+}
+

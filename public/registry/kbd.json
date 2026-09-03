@@ -1,0 +1,20 @@
+{
+  "slug": "kbd",
+  "name": "Kbd",
+  "description": "Keyboard shortcut key caps.",
+  "category": "Data Display",
+  "exports": [
+    "Kbd"
+  ],
+  "dependsOn": [],
+  "files": [
+    {
+      "path": "src/components/ui/kbd.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\ninterface KbdProps {\n  /** Keys to render; a string is shown as-is, an array renders each key. */\n  keys: string | string[];\n  className?: string;\n}\n\n/**\n * Kbd — renders keyboard shortcut keys as small caps-style key caps.\n * e.g. <Kbd keys={[\"⌘\", \"K\"]} /> or <Kbd keys=\"Esc\" />.\n */\nexport function Kbd({ keys, className }: KbdProps) {\n  const list = Array.isArray(keys) ? keys : [keys];\n  return (\n    <span className={cn(\"inline-flex items-center gap-1\", className)}>\n      {list.map((k, i) => (\n        <kbd\n          key={i}\n          className=\"inline-flex h-5 min-w-5 items-center justify-center rounded border border-border bg-bg-secondary px-1.5 font-mono text-[11px] font-medium text-text-secondary\"\n        >\n          {k}\n        </kbd>\n      ))}\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\n/**\n * Merge class names with clsx semantics + Tailwind conflict resolution.\n * Prefer this in all components.\n */\nexport function cn(...inputs: ClassValue[]): string {\n  return twMerge(clsx(inputs));\n}\n\n/**\n * Concatenate class names, filtering out falsy values.\n * @deprecated Prefer {@link cn} — it also resolves Tailwind class conflicts.\n */\nexport function cx(...args: (string | false | null | undefined)[]): string {\n  return args.filter(Boolean).join(\" \");\n}\n\n/**\n * Focus ring style helper.\n * @deprecated Focus rings are now handled globally via the\n * `:focus-visible` rule in `globals.css` and the `focus-visible:*`\n * utilities. This remains only for backwards compatibility.\n */\nexport function ring(color: string = \"var(--color-accent)\") {\n  return { outlineColor: color };\n}\n"
+    }
+  ]
+}

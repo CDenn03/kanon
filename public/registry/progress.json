@@ -1,0 +1,20 @@
+{
+  "slug": "progress",
+  "name": "Progress",
+  "description": "Linear progress bar — determinate (0–100) or indeterminate loop.",
+  "category": "Feedback",
+  "exports": [
+    "Progress"
+  ],
+  "dependsOn": [],
+  "files": [
+    {
+      "path": "src/components/ui/progress.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"@/lib/utils\";\n\ntype ProgressTone = \"accent\" | \"warning\" | \"error\";\n\nconst TONE: Record<ProgressTone, string> = {\n  accent: \"bg-accent\",\n  warning: \"bg-warning\",\n  error: \"bg-error\",\n};\n\ninterface ProgressProps {\n  /** 0–100. Omit (or pass null) for an indeterminate bar. */\n  value?: number | null;\n  tone?: ProgressTone;\n  /** Show the numeric percentage label above the bar. */\n  showValue?: boolean;\n  label?: string;\n  className?: string;\n}\n\n/**\n * Progress — a linear progress bar. Determinate when `value` is a number\n * (0–100); indeterminate (looping) when `value` is null/undefined.\n */\nexport function Progress({ value, tone = \"accent\", showValue, label, className }: ProgressProps) {\n  const indeterminate = value === null || value === undefined;\n  const pct = indeterminate ? 0 : Math.max(0, Math.min(100, value));\n\n  return (\n    <div className={cn(\"w-full\", className)}>\n      {(label || showValue) && (\n        <div className=\"mb-1.5 flex items-center justify-between text-xs\">\n          {label && <span className=\"font-medium text-text\">{label}</span>}\n          {showValue && !indeterminate && <span className=\"tabular-nums text-text-secondary\">{Math.round(pct)}%</span>}\n        </div>\n      )}\n      <div\n        role=\"progressbar\"\n        aria-valuenow={indeterminate ? undefined : Math.round(pct)}\n        aria-valuemin={0}\n        aria-valuemax={100}\n        aria-label={label ?? \"Progress\"}\n        className=\"h-2 w-full overflow-hidden rounded-full bg-bg-active\"\n      >\n        {indeterminate ? (\n          <div className={cn(\"h-full w-1/3 rounded-full\", TONE[tone], \"animate-[progress-indeterminate_1.2s_ease-in-out_infinite]\")} />\n        ) : (\n          <div\n            className={cn(\"h-full rounded-full transition-[width] duration-300\", TONE[tone])}\n            style={{ width: `${pct}%` }}\n          />\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\n/**\n * Merge class names with clsx semantics + Tailwind conflict resolution.\n * Prefer this in all components.\n */\nexport function cn(...inputs: ClassValue[]): string {\n  return twMerge(clsx(inputs));\n}\n\n/**\n * Concatenate class names, filtering out falsy values.\n * @deprecated Prefer {@link cn} — it also resolves Tailwind class conflicts.\n */\nexport function cx(...args: (string | false | null | undefined)[]): string {\n  return args.filter(Boolean).join(\" \");\n}\n\n/**\n * Focus ring style helper.\n * @deprecated Focus rings are now handled globally via the\n * `:focus-visible` rule in `globals.css` and the `focus-visible:*`\n * utilities. This remains only for backwards compatibility.\n */\nexport function ring(color: string = \"var(--color-accent)\") {\n  return { outlineColor: color };\n}\n"
+    }
+  ]
+}

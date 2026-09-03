@@ -1,0 +1,399 @@
+{
+  "name": "kanon",
+  "homepage": "https://kanon.local",
+  "style": "pine",
+  "tailwind": {
+    "css": "src/app/globals.css"
+  },
+  "components": [
+    {
+      "slug": "accordion",
+      "name": "Accordion",
+      "description": "Expandable sections; single-open by default or multiple.",
+      "category": "Layout",
+      "dependsOn": [],
+      "fileCount": 2
+    },
+    {
+      "slug": "alert",
+      "name": "Alert",
+      "description": "Static inline message block with tones + icon (icon paired with colour, never colour alone).",
+      "category": "Feedback",
+      "dependsOn": [],
+      "fileCount": 2
+    },
+    {
+      "slug": "avatar",
+      "name": "Avatar",
+      "description": "Initials or image avatar with stable colour hashing and size variants.",
+      "category": "Data Display",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "back-button",
+      "name": "BackButton",
+      "description": "Discoverable bordered back-navigation pill with an adequate touch target.",
+      "category": "Navigation",
+      "dependsOn": [],
+      "fileCount": 2
+    },
+    {
+      "slug": "badge",
+      "name": "Badge",
+      "description": "Compact status label in pine, amber, rose and neutral tones.",
+      "category": "Data Display",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "banner",
+      "name": "Banner",
+      "description": "Inline status message pairing a Lucide icon with tone (icon + colour, never colour alone).",
+      "category": "Feedback",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "blank",
+      "name": "Blank",
+      "description": "Designed empty/error state for tables and lists, with optional actions.",
+      "category": "Feedback",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "breadcrumb",
+      "name": "Breadcrumb",
+      "description": "Chevron-separated navigation trail; last item is the current page.",
+      "category": "Navigation",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "button",
+      "name": "Button",
+      "description": "Primary action trigger with variants, sizes, icons, loading and disabled-with-reason states.",
+      "category": "Buttons & Actions",
+      "dependsOn": [],
+      "fileCount": 4
+    },
+    {
+      "slug": "button-group",
+      "name": "ButtonGroup & Toolbar",
+      "description": "Segmented single-choice button set, and a Toolbar container for grouped actions.",
+      "category": "Buttons & Actions",
+      "dependsOn": [
+        "button",
+        "separator"
+      ],
+      "fileCount": 6
+    },
+    {
+      "slug": "card",
+      "name": "Card",
+      "description": "Bordered surface with optional header, body and footer; interactive and selected states.",
+      "category": "Layout",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "checkbox",
+      "name": "Checkbox",
+      "description": "Accessible checkbox with checked, indeterminate and disabled states.",
+      "category": "Forms",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "chip",
+      "name": "Chip & TagInput",
+      "description": "Compact removable tokens, and a tag input that adds chips on Enter/comma.",
+      "category": "Forms",
+      "dependsOn": [],
+      "fileCount": 3
+    },
+    {
+      "slug": "command-palette",
+      "name": "CommandPalette",
+      "description": "Generic ⌘K overlay: filter items by title/subtitle/keywords and act on selection.",
+      "category": "Overlays",
+      "dependsOn": [],
+      "fileCount": 3
+    },
+    {
+      "slug": "confirm-dialog",
+      "name": "ConfirmDialog",
+      "description": "Modal confirmation with simple, type-to-confirm and hold-to-confirm modes.",
+      "category": "Overlays",
+      "dependsOn": [
+        "button",
+        "hold-to-confirm"
+      ],
+      "fileCount": 7
+    },
+    {
+      "slug": "data-table",
+      "name": "DataTable",
+      "description": "Column-driven table composing SortHeader, SkeletonRows, Pagination and an empty state.",
+      "category": "Data Display",
+      "dependsOn": [
+        "sort-header",
+        "skeleton-rows",
+        "pagination",
+        "blank"
+      ],
+      "fileCount": 6
+    },
+    {
+      "slug": "date-picker",
+      "name": "DatePicker & DateRangePicker",
+      "description": "Popover calendar for single dates and ranges, with presets and month navigation.",
+      "category": "Forms",
+      "dependsOn": [],
+      "fileCount": 5
+    },
+    {
+      "slug": "date-range-picker",
+      "name": "DateRangePicker",
+      "description": "Two-month range calendar with presets, night count and apply/clear.",
+      "category": "Forms",
+      "dependsOn": [
+        "date-picker",
+        "button"
+      ],
+      "fileCount": 7
+    },
+    {
+      "slug": "dialog",
+      "name": "Dialog",
+      "description": "Generic modal with header/body/footer, focus trap, Esc + backdrop close, and a portal.",
+      "category": "Overlays",
+      "dependsOn": [
+        "button",
+        "input"
+      ],
+      "fileCount": 8
+    },
+    {
+      "slug": "drawer",
+      "name": "Drawer",
+      "description": "Slide-in panel anchored right/left/bottom for filters, detail views or forms.",
+      "category": "Overlays",
+      "dependsOn": [
+        "button"
+      ],
+      "fileCount": 6
+    },
+    {
+      "slug": "empty-state",
+      "name": "EmptyState",
+      "description": "General page-level empty/zero state with icon, title, body and actions.",
+      "category": "Feedback",
+      "dependsOn": [
+        "button"
+      ],
+      "fileCount": 5
+    },
+    {
+      "slug": "exception-strip",
+      "name": "ExceptionStrip",
+      "description": "Single-line compact stat bar for dense table headers.",
+      "category": "Data Display",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "hold-to-confirm",
+      "name": "HoldToConfirm",
+      "description": "Press-and-hold destructive action button with a keyboard fallback.",
+      "category": "Buttons & Actions",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "input",
+      "name": "Input",
+      "description": "Text field with label, hint, prefix/suffix, password reveal, numeric and error states.",
+      "category": "Forms",
+      "dependsOn": [],
+      "fileCount": 3
+    },
+    {
+      "slug": "kbd",
+      "name": "Kbd",
+      "description": "Keyboard shortcut key caps.",
+      "category": "Data Display",
+      "dependsOn": [],
+      "fileCount": 2
+    },
+    {
+      "slug": "menu",
+      "name": "Menu",
+      "description": "Portalled dropdown menu with items, checkbox items, separators and labels.",
+      "category": "Overlays",
+      "dependsOn": [],
+      "fileCount": 4
+    },
+    {
+      "slug": "money-input",
+      "name": "MoneyInput",
+      "description": "Currency field that groups thousands live while typing and formats to fixed decimals on blur.",
+      "category": "Forms",
+      "dependsOn": [],
+      "fileCount": 3
+    },
+    {
+      "slug": "page-header",
+      "name": "PageHeader",
+      "description": "Consistent H1 + description + actions row above page content.",
+      "category": "Layout",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "pagination",
+      "name": "Pagination",
+      "description": "Two-zone pagination with rows-per-page, numbered pages and go-to-page.",
+      "category": "Navigation",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "popover",
+      "name": "Popover",
+      "description": "Generic anchored floating panel — auto-positioned, outside-click + Esc to close.",
+      "category": "Overlays",
+      "dependsOn": [],
+      "fileCount": 4
+    },
+    {
+      "slug": "progress",
+      "name": "Progress",
+      "description": "Linear progress bar — determinate (0–100) or indeterminate loop.",
+      "category": "Feedback",
+      "dependsOn": [],
+      "fileCount": 2
+    },
+    {
+      "slug": "radio-group",
+      "name": "RadioGroup",
+      "description": "Accessible radio fieldset with a simple list and a card variant.",
+      "category": "Forms",
+      "dependsOn": [],
+      "fileCount": 2
+    },
+    {
+      "slug": "search-combobox",
+      "name": "SearchCombobox",
+      "description": "Single or multi-select combobox with client filtering or async search, keyboard nav and clear.",
+      "category": "Forms",
+      "dependsOn": [],
+      "fileCount": 5
+    },
+    {
+      "slug": "select",
+      "name": "Select",
+      "description": "Single-select dropdown built on Field, with keyboard navigation.",
+      "category": "Forms",
+      "dependsOn": [],
+      "fileCount": 5
+    },
+    {
+      "slug": "separator",
+      "name": "Separator",
+      "description": "Thin divider line — horizontal, vertical, or with a centered label.",
+      "category": "Layout",
+      "dependsOn": [],
+      "fileCount": 2
+    },
+    {
+      "slug": "skeleton-rows",
+      "name": "SkeletonRows",
+      "description": "Animated placeholder rows for loading tables.",
+      "category": "Feedback",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "slider",
+      "name": "Slider",
+      "description": "Range input styled to the tokens, with an optional value label and formatter.",
+      "category": "Forms",
+      "dependsOn": [],
+      "fileCount": 2
+    },
+    {
+      "slug": "sort-header",
+      "name": "SortHeader",
+      "description": "Sortable table column header with direction indicator and hover affordance.",
+      "category": "Data Display",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "spinner",
+      "name": "Spinner",
+      "description": "Indeterminate loading indicator with an accessible status label.",
+      "category": "Feedback",
+      "dependsOn": [],
+      "fileCount": 2
+    },
+    {
+      "slug": "stat-card",
+      "name": "StatCard",
+      "description": "Metric card with optional progress ring, loading and errored states.",
+      "category": "Data Display",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "switch",
+      "name": "Switch",
+      "description": "Toggle switch, standalone or as a labelled row.",
+      "category": "Forms",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "table-of-contents",
+      "name": "TableOfContents",
+      "description": "In-page scroll-spy contents list that highlights the section currently in view.",
+      "category": "Navigation",
+      "dependsOn": [],
+      "fileCount": 2
+    },
+    {
+      "slug": "tabs",
+      "name": "Tabs",
+      "description": "Keyboard-navigable tabs in underline and segmented variants, with optional counts.",
+      "category": "Navigation",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "textarea",
+      "name": "Textarea",
+      "description": "Auto-growing multi-line input with an optional character counter.",
+      "category": "Forms",
+      "dependsOn": [],
+      "fileCount": 3
+    },
+    {
+      "slug": "toast",
+      "name": "Toast",
+      "description": "Transient notifications with tones, auto-dismiss with pause-on-hover, and actions.",
+      "category": "Feedback",
+      "dependsOn": [],
+      "fileCount": 1
+    },
+    {
+      "slug": "tooltip",
+      "name": "Tooltip",
+      "description": "Auto-flipping dark tooltip that wraps any element, shown on hover and focus.",
+      "category": "Overlays",
+      "dependsOn": [],
+      "fileCount": 4
+    }
+  ]
+}

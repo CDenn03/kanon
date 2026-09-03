@@ -1,0 +1,16 @@
+{
+  "slug": "checkbox",
+  "name": "Checkbox",
+  "description": "Accessible checkbox with checked, indeterminate and disabled states.",
+  "category": "Forms",
+  "exports": [
+    "Checkbox"
+  ],
+  "dependsOn": [],
+  "files": [
+    {
+      "path": "src/components/ui/checkbox.tsx",
+      "content": "\"use client\";\n\nimport { Check as CheckIcon } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\n\ninterface CheckboxProps {\n  checked?: boolean;\n  indeterminate?: boolean;\n  disabled?: boolean;\n  onChange?: () => void;\n  /** Accessible label when used without an adjacent visible label. */\n  ariaLabel?: string;\n}\n\n/**\n * Checkbox — used for row selection in tables.\n * Supports checked, indeterminate, and disabled states.\n */\nexport function Checkbox({ checked, indeterminate, disabled, onChange, ariaLabel }: CheckboxProps) {\n  const on = checked || indeterminate;\n  return (\n    <button\n      type=\"button\"\n      disabled={disabled}\n      onClick={onChange}\n      role=\"checkbox\"\n      aria-checked={indeterminate ? \"mixed\" : Boolean(checked)}\n      aria-label={ariaLabel}\n      className={cn(\n        \"flex h-4 w-4 items-center justify-center rounded-sm border transition-colors\",\n        \"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent\",\n        \"disabled:cursor-not-allowed disabled:opacity-50\",\n        on ? \"border-accent bg-accent\" : \"border-border bg-surface\",\n        !on && disabled && \"bg-bg-secondary\"\n      )}\n    >\n      {indeterminate ? (\n        <span className=\"h-0.5 w-2 rounded-full bg-on-accent\" />\n      ) : checked ? (\n        <CheckIcon size={11} strokeWidth={3} className=\"text-on-accent\" />\n      ) : null}\n    </button>\n  );\n}\n"
+    }
+  ]
+}
