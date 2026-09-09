@@ -74,6 +74,25 @@
   --shadow-overlay: 0 25px 50px -12px rgba(15, 21, 19, 0.28);
   /* Pine glow for prominent primary CTAs */
   --shadow-accent: 0 4px 12px rgba(11, 93, 78, 0.28), 0 2px 4px rgba(11, 93, 78, 0.2);
+
+  /*
+   * Animation durations — based on Doherty Threshold research from Mathesis:
+   * - Micro interactions (hovers, focus): 150ms — instant feel
+   * - Standard transitions (dropdowns, tooltips): 200ms — responsive
+   * - Emphasis transitions (modals, drawers): 250ms — noticeable but quick
+   * - Complex animations (page transitions): 300ms — deliberate
+   * Stay under 400ms to maintain user flow state.
+   */
+  --duration-instant: 75ms;
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-emphasis: 250ms;
+  --duration-slow: 300ms;
+
+  /* Easing curves */
+  --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /*
