@@ -318,20 +318,19 @@ export default function UsersTablePage() {
           {/* body */}
           {isBlank ? (
             view === "empty" ? (
-              <Blank title="No users yet" body="Invite your first teammate to give them access to Steward." primary="Add user" />
+              <Blank title="No users yet" body="Invite your first teammate to give them access to Steward." />
             ) : view === "emptyFiltered" ? (
-              <Blank title="No users match these filters" body={`No ${meta.label.toLowerCase()} users with role ${roleFilter || "Auditor"}. Clear the filter to see all.`} secondary="Clear filters" />
+              <Blank title="No users match these filters" body={`No ${meta.label.toLowerCase()} users with role ${roleFilter || "Auditor"}. Clear the filter to see all.`} />
             ) : view === "searchEmpty" ? (
               <Blank icon={Search} title={`No ${meta.label.toLowerCase()} users match \u201cotieno\u201d`}
-                body="They may have a different status. Searching across every status usually finds them."
-                primary="Search all statuses" secondary="Clear search" />
+                body="They may have a different status. Searching across every status usually finds them." />
             ) : view === "forbidden" ? (
               <Blank icon={Lock} title="You don\u2019t have access to user management" tone="rose"
-                body="This needs the Owner or Controller role. Ask an owner to grant it." secondary="Request access" />
+                body="This needs the Owner or Controller role. Ask an owner to grant it." />
             ) : (
               <Blank icon={AlertTriangle} tone="rose" title="Couldn\u2019t load users"
-                body="The request failed. Your filters are still applied \u2014 retrying keeps them."
-                primary="Retry" secondary="Reload page" mono="ref 7f3a9c21" />
+                body="The request failed. Your filters are still applied — retrying keeps them."
+                mono="ref 7f3a9c21" />
             )
           ) : (
             <div className="relative overflow-x-auto">

@@ -367,7 +367,6 @@ export function BlankDemo() {
         icon={Users}
         title="No users yet"
         body="Invite your first teammate to get started."
-        primary="Invite user"
       />
     </div>
   );
