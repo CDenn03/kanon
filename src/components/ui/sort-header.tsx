@@ -9,18 +9,22 @@ interface SortHeaderProps {
   label: string;
   state: SortState;
   onClick: () => void;
+  style?: React.CSSProperties;
+  className?: string;
 }
 
-export function SortHeader({ label, state, onClick }: SortHeaderProps) {
+export function SortHeader({ label, state, onClick, style, className }: SortHeaderProps) {
   const active = state === "asc" || state === "desc";
 
   return (
     <th
       scope="col"
       aria-sort={state === "asc" ? "ascending" : state === "desc" ? "descending" : "none"}
+      style={style}
       className={cn(
         "px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wider",
-        active ? "text-text" : "text-text-secondary"
+        active ? "text-text" : "text-text-secondary",
+        className
       )}
     >
       <button

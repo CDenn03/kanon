@@ -25,6 +25,8 @@ export interface DataTableColumn<T> {
 
   numeric?: boolean;
 
+  width?: string;
+
   className?: string;
 }
 
@@ -101,17 +103,21 @@ export function DataTable<T>({
             <tr className="border-b border-border">
               {columns.map((col) => {
                 const align = col.numeric ? "right" : col.align ?? "left";
+                const style = col.width ? { width: col.width } : undefined;
                 return col.sortable ? (
                   <SortHeader
                     key={col.key}
                     label={col.header}
                     state={sort?.key === col.key ? sort.dir : "none"}
                     onClick={() => onSortChange?.(col.key)}
+                    style={style}
+                    className={col.className}
                   />
                 ) : (
                   <th
                     key={col.key}
                     scope="col"
+                    style={style}
                     className={cn(
                       "px-4 py-2.5 text-xs font-medium uppercase tracking-wider text-text-secondary",
                       ALIGN[align],
