@@ -42,8 +42,8 @@ export function RadioGroup({
                 key={opt.value}
                 className={cn(
                   "flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors",
-                  "focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2",
                   on ? "border-accent bg-accent-light" : "border-border bg-surface hover:border-border-hover",
+                  "focus-within:border-accent",
                   off && "cursor-not-allowed opacity-50"
                 )}
               >

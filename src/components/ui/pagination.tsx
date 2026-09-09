@@ -83,7 +83,7 @@ export function Pagination({
             value={perPage}
             onChange={(e) => onPerPageChange(Number(e.target.value))}
             aria-label="Rows per page"
-            className="h-8 rounded-md border border-border bg-surface px-2 text-sm tabular-nums text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="h-8 rounded-md border border-border bg-surface px-2 text-sm tabular-nums text-text focus-visible:outline-none focus-visible:border-accent"
           >
             {perPageOptions.map((n) => <option key={n} value={n}>{n}</option>)}
           </select>
@@ -163,7 +163,7 @@ export function Pagination({
             max={totalPages}
             aria-label={`Go to page (1–${totalPages})`}
             placeholder={String(page)}
-            className="h-8 w-14 rounded-md border border-border px-1.5 text-center text-sm tabular-nums text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="h-8 w-14 rounded-md border border-border px-1.5 text-center text-sm tabular-nums text-text focus-visible:outline-none focus-visible:border-accent"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 const v = Number(e.currentTarget.value);

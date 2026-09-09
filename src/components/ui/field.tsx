@@ -71,14 +71,14 @@ export function Field({
 export const controlBase = cn(
   "w-full rounded-lg border text-sm bg-surface text-text transition-colors",
   "placeholder:text-text-tertiary",
-  "focus:outline-none focus-visible:border-accent focus-visible:ring-2 focus-visible:ring-accent/25",
+  "focus:outline-none focus-visible:border-accent",
   "disabled:cursor-not-allowed disabled:bg-bg-secondary disabled:opacity-60",
   "read-only:bg-bg-secondary"
 );
 
 export function controlClasses(error?: string, disabled?: boolean, readOnly?: boolean) {
   return cn(
-    error ? "border-error focus-visible:ring-error/25 focus-visible:border-error" : "border-border",
+    error ? "border-error focus-visible:border-error" : "border-border",
     readOnly && "read-only:bg-bg-secondary",
     disabled && "text-text-tertiary"
   );
