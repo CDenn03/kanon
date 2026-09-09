@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, ChevronDown, Calendar as CalIcon, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -51,16 +51,27 @@ function MiniSelect({
   container: HTMLElement | null;
 }) {
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [highlighted, setHighlighted] = useState(-1);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
-  const [coords, setCoords] = useState<{ top: number; left: number; width: number } | null>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const initialScrollDone = useRef(false);
+
+  const filteredOptions = query
+    ? options.filter((o) => o.label.toLowerCase().includes(query.toLowerCase()))
+    : options;
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      initialScrollDone.current = false;
+      return;
+    }
     const h = (e: globalThis.MouseEvent) => {
       const target = e.target as Node;
       if (!triggerRef.current?.contains(target) && !listRef.current?.contains(target)) {
         setOpen(false);
+        setQuery("");
       }
     };
     document.addEventListener("mousedown", h);
@@ -68,78 +79,125 @@ function MiniSelect({
   }, [open]);
 
   useEffect(() => {
-    if (coords) {
-      const active = listRef.current?.querySelector<HTMLElement>('[data-selected="true"]');
-      active?.scrollIntoView({ block: "center" });
+    if (open && !initialScrollDone.current) {
+      inputRef.current?.focus();
+      const idx = filteredOptions.findIndex((o) => o.value === value);
+      setHighlighted(idx >= 0 ? idx : 0);
+      
+      requestAnimationFrame(() => {
+        const selected = listRef.current?.querySelector<HTMLElement>('[data-selected="true"]');
+        selected?.scrollIntoView({ block: "center" });
+        initialScrollDone.current = true;
+      });
     }
-  }, [coords]);
+  }, [open, value, filteredOptions]);
 
-  const toggle = () => {
-    if (open) {
-      setOpen(false);
-      setCoords(null);
-      return;
+  useEffect(() => {
+    if (highlighted >= 0 && initialScrollDone.current) {
+      const el = listRef.current?.querySelector<HTMLElement>(`[data-index="${highlighted}"]`);
+      el?.scrollIntoView({ block: "nearest" });
     }
-    const rect = triggerRef.current?.getBoundingClientRect();
-    if (rect) {
-      setCoords({ top: rect.bottom + 4, left: rect.left, width: Math.max(rect.width, 96) });
+  }, [highlighted]);
+
+  const close = useCallback(() => {
+    setOpen(false);
+    setQuery("");
+    setHighlighted(-1);
+  }, []);
+
+  const select = useCallback((opt: MiniSelectOption) => {
+    onChange(opt.value);
+    close();
+  }, [onChange, close]);
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlighted((i) => Math.min(i + 1, filteredOptions.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlighted((i) => Math.max(i - 1, 0));
+    } else if (e.key === "Enter" && filteredOptions[highlighted]) {
+      e.preventDefault();
+      select(filteredOptions[highlighted]);
+    } else if (e.key === "Escape") {
+      close();
     }
-    setOpen(true);
   };
 
   const selected = options.find((o) => o.value === value);
 
   return (
-    <>
+    <div className="relative">
       <button
         ref={triggerRef}
         type="button"
         aria-label={ariaLabel}
         aria-haspopup="listbox"
         aria-expanded={open}
-        onClick={toggle}
+        onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-1 rounded px-1.5 py-0.5 text-sm font-medium tabular-nums text-text hover:bg-bg-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
       >
         {selected?.label ?? value}
         <ChevronDown size={13} className="text-text-tertiary" aria-hidden />
       </button>
-      {open && coords && createPortal(
-        <ul
+      {open && (
+        <div
           ref={listRef}
-          role="listbox"
-          aria-label={ariaLabel}
           data-calendar-mini-select=""
-          className="pointer-events-auto fixed z-50 max-h-56 overflow-auto rounded-md border border-border bg-surface p-1 shadow-lg"
-          style={{ top: coords.top, left: coords.left, width: coords.width }}
+          className="absolute left-0 top-full z-50 mt-1 w-36 overflow-hidden rounded-lg border border-border bg-surface shadow-lg"
         >
-          {options.map((option) => {
-            const isSelected = option.value === value;
-            return (
-              <li key={option.value}>
-                <button
-                  type="button"
-                  role="option"
-                  aria-selected={isSelected}
-                  data-selected={isSelected}
-                  onClick={() => {
-                    onChange(option.value);
-                    setOpen(false);
-                    setCoords(null);
-                  }}
-                  className={cn(
-                    "w-full rounded px-2 py-1 text-left text-sm tabular-nums text-text hover:bg-bg-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
-                    isSelected && "bg-accent-light font-semibold"
-                  )}
-                >
-                  {option.label}
-                </button>
-              </li>
-            );
-          })}
-        </ul>,
-        container ?? document.body
+          <div className="border-b border-border p-1.5">
+            <input
+              ref={inputRef}
+              type="text"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setHighlighted(0);
+              }}
+              onKeyDown={onKeyDown}
+              placeholder="Type to filter…"
+              className="w-full rounded bg-bg-secondary px-2 py-1 text-sm text-text outline-none placeholder:text-text-tertiary"
+            />
+          </div>
+          <ul
+            role="listbox"
+            aria-label={ariaLabel}
+            className="max-h-48 overflow-auto p-1"
+          >
+            {filteredOptions.length === 0 ? (
+              <li className="px-2 py-1.5 text-sm text-text-tertiary">No match</li>
+            ) : (
+              filteredOptions.map((option, idx) => {
+                const isSelected = option.value === value;
+                const isHighlighted = idx === highlighted;
+                return (
+                  <li key={option.value}>
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={isSelected}
+                      data-selected={isSelected}
+                      data-index={idx}
+                      onMouseEnter={() => setHighlighted(idx)}
+                      onClick={() => select(option)}
+                      className={cn(
+                        "w-full rounded px-2 py-1 text-left text-sm tabular-nums text-text focus-visible:outline-none",
+                        isHighlighted && "bg-bg-hover",
+                        isSelected && "font-semibold text-accent"
+                      )}
+                    >
+                      {option.label}
+                    </button>
+                  </li>
+                );
+              })
+            )}
+          </ul>
+        </div>
       )}
-    </>
+    </div>
   );
 }
 
@@ -222,10 +280,6 @@ export function DatePicker({ id, label, hint, value, onChange, min, max }: DateP
   const position = usePopoverPosition(anchorRef, open, { minWidth: 260, preferredHeight: 340 });
   const mounted = useMounted();
 
-
-
-
-
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
 
   const toggleOpen = () => {
@@ -278,7 +332,7 @@ export function DatePicker({ id, label, hint, value, onChange, min, max }: DateP
         )}
       </div>
       {open && position && mounted && portalTarget && createPortal(
-        <div ref={panelRef} className="pointer-events-auto z-40 overflow-auto rounded-lg border border-border bg-surface p-3 shadow-lg" style={position.style}>
+        <div ref={panelRef} className="pointer-events-auto z-50 overflow-visible rounded-lg border border-border bg-surface p-3 shadow-lg" style={position.style}>
           <div className="mb-3 flex items-center justify-between">
             <button type="button" onClick={() => shift(-1)} className="rounded p-1 text-text-secondary hover:bg-bg-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" aria-label="Previous month"><ChevronLeft size={16} aria-hidden /></button>
             <span className="flex items-center gap-1">

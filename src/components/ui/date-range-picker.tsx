@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { ChevronLeft, ChevronRight, Calendar as CalIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, Calendar as CalIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePopoverPosition, useMounted } from "@/hooks";
 import { Field, controlBase, controlClasses } from "./field";
@@ -20,6 +20,181 @@ const PRESETS: [string, () => [Date, Date]][] = [
   ["Quarter to date", () => { const t = new Date(); t.setHours(0,0,0,0); const qm = Math.floor(t.getMonth() / 3) * 3; return [new Date(t.getFullYear(), qm, 1), t]; }],
   ["Year to date", () => { const t = new Date(); t.setHours(0,0,0,0); return [new Date(t.getFullYear(), 0, 1), t]; }],
 ];
+
+function yearRange(viewYear: number): number[] {
+  const start = viewYear - 100;
+  const end = viewYear + 10;
+  const years: number[] = [];
+  for (let y = start; y <= end; y++) years.push(y);
+  return years;
+}
+
+interface MiniSelectOption {
+  value: number;
+  label: string;
+}
+
+function MiniSelect({
+  value,
+  options,
+  ariaLabel,
+  onChange,
+}: {
+  value: number;
+  options: readonly MiniSelectOption[];
+  ariaLabel: string;
+  onChange: (value: number) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [highlighted, setHighlighted] = useState(-1);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const initialScrollDone = useRef(false);
+
+  const filteredOptions = query
+    ? options.filter((o) => o.label.toLowerCase().includes(query.toLowerCase()))
+    : options;
+
+  useEffect(() => {
+    if (!open) {
+      initialScrollDone.current = false;
+      return;
+    }
+    const h = (e: globalThis.MouseEvent) => {
+      const target = e.target as Node;
+      if (!triggerRef.current?.contains(target) && !listRef.current?.contains(target)) {
+        setOpen(false);
+        setQuery("");
+      }
+    };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, [open]);
+
+  useEffect(() => {
+    if (open && !initialScrollDone.current) {
+      inputRef.current?.focus();
+      const idx = filteredOptions.findIndex((o) => o.value === value);
+      setHighlighted(idx >= 0 ? idx : 0);
+      
+      requestAnimationFrame(() => {
+        const selected = listRef.current?.querySelector<HTMLElement>('[data-selected="true"]');
+        selected?.scrollIntoView({ block: "center" });
+        initialScrollDone.current = true;
+      });
+    }
+  }, [open, value, filteredOptions]);
+
+  useEffect(() => {
+    if (highlighted >= 0 && initialScrollDone.current) {
+      const el = listRef.current?.querySelector<HTMLElement>(`[data-index="${highlighted}"]`);
+      el?.scrollIntoView({ block: "nearest" });
+    }
+  }, [highlighted]);
+
+  const close = useCallback(() => {
+    setOpen(false);
+    setQuery("");
+    setHighlighted(-1);
+  }, []);
+
+  const select = useCallback((opt: MiniSelectOption) => {
+    onChange(opt.value);
+    close();
+  }, [onChange, close]);
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlighted((i) => Math.min(i + 1, filteredOptions.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlighted((i) => Math.max(i - 1, 0));
+    } else if (e.key === "Enter" && filteredOptions[highlighted]) {
+      e.preventDefault();
+      select(filteredOptions[highlighted]);
+    } else if (e.key === "Escape") {
+      close();
+    }
+  };
+
+  const selected = options.find((o) => o.value === value);
+
+  return (
+    <div className="relative">
+      <button
+        ref={triggerRef}
+        type="button"
+        aria-label={ariaLabel}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center gap-1 rounded px-1.5 py-0.5 text-sm font-medium tabular-nums text-text hover:bg-bg-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      >
+        {selected?.label ?? value}
+        <ChevronDown size={13} className="text-text-tertiary" aria-hidden />
+      </button>
+      {open && (
+        <div
+          ref={listRef}
+          data-calendar-mini-select=""
+          className="absolute left-0 top-full z-50 mt-1 w-36 overflow-hidden rounded-lg border border-border bg-surface shadow-lg"
+        >
+          <div className="border-b border-border p-1.5">
+            <input
+              ref={inputRef}
+              type="text"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setHighlighted(0);
+              }}
+              onKeyDown={onKeyDown}
+              placeholder="Type to filter…"
+              className="w-full rounded bg-bg-secondary px-2 py-1 text-sm text-text outline-none placeholder:text-text-tertiary"
+            />
+          </div>
+          <ul
+            role="listbox"
+            aria-label={ariaLabel}
+            className="max-h-48 overflow-auto p-1"
+          >
+            {filteredOptions.length === 0 ? (
+              <li className="px-2 py-1.5 text-sm text-text-tertiary">No match</li>
+            ) : (
+              filteredOptions.map((option, idx) => {
+                const isSelected = option.value === value;
+                const isHighlighted = idx === highlighted;
+                return (
+                  <li key={option.value}>
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={isSelected}
+                      data-selected={isSelected}
+                      data-index={idx}
+                      onMouseEnter={() => setHighlighted(idx)}
+                      onClick={() => select(option)}
+                      className={cn(
+                        "w-full rounded px-2 py-1 text-left text-sm tabular-nums text-text focus-visible:outline-none",
+                        isHighlighted && "bg-bg-hover",
+                        isSelected && "font-semibold text-accent"
+                      )}
+                    >
+                      {option.label}
+                    </button>
+                  </li>
+                );
+              })
+            )}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface DateRangePickerProps {
   id?: string;
@@ -57,6 +232,13 @@ export function DateRangePicker({ id, label, hint, value, onChange }: DateRangeP
   const shift = (n: number) => setCur(new Date(cur.getFullYear(), cur.getMonth() + n, 1));
   const nights = start && end ? Math.round((end.getTime() - start.getTime()) / 86400000) + 1 : null;
 
+  const setMonth = (m: number) => setCur(new Date(cur.getFullYear(), m, 1));
+  const setYear = (y: number) => setCur(new Date(y, cur.getMonth(), 1));
+  const years = yearRange(cur.getFullYear());
+
+  const nextMonth = (cur.getMonth() + 1) % 12;
+  const nextYear = cur.getMonth() === 11 ? cur.getFullYear() + 1 : cur.getFullYear();
+
   return (
     <Field label={label} hint={hint} htmlFor={id}>
       <button ref={anchorRef} id={id} onClick={() => setOpen((o) => !o)} className={cn(controlBase, controlClasses(), "flex h-10 items-center gap-2 px-3 text-left")}>
@@ -66,7 +248,7 @@ export function DateRangePicker({ id, label, hint, value, onChange }: DateRangeP
         </span>
       </button>
       {open && position && mounted && createPortal(
-        <div ref={panelRef} className="z-40 flex overflow-auto rounded-lg border border-border bg-surface shadow-lg" style={position.style}>
+        <div ref={panelRef} className="z-50 flex overflow-visible rounded-lg border border-border bg-surface shadow-lg" style={position.style}>
           <div className="w-36 shrink-0 border-r border-border py-2">
             {PRESETS.map(([lbl, fn]) => (
               <button key={lbl} onClick={() => { const [a, b] = fn(); setStart(a); setEnd(b); setCur(new Date(a.getFullYear(), a.getMonth(), 1)); }}
@@ -76,15 +258,41 @@ export function DateRangePicker({ id, label, hint, value, onChange }: DateRangeP
           <div className="p-3">
             <div className="mb-3 flex items-center justify-between">
               <button onClick={() => shift(-1)} className="rounded p-1 text-text-secondary hover:bg-bg-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" aria-label="Previous month"><ChevronLeft size={16} aria-hidden /></button>
-              <div className="flex gap-14 text-sm font-medium tabular-nums">
-                <span>{MONTHS[cur.getMonth()]} {cur.getFullYear()}</span>
-                <span>{MONTHS[(cur.getMonth() + 1) % 12]} {cur.getMonth() === 11 ? cur.getFullYear() + 1 : cur.getFullYear()}</span>
+              <div className="flex gap-8">
+                <span className="flex items-center gap-0.5">
+                  <MiniSelect
+                    ariaLabel="Month (left calendar)"
+                    value={cur.getMonth()}
+                    onChange={setMonth}
+                    options={MONTHS.map((name, i) => ({ value: i, label: name }))}
+                  />
+                  <MiniSelect
+                    ariaLabel="Year (left calendar)"
+                    value={cur.getFullYear()}
+                    onChange={setYear}
+                    options={years.map((yr) => ({ value: yr, label: String(yr) }))}
+                  />
+                </span>
+                <span className="flex items-center gap-0.5">
+                  <MiniSelect
+                    ariaLabel="Month (right calendar)"
+                    value={nextMonth}
+                    onChange={(m) => setCur(new Date(m < cur.getMonth() ? cur.getFullYear() + 1 : cur.getFullYear(), m - 1, 1))}
+                    options={MONTHS.map((name, i) => ({ value: i, label: name }))}
+                  />
+                  <MiniSelect
+                    ariaLabel="Year (right calendar)"
+                    value={nextYear}
+                    onChange={(y) => setCur(new Date(y, cur.getMonth(), 1))}
+                    options={years.map((yr) => ({ value: yr, label: String(yr) }))}
+                  />
+                </span>
               </div>
               <button onClick={() => shift(1)} className="rounded p-1 text-text-secondary hover:bg-bg-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" aria-label="Next month"><ChevronRight size={16} aria-hidden /></button>
             </div>
             <div className="flex gap-5" onMouseLeave={() => setHover(null)}>
               <MonthGrid y={cur.getFullYear()} m={cur.getMonth()} rangeStart={start} rangeEnd={end} hover={hover} onPick={pick} onHover={setHover} />
-              <MonthGrid y={cur.getMonth() === 11 ? cur.getFullYear() + 1 : cur.getFullYear()} m={(cur.getMonth() + 1) % 12} rangeStart={start} rangeEnd={end} hover={hover} onPick={pick} onHover={setHover} />
+              <MonthGrid y={nextYear} m={nextMonth} rangeStart={start} rangeEnd={end} hover={hover} onPick={pick} onHover={setHover} />
             </div>
             <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
               <span className="text-xs tabular-nums text-text-secondary">
