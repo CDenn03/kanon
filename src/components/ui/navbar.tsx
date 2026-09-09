@@ -29,7 +29,7 @@ export function Navbar({
   return (
     <div
       className={cn(
-        "flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border bg-surface px-4",
+        "relative z-50 flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border bg-surface px-4",
         className
       )}
     >
