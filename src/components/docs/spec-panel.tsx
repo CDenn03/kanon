@@ -1,3 +1,4 @@
+import { type ReactNode } from "react";
 import { Check, X, Ruler, Layers, Activity, Accessibility } from "lucide-react";
 import type { ComponentSpec } from "@/lib/docs/types";
 
@@ -100,7 +101,7 @@ export function SpecPanel({ spec }: { spec: ComponentSpec }) {
   );
 }
 
-function SpecCard({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+function SpecCard({ icon, title, children }: { icon: ReactNode; title: string; children: ReactNode }) {
   return (
     <section className="rounded-xl border border-border bg-surface p-4">
       <h3 className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-text-tertiary">

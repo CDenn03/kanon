@@ -1,8 +1,9 @@
+import { type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface CardProps {
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 
   interactive?: boolean;
 
@@ -27,9 +28,9 @@ export function Card({ className, children, interactive, selected }: CardProps) 
 }
 
 export interface CardHeaderProps {
-  title: React.ReactNode;
+  title: ReactNode;
 
-  action?: React.ReactNode;
+  action?: ReactNode;
   className?: string;
 }
 
@@ -49,10 +50,10 @@ export function CardHeader({ title, action, className }: CardHeaderProps) {
   );
 }
 
-export function CardBody({ className, children }: { className?: string; children: React.ReactNode }) {
+export function CardBody({ className, children }: { className?: string; children: ReactNode }) {
   return <div className={cn("p-4", className)}>{children}</div>;
 }
 
-export function CardFooter({ className, children }: { className?: string; children: React.ReactNode }) {
+export function CardFooter({ className, children }: { className?: string; children: ReactNode }) {
   return <div className={cn("border-t border-border px-4 py-3", className)}>{children}</div>;
 }

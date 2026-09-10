@@ -1,10 +1,11 @@
 "use client";
 
+import { type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export interface ButtonGroupOption {
   value: string;
-  label: React.ReactNode;
+  label: ReactNode;
   disabled?: boolean;
 }
 
@@ -47,7 +48,7 @@ export function ButtonGroup({ options, value, onChange, className, ...rest }: Bu
   );
 }
 
-export function Toolbar({ children, className, "aria-label": ariaLabel }: { children: React.ReactNode; className?: string; "aria-label"?: string }) {
+export function Toolbar({ children, className, "aria-label": ariaLabel }: { children: ReactNode; className?: string; "aria-label"?: string }) {
   return (
     <div
       role="toolbar"

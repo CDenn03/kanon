@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, type ReactNode, type ReactElement } from "react";
 import { createPortal } from "react-dom";
 import { usePopoverPosition } from "@/hooks/use-popover-position";
 import { useMounted } from "@/hooks/use-mounted";
 
 export interface TooltipProps {
 
-  content: React.ReactNode;
-  children: React.ReactElement;
+  content: ReactNode;
+  children: ReactElement;
 
   delayMs?: number;
 }

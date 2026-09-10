@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { cn } from "@/lib/utils";
 
 interface TabItem {
@@ -21,7 +21,7 @@ interface TabsProps {
 export function Tabs({ items, value, onChange, variant = "underline" }: TabsProps) {
   const refs = useRef<Record<string, HTMLButtonElement | null>>({});
 
-  const onKeyDown = (e: React.KeyboardEvent) => {
+  const onKeyDown = (e: ReactKeyboardEvent) => {
     const enabled = items.filter((i) => !i.disabled);
     const i = enabled.findIndex((t) => t.id === value);
     let next: string | undefined;

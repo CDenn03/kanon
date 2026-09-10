@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, useId } from "react";
+import { useRef, useState, useEffect, useId, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { createPortal } from "react-dom";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -71,7 +71,7 @@ export function Select({
     triggerRef.current?.focus();
   };
 
-  const onKeyDown = (e: React.KeyboardEvent) => {
+  const onKeyDown = (e: ReactKeyboardEvent) => {
     if (!open && (e.key === "Enter" || e.key === " " || e.key === "ArrowDown")) {
       e.preventDefault();
       setOpen(true);

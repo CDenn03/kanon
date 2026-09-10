@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, type MouseEvent } from "react";
+import { useState, useRef, type MouseEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Loader2, type LucideIcon } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -51,7 +51,7 @@ interface ButtonProps {
   disabledReason?: string;
   icon?: LucideIcon;
   iconRight?: LucideIcon;
-  children?: React.ReactNode;
+  children?: ReactNode;
   onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
   title?: string;
   type?: "button" | "submit" | "reset";

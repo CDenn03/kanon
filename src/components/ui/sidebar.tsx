@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, ChevronDown, Lock, LogOut, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -13,16 +13,16 @@ interface SidebarContextValue {
   requestExpand: () => void;
   hasPermission?: (permissions: string[]) => boolean;
 }
-const SidebarContext = React.createContext<SidebarContextValue>({
+const SidebarContext = createContext<SidebarContextValue>({
   collapsed: false,
   requestExpand: () => {},
 });
 
 export interface SidebarProps {
 
-  logo: React.ReactNode;
+  logo: ReactNode;
 
-  logoCollapsed?: React.ReactNode;
+  logoCollapsed?: ReactNode;
   collapsed: boolean;
   onCollapsedChange: (collapsed: boolean) => void;
   mobileOpen: boolean;
@@ -30,14 +30,14 @@ export interface SidebarProps {
 
   hasPermission?: (permissions: string[]) => boolean;
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function Sidebar({
   logo, logoCollapsed, collapsed, onCollapsedChange,
   mobileOpen, onMobileOpenChange, hasPermission, className, children,
 }: SidebarProps) {
-  React.useEffect(() => {
+  useEffect(() => {
     if (!mobileOpen) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onMobileOpenChange(false);
     document.addEventListener("keydown", onKey);
@@ -110,7 +110,7 @@ export function Sidebar({
   );
 }
 
-export function SidebarNav({ children }: { children: React.ReactNode }) {
+export function SidebarNav({ children }: { children: ReactNode }) {
   return <nav className="flex-1 overflow-y-auto py-2">{children}</nav>;
 }
 
@@ -118,11 +118,11 @@ export interface SidebarSectionProps {
   label?: string;
 
   hidden?: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function SidebarSection({ label, hidden, children }: SidebarSectionProps) {
-  const { collapsed } = React.useContext(SidebarContext);
+  const { collapsed } = useContext(SidebarContext);
 
   if (hidden) return null;
 
@@ -139,7 +139,7 @@ export function SidebarSection({ label, hidden, children }: SidebarSectionProps)
 }
 
 export interface SidebarItemProps {
-  icon: React.ReactNode;
+  icon: ReactNode;
   active?: boolean;
   count?: number;
   href?: string;
@@ -150,13 +150,13 @@ export interface SidebarItemProps {
   hidden?: boolean;
 
   permissions?: string[];
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function SidebarItem({
   icon, active, count, href, onClick, locked, hidden, permissions, children,
 }: SidebarItemProps) {
-  const { collapsed, hasPermission } = React.useContext(SidebarContext);
+  const { collapsed, hasPermission } = useContext(SidebarContext);
 
 
   if (permissions?.length && hasPermission && !hasPermission(permissions)) {
@@ -215,7 +215,7 @@ export function SidebarItem({
 }
 
 export interface SidebarGroupProps {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   defaultOpen?: boolean;
 
@@ -224,13 +224,13 @@ export interface SidebarGroupProps {
   hidden?: boolean;
 
   permissions?: string[];
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function SidebarGroup({
   icon, label, defaultOpen, hasActiveChild, hidden, permissions, children,
 }: SidebarGroupProps) {
-  const { collapsed, requestExpand, hasPermission } = React.useContext(SidebarContext);
+  const { collapsed, requestExpand, hasPermission } = useContext(SidebarContext);
 
 
   if (permissions?.length && hasPermission && !hasPermission(permissions)) {
@@ -240,7 +240,7 @@ export function SidebarGroup({
   if (hidden) return null;
 
 
-  const [userToggled, setUserToggled] = React.useState<boolean | null>(null);
+  const [userToggled, setUserToggled] = useState<boolean | null>(null);
 
   const effectiveOpen = userToggled !== null ? userToggled : (defaultOpen || hasActiveChild || false);
 
@@ -292,7 +292,7 @@ export function SidebarGroup({
 
 export interface SidebarSubItemProps {
 
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   active?: boolean;
   count?: number;
   href?: string;
@@ -305,13 +305,13 @@ export interface SidebarSubItemProps {
   permissions?: string[];
 
   badge?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function SidebarSubItem({
   icon, active, count, href, onClick, locked, hidden, permissions, badge, children,
 }: SidebarSubItemProps) {
-  const { hasPermission } = React.useContext(SidebarContext);
+  const { hasPermission } = useContext(SidebarContext);
 
 
   if (permissions?.length && hasPermission && !hasPermission(permissions)) {
@@ -369,7 +369,7 @@ export function SidebarSubItem({
   );
 }
 
-export function SidebarFooter({ children }: { children: React.ReactNode }) {
+export function SidebarFooter({ children }: { children: ReactNode }) {
   return (
     <div className="shrink-0 border-t border-border p-2">
       {children}
@@ -380,7 +380,7 @@ export function SidebarFooter({ children }: { children: React.ReactNode }) {
 export function SidebarAccount({
   name, email, avatarSrc,
 }: { name: string; email?: string; avatarSrc?: string }) {
-  const { collapsed } = React.useContext(SidebarContext);
+  const { collapsed } = useContext(SidebarContext);
   const row = (
     <div className={cn("flex items-center gap-2.5 rounded-md px-2 py-2", collapsed && "justify-center")}>
       <Avatar name={name} src={avatarSrc} size="sm" />
@@ -398,7 +398,7 @@ export function SidebarAccount({
 }
 
 export function SidebarLogoutButton({ onClick }: { onClick: () => void }) {
-  const { collapsed } = React.useContext(SidebarContext);
+  const { collapsed } = useContext(SidebarContext);
   const btn = (
     <button
       type="button"

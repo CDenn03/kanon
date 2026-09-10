@@ -1,5 +1,6 @@
 "use client";
 
+import { type CSSProperties } from "react";
 import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -9,7 +10,7 @@ interface SortHeaderProps {
   label: string;
   state: SortState;
   onClick: () => void;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
   className?: string;
 }
 

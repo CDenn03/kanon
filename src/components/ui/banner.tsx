@@ -1,5 +1,6 @@
 "use client";
 
+import { type ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -8,7 +9,7 @@ type BannerTone = "amber" | "rose" | "neutral";
 interface BannerProps {
   tone: BannerTone;
   icon: LucideIcon;
-  children: React.ReactNode;
+  children: ReactNode;
   action?: string;
   onAction?: () => void;
 }

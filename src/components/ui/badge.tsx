@@ -1,3 +1,4 @@
+import { type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type BadgeTone = "pine" | "amber" | "rose" | "neutral";
@@ -5,7 +6,7 @@ type BadgeTone = "pine" | "amber" | "rose" | "neutral";
 interface BadgeProps {
   tone?: BadgeTone;
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const TONE_CLASS: Record<BadgeTone, string> = {

@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { CodeBlock } from "./code-block";
 
 interface ExampleTabsProps {
   /** Live rendered example. */
-  preview: React.ReactNode;
+  preview: ReactNode;
   /** Pre-highlighted shiki HTML for the snippet. */
   codeHtml: string;
   /** Raw snippet source (for copy). */

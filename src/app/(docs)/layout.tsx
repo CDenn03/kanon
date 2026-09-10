@@ -1,3 +1,4 @@
+import { type ReactNode } from "react";
 import { LibraryShell } from "@/components/docs/library-shell";
 import { buildNav } from "@/lib/docs/registry";
 
@@ -7,7 +8,7 @@ import { buildNav } from "@/lib/docs/registry";
  * component pages is a client-side content swap (no shell remount / refresh,
  * sidebar collapse state preserved).
  */
-export default function DocsLayout({ children }: { children: React.ReactNode }) {
+export default function DocsLayout({ children }: { children: ReactNode }) {
   const nav = buildNav();
   return <LibraryShell nav={nav}>{children}</LibraryShell>;
 }

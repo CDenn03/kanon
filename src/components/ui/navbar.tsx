@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useState, type ReactNode } from "react";
 import { Menu as MenuIcon, Search, Bell, ChevronDown, LogOut, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar } from "./avatar";
@@ -8,7 +8,7 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuLabel } fr
 
 export interface NavbarProps {
 
-  left?: React.ReactNode;
+  left?: ReactNode;
 
   onMenuClick?: () => void;
   onSearchClick?: () => void;
@@ -24,7 +24,7 @@ export function Navbar({
   left, onMenuClick, onSearchClick, notificationCount, onNotificationsClick,
   account, onAccountSettings, onSignOut, className,
 }: NavbarProps) {
-  const [accountOpen, setAccountOpen] = React.useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
 
   return (
     <div
@@ -107,7 +107,7 @@ function NavIconButton({
 }: {
   label: string;
   onClick: () => void;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }) {
   return (

@@ -1,6 +1,19 @@
 "use client";
 
-import * as React from "react";
+import {
+  createContext,
+  useContext,
+  useRef,
+  useCallback,
+  useEffect,
+  cloneElement,
+  type RefObject,
+  type ReactNode,
+  type ReactElement,
+  type HTMLAttributes,
+  type Ref,
+  type MouseEvent as ReactMouseEvent,
+} from "react";
 import { createPortal } from "react-dom";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -11,12 +24,12 @@ import { useOutsideClick } from "@/hooks/use-outside-click";
 interface MenuContextValue {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  triggerRef: React.RefObject<HTMLElement | null>;
+  triggerRef: RefObject<HTMLElement | null>;
 }
-const MenuContext = React.createContext<MenuContextValue | null>(null);
+const MenuContext = createContext<MenuContextValue | null>(null);
 
 function useMenuContext(): MenuContextValue {
-  const ctx = React.useContext(MenuContext);
+  const ctx = useContext(MenuContext);
   if (!ctx) throw new Error("Menu compound components must be used inside <Menu>.");
   return ctx;
 }
@@ -24,7 +37,7 @@ function useMenuContext(): MenuContextValue {
 export interface MenuProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export interface MenuContentProps {
@@ -32,16 +45,16 @@ export interface MenuContentProps {
   align?: "start" | "end" | "center";
 
   minWidth?: number;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export interface MenuItemProps {
-  icon?: React.ReactNode;
+  icon?: ReactNode;
 
   destructive?: boolean;
   disabled?: boolean;
   onSelect?: () => void;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export interface MenuCheckboxItemProps {
@@ -49,11 +62,11 @@ export interface MenuCheckboxItemProps {
   onCheckedChange: (checked: boolean) => void;
 
   locked?: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function Menu({ open, onOpenChange, children }: MenuProps) {
-  const triggerRef = React.useRef<HTMLElement | null>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
   return (
     <MenuContext.Provider value={{ open, onOpenChange, triggerRef }}>
       <span className="relative inline-flex">{children}</span>
@@ -61,26 +74,26 @@ export function Menu({ open, onOpenChange, children }: MenuProps) {
   );
 }
 
-export function MenuTrigger({ children }: { children: React.ReactElement }) {
+export function MenuTrigger({ children }: { children: ReactElement }) {
   const { open, onOpenChange, triggerRef } = useMenuContext();
 
-  const child = React.cloneElement(children, {
+  const child = cloneElement(children, {
     ref: triggerRef,
-    onClick: (e: React.MouseEvent) => {
-      (children.props as React.HTMLAttributes<Element>).onClick?.(e as React.MouseEvent<HTMLElement>);
+    onClick: (e: ReactMouseEvent) => {
+      (children.props as HTMLAttributes<Element>).onClick?.(e as ReactMouseEvent<HTMLElement>);
       onOpenChange(!open);
     },
-  } as React.HTMLAttributes<HTMLElement> & { ref: React.Ref<HTMLElement> });
+  } as HTMLAttributes<HTMLElement> & { ref: Ref<HTMLElement> });
 
   return child;
 }
 
 export function MenuContent({ align = "start", minWidth = 180, children }: MenuContentProps) {
   const { open, onOpenChange, triggerRef } = useMenuContext();
-  const contentRef = React.useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const mounted = useMounted();
 
-  const position = usePopoverPosition(triggerRef as React.RefObject<HTMLElement>, open, {
+  const position = usePopoverPosition(triggerRef as RefObject<HTMLElement>, open, {
     align,
     minWidth,
     preferredHeight: 280,
@@ -91,11 +104,11 @@ export function MenuContent({ align = "start", minWidth = 180, children }: MenuC
   useOutsideClick(
     [triggerRef, contentRef],
     open,
-    React.useCallback(() => onOpenChange(false), [onOpenChange])
+    useCallback(() => onOpenChange(false), [onOpenChange])
   );
 
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!open) return;
     const items = () =>
       Array.from<HTMLElement>(
@@ -198,7 +211,7 @@ export function MenuSeparator() {
   return <div role="separator" className="my-1 h-px bg-border" />;
 }
 
-export function MenuLabel({ children }: { children: React.ReactNode }) {
+export function MenuLabel({ children }: { children: ReactNode }) {
   return (
     <p className="px-3 pb-1 pt-1.5 text-xs font-medium uppercase tracking-wider text-text-tertiary">
       {children}

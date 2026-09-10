@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, type ReactNode, type RefObject, type FormEvent } from "react";
 import {
   LayoutGrid, Users, Wallet, Settings, Building2, ShieldCheck,
   Plus, Eye, Pencil, Trash2, MoreHorizontal, Bell, X,
@@ -47,7 +47,7 @@ const ROLE_PERMISSIONS: Record<string, Set<string>> = {
 
 /* ── Nav types ─────────────────────────────────────────────── */
 type NavLeafItem = {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   count?: number;
   active?: boolean;
@@ -58,7 +58,7 @@ type NavLeafItem = {
 };
 type NavGroupItem = {
   type: "group";
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   permission?: string;
   hideIfDenied?: boolean;
@@ -226,7 +226,7 @@ const NOTIFICATIONS = [
 const NOTIF_ICON_COLOR = { amber: "text-warning", pine: "text-accent", neutral: "text-text-tertiary" };
 
 interface NotificationsPopupProps {
-  anchorRef: React.RefObject<HTMLElement | null>;
+  anchorRef: RefObject<HTMLElement | null>;
   open: boolean;
   onClose: () => void;
 }
@@ -322,7 +322,7 @@ function AddUserModal({ open, onClose }: AddUserModalProps) {
 
   if (!open) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     setTimeout(() => { setSubmitting(false); onClose(); setName(""); setEmail(""); setRole("Preparer"); }, 800);

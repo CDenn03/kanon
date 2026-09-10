@@ -1,5 +1,6 @@
 "use client";
 
+import { type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export interface SwitchProps {
@@ -47,9 +48,9 @@ export function Switch({ checked, onChange, size = "md", disabled, label }: Swit
 }
 
 export interface SwitchRowProps {
-  label: React.ReactNode;
+  label: ReactNode;
   hint?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 
   labelRight?: boolean;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent as ReactMouseEvent } from "react";
 import { cn } from "@/lib/utils";
 
 export interface TocItem {
@@ -41,7 +41,7 @@ export function TableOfContents({ items, title = "On this page", className }: Ta
     return () => observer.disconnect();
   }, [items]);
 
-  const onClick = (e: React.MouseEvent, id: string) => {
+  const onClick = (e: ReactMouseEvent, id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
     e.preventDefault();

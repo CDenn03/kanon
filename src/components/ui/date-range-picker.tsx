@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, ChevronDown, Calendar as CalIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -105,7 +105,7 @@ function MiniSelect({
     close();
   }, [onChange, close]);
 
-  const onKeyDown = (e: React.KeyboardEvent) => {
+  const onKeyDown = (e: ReactKeyboardEvent) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setHighlighted((i) => Math.min(i + 1, filteredOptions.length - 1));

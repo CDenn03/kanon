@@ -1,8 +1,10 @@
-export interface PageHeaderProps {
-  title: React.ReactNode;
-  description?: React.ReactNode;
+import { type ReactNode } from "react";
 
-  actions?: React.ReactNode;
+export interface PageHeaderProps {
+  title: ReactNode;
+  description?: ReactNode;
+
+  actions?: ReactNode;
 }
 
 export function PageHeader({ title, description, actions }: PageHeaderProps) {

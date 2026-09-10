@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo, useCallback, useId, forwardRef } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback, useId, forwardRef, type KeyboardEvent as ReactKeyboardEvent, type CSSProperties, type Ref, type ReactElement } from "react";
 import { createPortal } from "react-dom";
 import { Check, ChevronsUpDown, X, Loader2, RotateCw } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -156,7 +156,7 @@ export function SearchCombobox<T = ComboboxOption>({
     [multiple, value, onChange, getOptionValue, close]
   );
 
-  const onKeyDown = (e: React.KeyboardEvent) => {
+  const onKeyDown = (e: ReactKeyboardEvent) => {
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
@@ -314,7 +314,7 @@ interface ComboboxDropdownProps<T> {
   query: string;
   active: number;
   selectedValues: Set<string>;
-  position: { style: React.CSSProperties };
+  position: { style: CSSProperties };
   getOptionValue: (o: T) => string;
   getOptionLabel: (o: T) => string;
   getOptionMeta?: (o: T) => string | undefined;
@@ -343,7 +343,7 @@ const ComboboxDropdown = forwardRef(function ComboboxDropdown<T>(
     onSetActive,
     onRetry,
   }: ComboboxDropdownProps<T>,
-  ref: React.Ref<HTMLDivElement>
+  ref: Ref<HTMLDivElement>
 ) {
   const activeRef = useRef<HTMLDivElement>(null);
 
@@ -424,4 +424,4 @@ const ComboboxDropdown = forwardRef(function ComboboxDropdown<T>(
       )}
     </div>
   );
-}) as <T>(props: ComboboxDropdownProps<T> & { ref?: React.Ref<HTMLDivElement> }) => React.ReactElement;
+}) as <T>(props: ComboboxDropdownProps<T> & { ref?: Ref<HTMLDivElement> }) => ReactElement;
