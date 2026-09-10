@@ -334,3 +334,43 @@ input:-webkit-autofill:focus {
   color: var(--shiki-dark, inherit) !important;
 }
 
+
+
+/* ── Docs: animated collapsible (details/summary) ────────── */
+/*
+ * The panel animates its single grid row 0fr → 1fr (height-agnostic) and is
+ * driven entirely by data-open (React state), NOT the native [open] attribute,
+ * so both expand and collapse animate. The panel is always `display: grid`
+ * (overriding the UA `details:not([open])` hide rule) and collapses to a real
+ * zero height via the 0fr track + overflow-clip on its child — so a collapsed
+ * section adds no height and no scrollbar.
+ */
+.collapsible > .collapsible-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition:
+    grid-template-rows var(--duration-normal) var(--ease-out),
+    opacity var(--duration-normal) var(--ease-out);
+  opacity: 0;
+}
+
+.collapsible[data-open="true"] > .collapsible-panel {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+/* The single grid child must be allowed to shrink to 0 and clip its content. */
+.collapsible > .collapsible-panel > * {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Respect users who prefer reduced motion: snap instead of animate. */
+@media (prefers-reduced-motion: reduce) {
+  .collapsible > .collapsible-panel {
+    transition: none;
+  }
+  .collapsible .transition-transform {
+    transition: none;
+  }
+}

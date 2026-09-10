@@ -3,7 +3,9 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ExampleTabs } from "@/components/docs/example-tabs";
 import { CodeBlock } from "@/components/docs/code-block";
-import { SpecPanel } from "@/components/docs/spec-panel";
+import { CopyButton } from "@/components/docs/copy-button";
+import { SpecPanel, PropsTable } from "@/components/docs/spec-panel";
+import { CollapsibleSection } from "@/components/docs/collapsible-section";
 import { getEntry, registry } from "@/lib/docs/registry";
 import { loadSource, highlight } from "@/lib/docs/highlight";
 import type { ComponentEntry } from "@/lib/docs/types";
@@ -64,6 +66,18 @@ export default async function ComponentPage({
         </section>
       )}
 
+      {/* Props (collapsed by default) */}
+      {entry.spec?.props && entry.spec.props.length > 0 && (
+        <section className="mb-8">
+          <CollapsibleSection
+            title={`Props (${entry.spec.props.length})`}
+            subtitle="Every prop this component accepts, its type, default, and how to use it."
+          >
+            <PropsTable props={entry.spec.props} />
+          </CollapsibleSection>
+        </section>
+      )}
+
       {/* Examples */}
       <section className="space-y-6">
         {examples.map((ex, i) => (
@@ -85,12 +99,25 @@ export default async function ComponentPage({
 
       {/* Full source */}
       <section className="mt-10">
-        <h2 className="mb-1 text-sm font-semibold text-text">Full source</h2>
-        <p className="mb-3 text-sm text-text-secondary">
-          The complete component, read from{" "}
-          <code className="font-mono text-xs text-text">{entry.sourcePath}</code>.
-        </p>
-        <CodeBlock html={sourceHtml} raw={rawSource} filename={filename} />
+        <CollapsibleSection
+          title="Full source"
+          subtitle={
+            <>
+              The complete component, read from{" "}
+              <code className="font-mono text-xs text-text">{entry.sourcePath}</code>.
+            </>
+          }
+          action={
+            <CopyButton
+              text={rawSource}
+              label="Copy code"
+              stopPropagation
+              className="text-text-secondary hover:bg-bg-hover hover:text-text focus-visible:ring-accent"
+            />
+          }
+        >
+          <CodeBlock html={sourceHtml} raw={rawSource} filename={filename} />
+        </CollapsibleSection>
       </section>
 
       {/* Dependencies */}
