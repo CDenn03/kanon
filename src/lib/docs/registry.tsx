@@ -73,6 +73,21 @@ export const registry: ComponentEntry[] = [
       source: "mathesis ui-component/primary-button",
       purpose:
         "Triggers the primary action on a screen. One primary button per view — it signals the most important next step.",
+      props: [
+        { name: "variant", type: '"primary" | "secondary" | "ghost" | "destructive" | "link"', default: '"primary"', description: "Sets the visual weight and intent of the button." },
+        { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Controls the button height, padding and icon size." },
+        { name: "loading", type: "boolean", description: "Shows a spinner in place of the content and blocks clicks while an async action runs." },
+        { name: "disabled", type: "boolean", description: "Disables the button; combine with disabledReason to explain why on hover/focus." },
+        { name: "disabledReason", type: "string", description: "Tooltip text shown when the button is disabled, explaining why the action is blocked." },
+        { name: "icon", type: "LucideIcon", description: "Leading icon component rendered before the label." },
+        { name: "iconRight", type: "LucideIcon", description: "Trailing icon component rendered after the label." },
+        { name: "children", type: "ReactNode", description: "The button label; keep it to 1–3 words." },
+        { name: "onClick", type: "(e: MouseEvent<HTMLButtonElement>) => void", description: "Handler invoked when the button is activated (suppressed while disabled with a reason)." },
+        { name: "title", type: "string", description: "Native title attribute; ignored when a disabledReason tooltip is shown." },
+        { name: "type", type: '"button" | "submit" | "reset"', default: '"button"', description: "The native button type; use \"submit\" inside forms." },
+        { name: "className", type: "string", description: "Extra classes merged onto the button element." },
+        { name: "ariaLabel", type: "string", description: "Accessible label; required when the button is icon-only." },
+      ],
       anatomy: [
         "Container: moderate radius (8px / rounded-lg)",
         "Label: 14px medium weight, centered",
@@ -147,6 +162,25 @@ import { Plus, Search } from "lucide-react";
       source: "mathesis ui-component/text-input",
       purpose:
         "Collects a single line of text. Always paired with a visible label — never use the placeholder as the label.",
+      props: [
+        { name: "id", type: "string", description: "Explicit element id; auto-generated when omitted and wired to the label." },
+        { name: "label", type: "string", description: "Visible field label shown above the input." },
+        { name: "hint", type: "string", description: "Helper text shown below the field when there is no error." },
+        { name: "error", type: "string", description: "Error message; renders the field in the error state and sets aria-invalid." },
+        { name: "required", type: "boolean", description: "Marks the field required with a visual asterisk." },
+        { name: "disabled", type: "boolean", description: "Disables input and dims the field." },
+        { name: "readOnly", type: "boolean", description: "Makes the field read-only while keeping the value visible." },
+        { name: "prefix", type: "string", description: "Static text shown inside the field on the left (e.g. a currency code)." },
+        { name: "suffix", type: "string", description: "Static text shown inside the field on the right (e.g. a unit)." },
+        { name: "type", type: "string", default: '"text"', description: "Native input type; \"password\" adds a reveal toggle." },
+        { name: "numeric", type: "boolean", description: "Right-aligns the text with tabular figures for numeric entry." },
+        { name: "placeholder", type: "string", description: "Example input shown when empty — not a substitute for the label." },
+        { name: "value", type: "string", description: "Controlled input value." },
+        { name: "onChange", type: "(e: ChangeEvent<HTMLInputElement>) => void", description: "Change handler; fires after any rule enforcement is applied." },
+        { name: "onBlur", type: "(e: FocusEvent<HTMLInputElement>) => void", description: "Blur handler; fires after rule-based formatting on blur." },
+        { name: "autoComplete", type: "string", description: "Native autocomplete hint for common fields (email, name, etc.)." },
+        { name: "rule", type: "InputRule", description: "Keystroke/blur validation rule that strips disallowed characters, caps length, and pretty-prints on blur." },
+      ],
       anatomy: [
         "Label: 13–14px medium, above the field (never inside)",
         "Input container: 1px border, 8px radius",
@@ -212,6 +246,27 @@ import { Plus, Search } from "lucide-react";
     sourcePath: "src/components/ui/money-input.tsx",
     exports: ["MoneyInput"],
     requires: ["src/components/ui/field.tsx", "src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "Collects a monetary amount, grouping thousands live as the user types and formatting to fixed decimals on blur.",
+      props: [
+        { name: "id", type: "string", description: "Explicit element id, wired to the label." },
+        { name: "label", type: "string", description: "Visible field label shown above the input." },
+        { name: "hint", type: "string", description: "Helper text shown below the field when there is no error." },
+        { name: "error", type: "string", description: "Error message; renders the field in the error state." },
+        { name: "disabled", type: "boolean", description: "Disables the input." },
+        { name: "readOnly", type: "boolean", description: "Makes the field read-only." },
+        { name: "placeholder", type: "string", default: '"0.00"', description: "Placeholder shown when the value is empty." },
+        { name: "currency", type: "string", description: "Currency code shown as a static prefix inside the field (e.g. \"KES\")." },
+        { name: "value", type: "number | null", required: true, description: "Controlled numeric value; null when empty." },
+        { name: "onChange", type: "(value: number | null) => void", required: true, description: "Called with the parsed number (or null) as the user types and on blur." },
+        { name: "decimals", type: "number", default: "2", description: "Number of decimal places to keep and format to." },
+        { name: "allowNegative", type: "boolean", default: "false", description: "Permits a leading minus sign for negative amounts." },
+        { name: "max", type: "number", description: "Upper bound clamped on blur." },
+        { name: "min", type: "number", description: "Lower bound clamped on blur." },
+        { name: "locale", type: "string", default: '"en-KE"', description: "Locale used for thousands grouping and decimal formatting." },
+      ],
+    },
     examples: [
       {
         title: "Live thousand separators",
@@ -232,6 +287,24 @@ const [amount, setAmount] = useState<number | null>(1234567.5);
     sourcePath: "src/components/ui/textarea.tsx",
     exports: ["Textarea"],
     requires: ["src/components/ui/field.tsx", "src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "Collects multi-line text, growing to fit its content with an optional character counter.",
+      props: [
+        { name: "id", type: "string", description: "Explicit element id, wired to the label." },
+        { name: "label", type: "string", description: "Visible field label shown above the textarea." },
+        { name: "hint", type: "string", description: "Helper text shown below the field when there is no error." },
+        { name: "error", type: "string", description: "Error message; renders the field in the error state." },
+        { name: "required", type: "boolean", description: "Marks the field required with a visual asterisk." },
+        { name: "placeholder", type: "string", description: "Example input shown when empty." },
+        { name: "maxLength", type: "number", description: "Character limit; drives the counter and native maxLength." },
+        { name: "rows", type: "number", default: "3", description: "Initial visible row count before auto-growing." },
+        { name: "value", type: "string", description: "Controlled textarea value." },
+        { name: "onChange", type: "(e: ChangeEvent<HTMLTextAreaElement>) => void", description: "Change handler; fires after any rule enforcement is applied." },
+        { name: "onBlur", type: "(e: FocusEvent<HTMLTextAreaElement>) => void", description: "Blur handler; fires after rule-based formatting on blur." },
+        { name: "rule", type: "InputRule", description: "Keystroke/blur validation rule that strips disallowed characters, caps length, and pretty-prints on blur." },
+      ],
+    },
     examples: [
       {
         title: "With counter",
@@ -255,6 +328,28 @@ const [amount, setAmount] = useState<number | null>(1234567.5);
       "src/hooks/use-popover-position.ts",
       "src/hooks/use-mounted.ts",
     ],
+    spec: {
+      purpose:
+        "Searches and selects one or many options, with client-side filtering or async remote search, keyboard navigation and clear.",
+      props: [
+        { name: "id", type: "string", description: "Explicit element id, wired to the label." },
+        { name: "label", type: "string", description: "Visible field label shown above the control." },
+        { name: "hint", type: "string", description: "Helper text shown below the field when there is no error." },
+        { name: "error", type: "string", description: "Error message; renders the field in the error state." },
+        { name: "disabled", type: "boolean", description: "Disables the combobox." },
+        { name: "required", type: "boolean", description: "Marks the field required with a visual asterisk." },
+        { name: "options", type: "T[]", description: "Static options to filter client-side; omit when using onSearch." },
+        { name: "onSearch", type: "(query: string, signal: AbortSignal) => Promise<T[]>", description: "Async search callback for remote data; enables debounced remote mode with an abort signal." },
+        { name: "multiple", type: "boolean", description: "Allows selecting multiple options rendered as removable chips." },
+        { name: "value", type: "T | T[] | null", required: true, description: "Controlled selection — an array in multiple mode, a single option or null otherwise." },
+        { name: "onChange", type: "(value: T | T[] | null) => void", required: true, description: "Called with the updated selection." },
+        { name: "getOptionValue", type: "(o: T) => string", default: "o.value", description: "Derives the stable value/key from an option." },
+        { name: "getOptionLabel", type: "(o: T) => string", default: "o.label", description: "Derives the display label from an option." },
+        { name: "getOptionMeta", type: "(o: T) => string | undefined", description: "Derives optional trailing meta text shown per option." },
+        { name: "minChars", type: "number", default: "0", description: "Minimum query length before searching/filtering runs." },
+        { name: "placeholder", type: "string", default: '"Search…"', description: "Placeholder shown in the search input when nothing is selected." },
+      ],
+    },
     examples: [
       {
         title: "Single & multiple",
@@ -273,6 +368,16 @@ const [amount, setAmount] = useState<number | null>(1234567.5);
     category: "Navigation",
     sourcePath: "src/components/ui/tabs.tsx",
     exports: ["Tabs"],
+    spec: {
+      purpose:
+        "Switches between sibling views within the same context, with keyboard navigation and optional counts.",
+      props: [
+        { name: "items", type: "TabItem[]", required: true, description: "Tabs to render; each has id, label and optional count, urgent and disabled flags." },
+        { name: "value", type: "string", required: true, description: "The id of the currently active tab." },
+        { name: "onChange", type: "(id: string) => void", required: true, description: "Called with the newly selected tab id." },
+        { name: "variant", type: '"underline" | "segmented"', default: '"underline"', description: "Chooses the underline tab bar or a compact segmented control." },
+      ],
+    },
     examples: [
       {
         title: "Underline & segmented",
@@ -303,6 +408,19 @@ const items = [
       "src/hooks/use-popover-position.ts",
       "src/hooks/use-mounted.ts",
     ],
+    spec: {
+      purpose:
+        "Selects a single date from a popover calendar with month/year navigation; DateRangePicker selects a start/end range with presets.",
+      props: [
+        { name: "id", type: "string", description: "Explicit element id, wired to the label (DatePicker)." },
+        { name: "label", type: "string", description: "Visible field label shown above the trigger." },
+        { name: "hint", type: "string", description: "Helper text shown below the field." },
+        { name: "value", type: "Date | null", required: true, description: "Controlled selected date (DatePicker); null when unset." },
+        { name: "onChange", type: "(d: Date | null) => void", required: true, description: "Called with the chosen date, or null when cleared (DatePicker)." },
+        { name: "min", type: "Date", description: "Earliest selectable date; earlier days are disabled." },
+        { name: "max", type: "Date", description: "Latest selectable date; later days are disabled." },
+      ],
+    },
     examples: [
       {
         title: "Single date & range",
@@ -321,6 +439,20 @@ const items = [
     category: "Feedback",
     sourcePath: "src/components/ui/toast.tsx",
     exports: ["Toast", "useToasts", "ToastData"],
+    spec: {
+      purpose:
+        "Shows a transient notification with a tone, auto-dismiss (paused on hover/focus) and an optional action; drive the queue with the useToasts hook.",
+      props: [
+        { name: "t", type: "ToastData", required: true, description: "The toast to render (id, tone, title, optional body/action/duration/sticky)." },
+        { name: "onClose", type: "() => void", required: true, description: "Called when the toast is dismissed or its timer elapses." },
+        { name: "ToastData.tone", type: '"success" | "error" | "warning" | "info"', required: true, description: "Semantic tone; error toasts are sticky and use role=\"alert\" (ToastData)." },
+        { name: "ToastData.title", type: "string", required: true, description: "The primary toast headline (ToastData)." },
+        { name: "ToastData.body", type: "string", description: "Optional secondary message under the title (ToastData)." },
+        { name: "ToastData.duration", type: "number", required: true, description: "Auto-dismiss time in ms; defaulted to 5000 by useToasts (ToastData)." },
+        { name: "ToastData.sticky", type: "boolean", description: "Prevents auto-dismiss so the toast stays until closed (ToastData)." },
+        { name: "ToastData.action", type: "{ label: string; run?: () => void }", description: "Optional inline action button shown in the toast (ToastData)." },
+      ],
+    },
     examples: [
       {
         title: "Tones",
@@ -344,6 +476,23 @@ const { list, push, close } = useToasts();
     exports: ["ConfirmDialog"],
     dependsOn: ["button", "hold-to-confirm"],
     requires: ["src/components/ui/field.tsx", "src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "Modal confirmation for consequential actions, supporting simple, type-to-confirm and press-and-hold modes.",
+      props: [
+        { name: "open", type: "boolean", required: true, description: "Controls whether the dialog is rendered." },
+        { name: "tone", type: '"default" | "destructive"', default: '"default"', description: "Sets the visual emphasis; destructive uses error styling for dangerous actions." },
+        { name: "title", type: "string", required: true, description: "Heading question shown at the top of the dialog." },
+        { name: "body", type: "string", description: "Optional supporting text explaining the action." },
+        { name: "consequences", type: "string[]", default: "[]", description: "Bulleted list of side effects shown to the user." },
+        { name: "confirmLabel", type: "string", required: true, description: "Label for the confirm button." },
+        { name: "mode", type: '"simple" | "type" | "hold"', default: '"simple"', description: "Confirmation strategy: a plain button, type-to-match, or press-and-hold." },
+        { name: "typeToMatch", type: "string", description: "The exact string the user must type when mode is \"type\"." },
+        { name: "onConfirm", type: "() => void", required: true, description: "Called when the user confirms the action." },
+        { name: "onCancel", type: "() => void", required: true, description: "Called when the user cancels or dismisses the dialog." },
+        { name: "loading", type: "boolean", description: "Shows a pending state on the confirm button while the action runs." },
+      ],
+    },
     examples: [
       {
         title: "Hold & type to confirm",
@@ -371,6 +520,17 @@ const { list, push, close } = useToasts();
     category: "Buttons & Actions",
     sourcePath: "src/components/ui/hold-to-confirm.tsx",
     exports: ["HoldToConfirm"],
+    spec: {
+      purpose:
+        "Requires a deliberate press-and-hold to trigger a destructive action, with a keyboard fallback to a confirmation dialog.",
+      props: [
+        { name: "label", type: "string", default: '"Hold to delete"', description: "Idle button label describing the action." },
+        { name: "duration", type: "number", default: "1200", description: "Milliseconds the user must hold before the action fires." },
+        { name: "onConfirm", type: "() => void", required: true, description: "Called once the hold completes and the progress bar fills." },
+        { name: "onKeyboardFallback", type: "() => void", required: true, description: "Called on Enter/Space so keyboard users get a confirmation dialog instead of holding." },
+        { name: "disabled", type: "boolean", description: "Disables the button and prevents holding." },
+      ],
+    },
     examples: [
       {
         title: "Hold to delete",
@@ -396,6 +556,16 @@ const { list, push, close } = useToasts();
       source: "mathesis ui-component/content-card",
       purpose:
         "Groups related content into a scannable unit. Name a card by its function (Summary, Profile) — not its appearance.",
+      props: [
+        { name: "children", type: "ReactNode", required: true, description: "The card's content, typically CardHeader / CardBody / CardFooter." },
+        { name: "interactive", type: "boolean", description: "Adds hover elevation and focus affordances for clickable cards." },
+        { name: "selected", type: "boolean", description: "Applies the selected state with an accent border and tinted background." },
+        { name: "className", type: "string", description: "Extra classes merged onto the card container." },
+        { name: "CardHeader.title", type: "ReactNode", required: true, description: "The header title text (CardHeader)." },
+        { name: "CardHeader.action", type: "ReactNode", description: "Optional trailing action or status shown in the header (CardHeader)." },
+        { name: "CardBody.children", type: "ReactNode", required: true, description: "The padded main content of the card (CardBody)." },
+        { name: "CardFooter.children", type: "ReactNode", required: true, description: "Footer metadata or actions divided from the body (CardFooter)." },
+      ],
       anatomy: [
         "Container: surface background, 1px border, 12px radius",
         "Header: title + optional action, divided from body",
@@ -456,6 +626,15 @@ const { list, push, close } = useToasts();
     category: "Data Display",
     sourcePath: "src/components/ui/badge.tsx",
     exports: ["Badge"],
+    spec: {
+      purpose:
+        "Labels the status or category of an item in a compact, color-toned pill.",
+      props: [
+        { name: "tone", type: '"pine" | "amber" | "rose" | "neutral"', default: '"neutral"', description: "Sets the semantic color of the badge (e.g. pine for positive, rose for errors)." },
+        { name: "children", type: "ReactNode", required: true, description: "The badge label; keep it to one or two words." },
+        { name: "className", type: "string", description: "Extra classes merged onto the badge element." },
+      ],
+    },
     examples: [
       {
         title: "Tones",
@@ -476,6 +655,17 @@ const { list, push, close } = useToasts();
     category: "Forms",
     sourcePath: "src/components/ui/checkbox.tsx",
     exports: ["Checkbox"],
+    spec: {
+      purpose:
+        "Toggles a single boolean option, supporting checked, indeterminate and disabled states.",
+      props: [
+        { name: "checked", type: "boolean", description: "Whether the checkbox is checked." },
+        { name: "indeterminate", type: "boolean", description: "Shows the mixed/dash state, typically for a partially-selected group." },
+        { name: "disabled", type: "boolean", description: "Disables the checkbox." },
+        { name: "onChange", type: "() => void", description: "Called when the checkbox is toggled; update state yourself." },
+        { name: "ariaLabel", type: "string", description: "Accessible label; required since the control renders no visible text." },
+      ],
+    },
     examples: [
       {
         title: "States",
@@ -495,6 +685,21 @@ const { list, push, close } = useToasts();
     category: "Forms",
     sourcePath: "src/components/ui/switch.tsx",
     exports: ["Switch", "SwitchRow"],
+    spec: {
+      purpose:
+        "Toggles a setting on or off with immediate effect, standalone or wrapped in a labelled SwitchRow.",
+      props: [
+        { name: "checked", type: "boolean", required: true, description: "Whether the switch is on (Switch)." },
+        { name: "onChange", type: "(checked: boolean) => void", required: true, description: "Called with the next on/off value (Switch)." },
+        { name: "size", type: '"sm" | "md"', default: '"md"', description: "Switch track size." },
+        { name: "disabled", type: "boolean", description: "Disables the switch." },
+        { name: "label", type: "string", description: "Accessible label used for the standalone switch's aria-label." },
+        { name: "SwitchRow.label", type: "ReactNode", required: true, description: "Primary row label displayed beside the control (SwitchRow)." },
+        { name: "SwitchRow.hint", type: "string", description: "Secondary helper text under the row label (SwitchRow)." },
+        { name: "SwitchRow.children", type: "ReactNode", required: true, description: "The Switch (or other control) to render in the row (SwitchRow)." },
+        { name: "SwitchRow.labelRight", type: "boolean", description: "Places the label to the right of the control instead of the left (SwitchRow)." },
+      ],
+    },
     examples: [
       {
         title: "Standalone & row",
@@ -516,6 +721,17 @@ const { list, push, close } = useToasts();
     category: "Feedback",
     sourcePath: "src/components/ui/banner.tsx",
     exports: ["Banner"],
+    spec: {
+      purpose:
+        "Shows an inline, page-spanning status message pairing a Lucide icon with a tone and an optional action.",
+      props: [
+        { name: "tone", type: '"amber" | "rose" | "neutral"', required: true, description: "Sets the semantic color of the banner (never rely on color alone — always pair with an icon)." },
+        { name: "icon", type: "LucideIcon", required: true, description: "Leading icon that reinforces the message's meaning." },
+        { name: "children", type: "ReactNode", required: true, description: "The banner message content." },
+        { name: "action", type: "string", description: "Label for an optional inline action button." },
+        { name: "onAction", type: "() => void", description: "Handler invoked when the action button is clicked." },
+      ],
+    },
     examples: [
       {
         title: "Tones with action",
@@ -535,6 +751,21 @@ import { AlertTriangle, Info } from "lucide-react";
     category: "Data Display",
     sourcePath: "src/components/ui/stat-card.tsx",
     exports: ["StatCard"],
+    spec: {
+      purpose:
+        "Displays a single key metric with a label, optional trend sub-line and progress ring, and loading/errored states.",
+      props: [
+        { name: "label", type: "string", required: true, description: "Short uppercase caption naming the metric." },
+        { name: "value", type: "string", required: true, description: "The formatted metric value shown prominently." },
+        { name: "sub", type: "string", description: "Secondary line beneath the value, e.g. a trend or target." },
+        { name: "tone", type: '"pine" | "amber" | "rose" | "neutral"', default: '"neutral"', description: "Colors the value and ring to signal sentiment." },
+        { name: "ring", type: "number", description: "Renders a 0–100 progress ring beside the value when provided." },
+        { name: "loading", type: "boolean", description: "Shows a skeleton placeholder while the metric loads." },
+        { name: "errored", type: "boolean", description: "Shows an error/retry state with a dash instead of the value." },
+        { name: "onClick", type: "() => void", description: "Makes the card actionable; called when clicked (disabled while loading or errored)." },
+        { name: "compact", type: "boolean", description: "Uses tighter spacing and hides the sub-line for dense layouts." },
+      ],
+    },
     examples: [
       {
         title: "With & without ring",
@@ -553,6 +784,16 @@ import { AlertTriangle, Info } from "lucide-react";
     category: "Data Display",
     sourcePath: "src/components/ui/avatar.tsx",
     exports: ["Avatar", "AvatarProps"],
+    spec: {
+      purpose:
+        "Represents a person or entity with an image, or initials with stable color hashing when no image is available.",
+      props: [
+        { name: "name", type: "string", required: true, description: "Full name used to derive the initials and (when colourful) the hashed color." },
+        { name: "src", type: "string", description: "Optional image URL; falls back to initials if it fails to load." },
+        { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Avatar diameter and font size." },
+        { name: "colourful", type: "boolean", description: "Assigns a stable color from the palette based on the name instead of a neutral tone." },
+      ],
+    },
     examples: [
       {
         title: "Sizes & colours",
@@ -572,6 +813,15 @@ import { AlertTriangle, Info } from "lucide-react";
     category: "Navigation",
     sourcePath: "src/components/ui/breadcrumb.tsx",
     exports: ["Breadcrumb", "BreadcrumbItem"],
+    spec: {
+      purpose:
+        "Renders a chevron-separated navigation trail where the final item marks the current page.",
+      props: [
+        { name: "items", type: "BreadcrumbItem[]", required: true, description: "Ordered trail of crumbs; the last item is rendered as the current page (aria-current)." },
+        { name: "BreadcrumbItem.label", type: "string", required: true, description: "Visible text for a crumb." },
+        { name: "BreadcrumbItem.href", type: "string", description: "Link target for the crumb; omit on the final (current) item." },
+      ],
+    },
     examples: [
       {
         title: "Trail",
@@ -593,6 +843,15 @@ import { AlertTriangle, Info } from "lucide-react";
     category: "Layout",
     sourcePath: "src/components/ui/page-header.tsx",
     exports: ["PageHeader"],
+    spec: {
+      purpose:
+        "Provides a consistent page heading row with an H1 title, optional description and right-aligned actions.",
+      props: [
+        { name: "title", type: "ReactNode", required: true, description: "Primary page title rendered as an H1." },
+        { name: "description", type: "ReactNode", description: "Optional supporting text shown beneath the title." },
+        { name: "actions", type: "ReactNode", description: "Right-aligned action controls, typically buttons." },
+      ],
+    },
     examples: [
       {
         title: "Title, description, actions",
@@ -615,6 +874,19 @@ import { Plus } from "lucide-react";
     category: "Feedback",
     sourcePath: "src/components/ui/blank.tsx",
     exports: ["Blank"],
+    spec: {
+      purpose:
+        "Renders a designed empty or error state inside tables and lists, with an optional action button and mono detail line.",
+      props: [
+        { name: "icon", type: "LucideIcon", description: "Optional icon shown above the title, colored by tone." },
+        { name: "title", type: "string", required: true, description: "Short heading describing the empty or error state." },
+        { name: "body", type: "string", required: true, description: "Explanatory text below the title." },
+        { name: "action", type: "string", description: "Label for an optional primary action button." },
+        { name: "onAction", type: "() => void", description: "Handler invoked when the action button is clicked." },
+        { name: "mono", type: "string", description: "Optional monospace detail line (e.g. an error code) shown at the bottom." },
+        { name: "tone", type: '"rose" | "amber" | "neutral"', default: '"neutral"', description: "Colors the icon to signal the nature of the state." },
+      ],
+    },
     examples: [
       {
         title: "Empty state",
@@ -638,6 +910,14 @@ import { Users } from "lucide-react";
     category: "Feedback",
     sourcePath: "src/components/ui/skeleton-rows.tsx",
     exports: ["SkeletonRows"],
+    spec: {
+      purpose:
+        "Renders animated placeholder table rows while a table's data loads.",
+      props: [
+        { name: "n", type: "number", default: "8", description: "Number of skeleton rows to render." },
+        { name: "colCount", type: "number", default: "3", description: "Number of extra placeholder columns rendered after the leading avatar/text columns." },
+      ],
+    },
     examples: [
       {
         title: "Loading table",
@@ -659,6 +939,16 @@ import { Users } from "lucide-react";
     category: "Data Display",
     sourcePath: "src/components/ui/exception-strip.tsx",
     exports: ["ExceptionStrip"],
+    spec: {
+      purpose:
+        "Shows a compact single-line row of labelled metrics for dense table headers, with loading, errored and as-of states.",
+      props: [
+        { name: "items", type: "{ label: string; value: string; tone?: \"pine\" | \"amber\" | \"neutral\" }[]", required: true, description: "The metrics to display; each has a label, value and optional tone." },
+        { name: "loading", type: "boolean", description: "Shows shimmering placeholders in place of values." },
+        { name: "errored", type: "boolean", description: "Shows a dash for each value to signal a load failure." },
+        { name: "asOf", type: "string", description: "Optional timestamp text shown at the end (e.g. \"09:24\")." },
+      ],
+    },
     examples: [
       {
         title: "Compact metrics",
@@ -683,6 +973,17 @@ import { Users } from "lucide-react";
     category: "Data Display",
     sourcePath: "src/components/ui/sort-header.tsx",
     exports: ["SortHeader"],
+    spec: {
+      purpose:
+        "Renders a sortable table column header (a <th>) with a direction indicator and a hover affordance.",
+      props: [
+        { name: "label", type: "string", required: true, description: "The column heading text." },
+        { name: "state", type: '"asc" | "desc" | "none"', required: true, description: "Current sort direction for this column." },
+        { name: "onClick", type: "() => void", required: true, description: "Called when the header is clicked to cycle the sort." },
+        { name: "style", type: "CSSProperties", description: "Inline styles applied to the <th> (e.g. a fixed width)." },
+        { name: "className", type: "string", description: "Extra classes merged onto the <th>." },
+      ],
+    },
     examples: [
       {
         title: "Sortable columns",
@@ -710,6 +1011,15 @@ import { Users } from "lucide-react";
       "src/hooks/use-popover-position.ts",
       "src/hooks/use-mounted.ts",
     ],
+    spec: {
+      purpose:
+        "Wraps any element and shows an auto-flipping dark tooltip on hover and keyboard focus.",
+      props: [
+        { name: "content", type: "ReactNode", required: true, description: "The tooltip content shown on hover/focus." },
+        { name: "children", type: "ReactElement", required: true, description: "The single element that anchors and triggers the tooltip." },
+        { name: "delayMs", type: "number", default: "400", description: "Delay before the tooltip appears after hover/focus, in milliseconds." },
+      ],
+    },
     examples: [
       {
         title: "On a button",
@@ -731,6 +1041,22 @@ import { Trash2 } from "lucide-react";
     category: "Navigation",
     sourcePath: "src/components/ui/pagination.tsx",
     exports: ["Pagination", "PaginationProps", "PaginationMeta"],
+    spec: {
+      purpose:
+        "Provides two-zone pagination with a rows-per-page selector, numbered pages and a go-to-page input; supply either a meta object or the individual page/pages/perPage/total props.",
+      props: [
+        { name: "meta", type: "PaginationMeta", description: "Bundled pagination state (page, perPage, totalItems, totalPages, from, to); overrides the individual props when provided." },
+        { name: "page", type: "number", default: "1", description: "Current 1-based page number (used when meta is omitted)." },
+        { name: "pages", type: "number", default: "1", description: "Total number of pages (used when meta is omitted)." },
+        { name: "perPage", type: "number", default: "25", description: "Rows shown per page (used when meta is omitted)." },
+        { name: "total", type: "number", default: "0", description: "Total number of items across all pages (used when meta is omitted)." },
+        { name: "onPageChange", type: "(page: number) => void", required: true, description: "Called with the requested page number." },
+        { name: "onPerPageChange", type: "(perPage: number) => void", required: true, description: "Called with the newly selected rows-per-page value." },
+        { name: "perPageOptions", type: "number[]", default: "[10, 25, 50, 100]", description: "Options offered in the rows-per-page selector." },
+        { name: "disabled", type: "boolean", description: "Dims and disables the pager, e.g. while loading." },
+        { name: "className", type: "string", description: "Extra classes merged onto the container." },
+      ],
+    },
     examples: [
       {
         title: "Full pager",
@@ -760,6 +1086,24 @@ import { Trash2 } from "lucide-react";
       "src/hooks/use-popover-position.ts",
       "src/hooks/use-mounted.ts",
     ],
+    spec: {
+      purpose:
+        "A portalled dropdown menu composed of a trigger and content containing items, checkbox items, separators and labels.",
+      props: [
+        { name: "open", type: "boolean", required: true, description: "Controls whether the menu content is shown (Menu)." },
+        { name: "onOpenChange", type: "(open: boolean) => void", required: true, description: "Called when the menu requests to open or close (Menu)." },
+        { name: "children", type: "ReactNode", required: true, description: "The MenuTrigger and MenuContent subtree (Menu)." },
+        { name: "MenuContent.align", type: '"start" | "end" | "center"', default: '"start"', description: "Horizontal alignment of the content relative to the trigger." },
+        { name: "MenuContent.minWidth", type: "number", default: "180", description: "Minimum width in pixels for the menu content." },
+        { name: "MenuItem.icon", type: "ReactNode", description: "Optional leading icon for a menu item." },
+        { name: "MenuItem.destructive", type: "boolean", description: "Styles the item as a destructive action." },
+        { name: "MenuItem.disabled", type: "boolean", description: "Disables the item and skips it during keyboard navigation." },
+        { name: "MenuItem.onSelect", type: "() => void", description: "Called when the item is chosen." },
+        { name: "MenuCheckboxItem.checked", type: "boolean", required: true, description: "Current checked state of the checkbox item." },
+        { name: "MenuCheckboxItem.onCheckedChange", type: "(checked: boolean) => void", required: true, description: "Called with the next checked state when toggled." },
+        { name: "MenuCheckboxItem.locked", type: "boolean", description: "Prevents the checkbox item from being toggled." },
+      ],
+    },
     examples: [
       {
         title: "Actions menu",
@@ -793,6 +1137,17 @@ import { MoreHorizontal, Edit, Home, Trash2 } from "lucide-react";
       "src/hooks/use-popover-position.ts",
       "src/hooks/use-mounted.ts",
     ],
+    spec: {
+      purpose:
+        "Selects a start/end date range from a two-month calendar with quick presets, a night/day count and apply/clear actions.",
+      props: [
+        { name: "id", type: "string", description: "Explicit element id, wired to the label." },
+        { name: "label", type: "string", description: "Visible field label shown above the trigger." },
+        { name: "hint", type: "string", description: "Helper text shown below the field." },
+        { name: "value", type: "[Date, Date] | null", required: true, description: "Controlled [start, end] range; null when unset." },
+        { name: "onChange", type: "(range: [Date, Date]) => void", required: true, description: "Called with the applied [start, end] range." },
+      ],
+    },
     examples: [
       {
         title: "Range with presets",
@@ -811,6 +1166,15 @@ import { MoreHorizontal, Edit, Home, Trash2 } from "lucide-react";
     sourcePath: "src/components/ui/back-button.tsx",
     exports: ["BackButton"],
     requires: ["src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "A discoverable bordered pill that links back to a previous page with an adequate touch target.",
+      props: [
+        { name: "href", type: "string", required: true, description: "Destination the back link navigates to." },
+        { name: "label", type: "string", required: true, description: "Visible text describing where the link goes." },
+        { name: "className", type: "string", description: "Additional CSS classes merged onto the link." },
+      ],
+    },
     examples: [
       {
         title: "Basic",
@@ -829,6 +1193,18 @@ import { MoreHorizontal, Edit, Home, Trash2 } from "lucide-react";
     sourcePath: "src/components/ui/table-of-contents.tsx",
     exports: ["TableOfContents", "TocItem"],
     requires: ["src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "An in-page scroll-spy contents list that highlights the section currently in the viewport and smooth-scrolls to sections on click.",
+      props: [
+        { name: "items", type: "TocItem[]", required: true, description: "Sections to list; each id must match an element id in the page." },
+        { name: "title", type: "string", default: '"On this page"', description: "Heading label shown above the list (also used as the nav aria-label)." },
+        { name: "className", type: "string", description: "Additional CSS classes merged onto the nav." },
+        { name: "TocItem.id", type: "string", required: true, description: "Id of the target section element to observe and scroll to." },
+        { name: "TocItem.label", type: "string", required: true, description: "Visible link text for the section." },
+        { name: "TocItem.level", type: "2 | 3", description: "Heading depth used to indent nested (level 3) items." },
+      ],
+    },
     examples: [
       {
         title: "Scroll-spy",
@@ -854,6 +1230,24 @@ const items = [
     sourcePath: "src/components/ui/command-palette.tsx",
     exports: ["CommandPalette", "useCommandPalette", "CommandItem"],
     requires: ["src/lib/utils.ts", "src/hooks/use-mounted.ts"],
+    spec: {
+      purpose:
+        "A generic ⌘K overlay that filters a list of items by title, subtitle, tag or keywords and invokes a handler on selection.",
+      props: [
+        { name: "open", type: "boolean", required: true, description: "Controls whether the palette overlay is shown." },
+        { name: "onClose", type: "() => void", required: true, description: "Called when the palette should close (Esc, backdrop, or after a selection)." },
+        { name: "items", type: "CommandItem[]", required: true, description: "Commands to search and display." },
+        { name: "onSelect", type: "(id: string) => void", required: true, description: "Called with the chosen item's id." },
+        { name: "placeholder", type: "string", default: '"Search, or type a command…"', description: "Placeholder text for the search input." },
+        { name: "emptyHeading", type: "string", default: '"Suggestions"', description: "Section heading shown above results before the user types." },
+        { name: "CommandItem.id", type: "string", required: true, description: "Stable identifier passed to onSelect." },
+        { name: "CommandItem.title", type: "string", required: true, description: "Primary label for the command." },
+        { name: "CommandItem.subtitle", type: "string", description: "Secondary descriptive text." },
+        { name: "CommandItem.tag", type: "string", description: "Short category tag shown alongside the item." },
+        { name: "CommandItem.icon", type: "ReactNode", description: "Optional leading icon." },
+        { name: "CommandItem.keywords", type: "string", description: "Extra searchable terms not shown in the UI." },
+      ],
+    },
     examples: [
       {
         title: "⌘K launcher",
@@ -889,6 +1283,20 @@ const items = [
     exports: ["Dialog"],
     dependsOn: ["button", "input"],
     requires: ["src/lib/utils.ts", "src/hooks/use-mounted.ts", "src/hooks/use-focus-trap.ts"],
+    spec: {
+      purpose:
+        "A generic portalled modal with optional header/body/footer, focus trapping, and Esc + backdrop dismissal.",
+      props: [
+        { name: "open", type: "boolean", required: true, description: "Controls whether the dialog is rendered." },
+        { name: "onClose", type: "() => void", required: true, description: "Called when the dialog requests to close (Esc, backdrop, or close button)." },
+        { name: "title", type: "ReactNode", description: "Optional heading; also wires up aria-labelledby." },
+        { name: "description", type: "ReactNode", description: "Optional supporting text; also wires up aria-describedby." },
+        { name: "footer", type: "ReactNode", description: "Footer content, typically action buttons." },
+        { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Maximum width of the dialog panel." },
+        { name: "closeOnBackdrop", type: "boolean", default: "true", description: "Whether clicking the backdrop closes the dialog." },
+        { name: "children", type: "ReactNode", description: "Main body content of the dialog." },
+      ],
+    },
     examples: [
       {
         title: "With form + actions",
@@ -919,6 +1327,19 @@ const items = [
     exports: ["Drawer"],
     dependsOn: ["button"],
     requires: ["src/lib/utils.ts", "src/hooks/use-mounted.ts", "src/hooks/use-focus-trap.ts"],
+    spec: {
+      purpose:
+        "A slide-in panel anchored to the right, left or bottom for filters, detail views or forms, with focus trapping and backdrop dismissal.",
+      props: [
+        { name: "open", type: "boolean", required: true, description: "Controls whether the drawer is rendered." },
+        { name: "onClose", type: "() => void", required: true, description: "Called when the drawer requests to close (Esc, backdrop, or close button)." },
+        { name: "side", type: '"right" | "left" | "bottom"', default: '"right"', description: "Edge the drawer slides in from." },
+        { name: "title", type: "ReactNode", description: "Optional heading; also wires up aria-labelledby." },
+        { name: "footer", type: "ReactNode", description: "Footer content, typically action buttons." },
+        { name: "closeOnBackdrop", type: "boolean", default: "true", description: "Whether clicking the backdrop closes the drawer." },
+        { name: "children", type: "ReactNode", description: "Main body content of the drawer." },
+      ],
+    },
     examples: [
       {
         title: "Right sheet",
@@ -945,6 +1366,21 @@ const items = [
       "src/hooks/use-popover-position.ts",
       "src/hooks/use-mounted.ts",
     ],
+    spec: {
+      purpose:
+        "Selects one option from a short, fixed list via a keyboard-navigable dropdown built on Field.",
+      props: [
+        { name: "id", type: "string", description: "Explicit element id, wired to the label." },
+        { name: "label", type: "string", description: "Visible field label shown above the control." },
+        { name: "hint", type: "string", description: "Helper text shown below the field when there is no error." },
+        { name: "error", type: "string", description: "Error message; renders the field in the error state." },
+        { name: "disabled", type: "boolean", description: "Disables the select." },
+        { name: "options", type: "SelectOption[]", required: true, description: "Options to choose from; each has value, label and optional disabled." },
+        { name: "value", type: "string | null", required: true, description: "The value of the currently selected option, or null." },
+        { name: "onChange", type: "(value: string) => void", required: true, description: "Called with the selected option's value." },
+        { name: "placeholder", type: "string", default: '"Select…"', description: "Text shown when no option is selected." },
+      ],
+    },
     examples: [
       {
         title: "Roles",
@@ -969,6 +1405,19 @@ const options: SelectOption[] = [
     sourcePath: "src/components/ui/radio-group.tsx",
     exports: ["RadioGroup", "RadioOption"],
     requires: ["src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "Selects exactly one option from a small mutually-exclusive set, as a simple list or as selectable cards.",
+      props: [
+        { name: "name", type: "string", required: true, description: "Radio group name shared by all inputs so only one can be selected." },
+        { name: "label", type: "string", description: "Optional fieldset legend shown above the options." },
+        { name: "options", type: "RadioOption[]", required: true, description: "Options to render; each has value, label and optional description and disabled." },
+        { name: "value", type: "string | null", required: true, description: "The value of the currently selected option, or null." },
+        { name: "onChange", type: "(value: string) => void", required: true, description: "Called with the selected option's value." },
+        { name: "variant", type: '"list" | "card"', default: '"list"', description: "Renders a compact radio list or larger selectable cards with descriptions." },
+        { name: "disabled", type: "boolean", description: "Disables the whole group." },
+      ],
+    },
     examples: [
       {
         title: "List & cards",
@@ -992,6 +1441,26 @@ const options: SelectOption[] = [
     exports: ["DataTable", "DataTableColumn"],
     dependsOn: ["sort-header", "skeleton-rows", "pagination", "blank"],
     requires: ["src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "Renders a column-driven data table that composes SortHeader, SkeletonRows, Pagination and an empty state, with per-row status styling.",
+      props: [
+        { name: "columns", type: "DataTableColumn<T>[]", required: true, description: "Column definitions (key, header, cell renderer and optional sortable/align/numeric/width/className)." },
+        { name: "rows", type: "T[]", required: true, description: "The row data to render." },
+        { name: "rowKey", type: "(row: T) => string", required: true, description: "Returns a stable unique key for each row." },
+        { name: "loading", type: "boolean", description: "Shows skeleton rows and a top progress bar while data loads." },
+        { name: "sort", type: "{ key: string; dir: \"asc\" | \"desc\" | \"none\" }", description: "Current sort column and direction." },
+        { name: "onSortChange", type: "(key: string) => void", description: "Called with a column key when a sortable header is clicked." },
+        { name: "empty", type: "{ title: string; body: string }", description: "Custom title/body for the empty state when there are no rows." },
+        { name: "pagination", type: "PaginationProps", description: "When provided, renders a Pagination footer with these props." },
+        { name: "onRowClick", type: "(row: T) => void", description: "Makes rows clickable; called with the clicked row." },
+        { name: "rowStatus", type: '(row: T) => "default" | "selected" | "error" | "pending"', description: "Returns a per-row status that drives its background and accent bar." },
+        { name: "zebra", type: "boolean", description: "Applies alternating row backgrounds for readability." },
+        { name: "title", type: "string", description: "Optional table title shown in the header bar." },
+        { name: "subtitle", type: "string", description: "Optional subtitle (e.g. a count) shown under the title." },
+        { name: "caption", type: "string", description: "Screen-reader-only <caption> describing the table." },
+      ],
+    },
     examples: [
       {
         title: "Sortable columns",
@@ -1027,6 +1496,18 @@ const columns: DataTableColumn<Row>[] = [
     sourcePath: "src/components/ui/alert.tsx",
     exports: ["Alert"],
     requires: ["src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "Displays a static, inline callout with a tone, icon and optional title, dismiss button and action.",
+      props: [
+        { name: "tone", type: '"info" | "success" | "warning" | "error"', default: '"info"', description: "Sets the icon, colors and ARIA role (error uses role=\"alert\")." },
+        { name: "title", type: "ReactNode", description: "Optional bold heading shown above the body." },
+        { name: "children", type: "ReactNode", description: "The alert body message." },
+        { name: "dismissible", type: "boolean", description: "Shows a close button that hides the alert." },
+        { name: "onDismiss", type: "() => void", description: "Called after the user dismisses the alert." },
+        { name: "action", type: "ReactNode", description: "Optional action element (e.g. a button) rendered below the body." },
+      ],
+    },
     examples: [
       {
         title: "Tones",
@@ -1047,6 +1528,17 @@ const columns: DataTableColumn<Row>[] = [
     sourcePath: "src/components/ui/progress.tsx",
     exports: ["Progress"],
     requires: ["src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "Shows a linear progress bar — determinate for a known 0–100 value, or an indeterminate loop when the value is null.",
+      props: [
+        { name: "value", type: "number | null", description: "Completion percentage (0–100); pass null or omit for an indeterminate loop." },
+        { name: "tone", type: '"accent" | "warning" | "error"', default: '"accent"', description: "Colors the progress fill." },
+        { name: "showValue", type: "boolean", description: "Displays the rounded percentage beside the label (determinate only)." },
+        { name: "label", type: "string", description: "Text label shown above the bar and used as its aria-label." },
+        { name: "className", type: "string", description: "Extra classes merged onto the wrapper." },
+      ],
+    },
     examples: [
       {
         title: "Determinate & indeterminate",
@@ -1067,6 +1559,15 @@ const columns: DataTableColumn<Row>[] = [
     sourcePath: "src/components/ui/accordion.tsx",
     exports: ["Accordion", "AccordionItem"],
     requires: ["src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "Shows a list of expandable sections, single-open by default or multiple-open, with keyboard-accessible triggers.",
+      props: [
+        { name: "items", type: "AccordionItem[]", required: true, description: "Sections to render; each has an id, title and content." },
+        { name: "multiple", type: "boolean", default: "false", description: "Allows more than one section to be open at once." },
+        { name: "defaultOpen", type: "string[]", default: "[]", description: "Ids of the sections open on first render." },
+      ],
+    },
     examples: [
       {
         title: "FAQ",
@@ -1091,6 +1592,22 @@ const columns: DataTableColumn<Row>[] = [
     sourcePath: "src/components/ui/slider.tsx",
     exports: ["Slider"],
     requires: ["src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "Selects a numeric value from a continuous range, with an optional live value label and custom formatter.",
+      props: [
+        { name: "label", type: "string", description: "Visible label shown above the track and used as the aria-label." },
+        { name: "value", type: "number", required: true, description: "Controlled current value." },
+        { name: "onChange", type: "(value: number) => void", required: true, description: "Called with the new value as the slider moves." },
+        { name: "min", type: "number", default: "0", description: "Minimum selectable value." },
+        { name: "max", type: "number", default: "100", description: "Maximum selectable value." },
+        { name: "step", type: "number", default: "1", description: "Increment between selectable values." },
+        { name: "disabled", type: "boolean", description: "Disables the slider." },
+        { name: "showValue", type: "boolean", description: "Displays the current value beside the label." },
+        { name: "format", type: "(value: number) => string", default: "String(v)", description: "Formats the displayed value (e.g. append a % or unit)." },
+        { name: "className", type: "string", description: "Extra classes merged onto the wrapper." },
+      ],
+    },
     examples: [
       {
         title: "Volume & threshold",
@@ -1111,6 +1628,18 @@ const columns: DataTableColumn<Row>[] = [
     exports: ["EmptyState"],
     dependsOn: ["button"],
     requires: ["src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "Fills a page-level zero state with an icon, title, explanatory body and optional actions.",
+      props: [
+        { name: "icon", type: "LucideIcon", description: "Optional icon shown in a circle above the title." },
+        { name: "title", type: "string", required: true, description: "Short heading describing the empty state." },
+        { name: "body", type: "string", description: "Explanatory text guiding the user on what to do next." },
+        { name: "actions", type: "ReactNode", description: "Optional action buttons rendered below the body." },
+        { name: "compact", type: "boolean", description: "Reduces vertical padding for tighter contexts." },
+        { name: "className", type: "string", description: "Extra classes merged onto the container." },
+      ],
+    },
     examples: [
       {
         title: "Zero state",
@@ -1134,6 +1663,20 @@ import { Inbox } from "lucide-react";
     sourcePath: "src/components/ui/popover.tsx",
     exports: ["Popover"],
     requires: ["src/lib/utils.ts", "src/hooks/use-popover-position.ts", "src/hooks/use-mounted.ts"],
+    spec: {
+      purpose:
+        "A generic anchored floating panel that auto-positions relative to a trigger and closes on outside-click or Esc.",
+      props: [
+        { name: "open", type: "boolean", required: true, description: "Controls whether the floating panel is shown." },
+        { name: "onOpenChange", type: "(open: boolean) => void", required: true, description: "Called when the popover requests to open or close." },
+        { name: "trigger", type: "ReactNode", required: true, description: "Element that anchors and toggles the popover." },
+        { name: "children", type: "ReactNode", required: true, description: "Content rendered inside the floating panel." },
+        { name: "align", type: '"start" | "center" | "end"', default: '"start"', description: "Horizontal alignment of the panel relative to the trigger." },
+        { name: "minWidth", type: "number", default: "200", description: "Minimum width in pixels for the panel." },
+        { name: "matchWidth", type: "boolean", description: "When true, sizes the panel to match the trigger's width." },
+        { name: "className", type: "string", description: "Additional CSS classes merged onto the panel." },
+      ],
+    },
     examples: [
       {
         title: "Trigger + panel",
@@ -1155,6 +1698,15 @@ import { Inbox } from "lucide-react";
     sourcePath: "src/components/ui/separator.tsx",
     exports: ["Separator"],
     requires: ["src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "Draws a thin divider line — horizontal, vertical, or horizontal with a centered label.",
+      props: [
+        { name: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "Chooses a horizontal rule or a vertical divider." },
+        { name: "label", type: "string", description: "Optional centered label rendered between two horizontal rules (horizontal only)." },
+        { name: "className", type: "string", description: "Extra classes merged onto the separator." },
+      ],
+    },
     examples: [
       {
         title: "Variants",
@@ -1175,6 +1727,14 @@ import { Inbox } from "lucide-react";
     sourcePath: "src/components/ui/kbd.tsx",
     exports: ["Kbd"],
     requires: ["src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "Renders one or more keyboard shortcut key caps.",
+      props: [
+        { name: "keys", type: "string | string[]", required: true, description: "A single key or an array of keys to render as separate caps (e.g. [\"⌘\", \"K\"])." },
+        { name: "className", type: "string", description: "Extra classes merged onto the wrapper." },
+      ],
+    },
     examples: [
       {
         title: "Shortcuts",
@@ -1194,6 +1754,15 @@ import { Inbox } from "lucide-react";
     sourcePath: "src/components/ui/spinner.tsx",
     exports: ["Spinner"],
     requires: ["src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "Indicates an indeterminate loading state with a spinning icon and an accessible status label.",
+      props: [
+        { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', description: "Icon size of the spinner." },
+        { name: "label", type: "string", default: '"Loading"', description: "Screen-reader status text announced while loading." },
+        { name: "className", type: "string", description: "Extra classes merged onto the wrapper." },
+      ],
+    },
     examples: [
       {
         title: "Sizes",
@@ -1216,6 +1785,20 @@ import { Inbox } from "lucide-react";
     exports: ["ButtonGroup", "Toolbar", "ButtonGroupOption"],
     dependsOn: ["button", "separator"],
     requires: ["src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "Presents a segmented single-choice set of buttons; Toolbar groups related action controls in a bordered container.",
+      props: [
+        { name: "options", type: "ButtonGroupOption[]", required: true, description: "Segments to render; each has value, label and optional disabled (ButtonGroup)." },
+        { name: "value", type: "string", required: true, description: "The value of the currently active segment (ButtonGroup)." },
+        { name: "onChange", type: "(value: string) => void", required: true, description: "Called with the newly selected segment's value (ButtonGroup)." },
+        { name: "aria-label", type: "string", description: "Accessible label for the group; describe what the choice controls (ButtonGroup)." },
+        { name: "className", type: "string", description: "Extra classes merged onto the group container (ButtonGroup)." },
+        { name: "Toolbar.children", type: "ReactNode", required: true, description: "The controls to lay out inside the toolbar (Toolbar)." },
+        { name: "Toolbar.aria-label", type: "string", description: "Accessible label for the toolbar region (Toolbar)." },
+        { name: "Toolbar.className", type: "string", description: "Extra classes merged onto the toolbar container (Toolbar)." },
+      ],
+    },
     examples: [
       {
         title: "Segmented + toolbar",
@@ -1241,6 +1824,23 @@ import { Inbox } from "lucide-react";
     sourcePath: "src/components/ui/chip.tsx",
     exports: ["Chip", "TagInput"],
     requires: ["src/components/ui/field.tsx", "src/lib/utils.ts"],
+    spec: {
+      purpose:
+        "Displays a compact, optionally-removable token; TagInput lets users build a list of chips by typing and pressing Enter or comma.",
+      props: [
+        { name: "children", type: "ReactNode", required: true, description: "The chip's content/label (Chip)." },
+        { name: "onRemove", type: "() => void", description: "When provided, shows a remove (×) button and is called on click (Chip)." },
+        { name: "className", type: "string", description: "Extra classes merged onto the chip (Chip)." },
+        { name: "id", type: "string", description: "Explicit element id, wired to the label (TagInput)." },
+        { name: "label", type: "string", description: "Visible field label shown above the input (TagInput)." },
+        { name: "hint", type: "string", description: "Helper text shown below the field (TagInput)." },
+        { name: "error", type: "string", description: "Error message; renders the field in the error state (TagInput)." },
+        { name: "value", type: "string[]", required: true, description: "The current list of tags (TagInput)." },
+        { name: "onChange", type: "(tags: string[]) => void", required: true, description: "Called with the updated tag list when tags are added or removed (TagInput)." },
+        { name: "placeholder", type: "string", default: '"Add tag…"', description: "Placeholder shown when there are no tags (TagInput)." },
+        { name: "disabled", type: "boolean", description: "Disables adding and removing tags (TagInput)." },
+      ],
+    },
     examples: [
       {
         title: "Chips + tag input",

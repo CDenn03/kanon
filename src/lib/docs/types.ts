@@ -24,6 +24,23 @@ export interface ComponentExample {
 }
 
 /**
+ * A single documented prop: its type, whether it's required, its default, and
+ * a plain-language explanation of what it does / how to use it.
+ */
+export interface PropSpec {
+  /** Prop name as written in code. */
+  name: string;
+  /** TypeScript type (kept short & readable, not necessarily verbatim). */
+  type: string;
+  /** True when the prop must be supplied. */
+  required?: boolean;
+  /** Default value when omitted (shown verbatim, e.g. `"md"`, `false`). */
+  default?: string;
+  /** What it's for and how to use it. */
+  description: string;
+}
+
+/**
  * Reference-grade specification for a component, sourced from / modelled on
  * the Mathesis UI_COMPONENT asset guidelines (anatomy, states, tokens,
  * do/don't, accessibility). Optional — components without a spec just show
@@ -32,6 +49,8 @@ export interface ComponentExample {
 export interface ComponentSpec {
   /** What it's for / when to use it. */
   purpose?: string;
+  /** Every prop the component accepts, with usage notes. */
+  props?: PropSpec[];
   /** Visual/structural breakdown. */
   anatomy?: string[];
   /** Interactive states (default / hover / focus / disabled / …). */

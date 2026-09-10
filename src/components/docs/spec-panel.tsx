@@ -1,10 +1,10 @@
 import { type ReactNode } from "react";
 import { Check, X, Ruler, Layers, Activity, Accessibility } from "lucide-react";
-import type { ComponentSpec } from "@/lib/docs/types";
+import type { ComponentSpec, PropSpec } from "@/lib/docs/types";
 
 /**
- * SpecPanel — renders a component's reference spec (anatomy, states, tokens,
- * do/don't, accessibility). Purely presentational; server-rendered.
+ * SpecPanel — renders a component's reference spec (props, anatomy, states,
+ * tokens, do/don't, accessibility). Purely presentational; server-rendered.
  */
 export function SpecPanel({ spec }: { spec: ComponentSpec }) {
   return (
@@ -110,5 +110,52 @@ function SpecCard({ icon, title, children }: { icon: ReactNode; title: string; c
       </h3>
       {children}
     </section>
+  );
+}
+
+/**
+ * PropsTable — renders a component's props as a table (Prop / Type / Default /
+ * Description). Extracted so the docs page can place it inside its own
+ * collapsible section.
+ */
+export function PropsTable({ props }: { props: PropSpec[] }) {
+  return (
+    <div className="overflow-x-auto rounded-xl border border-border bg-surface">
+      <table className="w-full border-collapse text-left text-sm">
+        <thead>
+          <tr className="border-b border-border text-xs uppercase tracking-wider text-text-tertiary">
+            <th className="px-4 py-2.5 font-medium">Prop</th>
+            <th className="px-4 py-2.5 font-medium">Type</th>
+            <th className="px-4 py-2.5 font-medium">Default</th>
+            <th className="px-4 py-2.5 font-medium">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {props.map((p) => (
+            <tr key={p.name} className="border-b border-border align-top last:border-0">
+              <td className="px-4 py-2.5 whitespace-nowrap">
+                <span className="font-mono text-[13px] text-text">{p.name}</span>
+                {p.required && (
+                  <span className="ml-1 text-error" title="Required" aria-label="required">
+                    *
+                  </span>
+                )}
+              </td>
+              <td className="px-4 py-2.5">
+                <code className="font-mono text-xs text-accent">{p.type}</code>
+              </td>
+              <td className="px-4 py-2.5 whitespace-nowrap">
+                {p.default ? (
+                  <code className="font-mono text-xs text-text-secondary">{p.default}</code>
+                ) : (
+                  <span className="text-text-tertiary">—</span>
+                )}
+              </td>
+              <td className="px-4 py-2.5 text-sm leading-snug text-text-secondary">{p.description}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
