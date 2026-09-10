@@ -7,6 +7,21 @@
 export * from "./components/ui";
 export { cn, cx } from "./lib/utils";
 export {
+  enforceInputRule,
+  formatOnBlur,
+  normalizeForSubmit,
+  isValidKenyanPhone,
+  normalizeKenyanPhone,
+  toKenyanSubscriber,
+  isValidDigits,
+  isValidKraPin,
+  isValidVehiclePlate,
+  isValidEmail,
+  type InputRule,
+  type FieldFormatKind,
+  type FieldFormatOptions,
+} from "./lib/validation";
+export {
   usePopoverPosition,
   useMounted,
   useFocusTrap,

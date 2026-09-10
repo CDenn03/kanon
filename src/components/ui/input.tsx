@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useId, type ChangeEvent } from "react";
+import { useState, useId, useCallback, type ChangeEvent, type FocusEvent } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Field, controlBase, controlClasses } from "./field";
+import { enforceInputRule, formatOnBlur, type InputRule } from "@/lib/validation";
 
 interface InputProps {
   id?: string;
@@ -20,8 +21,15 @@ interface InputProps {
   placeholder?: string;
   value?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-
+  onBlur?: (e: FocusEvent<HTMLInputElement>) => void;
   autoComplete?: string;
+  /**
+   * Keystroke/blur validation rule. When set, the input strips disallowed
+   * characters and caps length on every change (before `onChange` fires), and
+   * pretty-prints via `rule.format` on blur. Also drives `inputMode` and the
+   * native `maxLength`. See `@/lib/validation`.
+   */
+  rule?: InputRule;
 }
 
 export function Input({
@@ -39,7 +47,9 @@ export function Input({
   placeholder,
   value,
   onChange,
+  onBlur,
   autoComplete,
+  rule,
 }: InputProps) {
   const [reveal, setReveal] = useState(false);
   const isPw = type === "password";
@@ -47,6 +57,31 @@ export function Input({
   const inputId = id ?? reactId;
   const messageId = `${inputId}-message`;
   const describedBy = error || hint ? messageId : undefined;
+
+  const handleChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      if (rule) {
+        const enforced = enforceInputRule(event.target.value, rule);
+        if (enforced !== event.target.value) event.target.value = enforced;
+      }
+      onChange?.(event);
+    },
+    [rule, onChange]
+  );
+
+  const handleBlur = useCallback(
+    (event: FocusEvent<HTMLInputElement>) => {
+      if (rule?.format) {
+        const formatted = formatOnBlur(rule.format, event.target.value);
+        if (formatted !== event.target.value) {
+          event.target.value = formatted;
+          onChange?.(event as unknown as ChangeEvent<HTMLInputElement>);
+        }
+      }
+      onBlur?.(event);
+    },
+    [rule, onChange, onBlur]
+  );
 
   return (
     <Field
@@ -70,7 +105,10 @@ export function Input({
           readOnly={readOnly}
           placeholder={placeholder}
           value={value}
-          onChange={onChange}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          inputMode={rule?.inputMode}
+          maxLength={rule?.maxLength}
           autoComplete={autoComplete}
           aria-invalid={Boolean(error) || undefined}
           aria-describedby={describedBy}
