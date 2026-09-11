@@ -176,6 +176,34 @@
       "fileCount": 8
     },
     {
+      "slug": "document-request-list",
+      "name": "DocumentRequestList",
+      "description": "A predefined checklist of required documents with a per-row upload control, status, and preview — for onboarding / KYC flows.",
+      "category": "Forms",
+      "dependsOn": [
+        "file-upload"
+      ],
+      "fileCount": 5
+    },
+    {
+      "slug": "document-viewer",
+      "name": "DocumentViewer",
+      "description": "Responsive, type-aware preview: images, PDFs, CSV/Excel (bordered table), Markdown & Word (formatted), JSON, text, and media — with a download fallback.",
+      "category": "Data Display",
+      "dependsOn": [],
+      "fileCount": 3
+    },
+    {
+      "slug": "documents-table",
+      "name": "DocumentsTable",
+      "description": "A DataTable preset for stored files: type icon + name, type, size, uploader/date, an accessible status badge, and row actions.",
+      "category": "Data Display",
+      "dependsOn": [
+        "data-table"
+      ],
+      "fileCount": 4
+    },
+    {
       "slug": "drawer",
       "name": "Drawer",
       "description": "Slide-in panel anchored right/left/bottom for filters, detail views or forms.",
@@ -204,12 +232,44 @@
       "fileCount": 1
     },
     {
+      "slug": "file-upload",
+      "name": "FileUpload",
+      "description": "Single-file drag-and-drop + click picker with a type-aware preview, validation, progress and error states.",
+      "category": "Forms",
+      "dependsOn": [
+        "progress"
+      ],
+      "fileCount": 5
+    },
+    {
+      "slug": "file-upload-multiple",
+      "name": "FileUploadMultiple",
+      "description": "Drag-and-drop + click picker for many files, each with a type-aware preview, per-file progress and per-file error.",
+      "category": "Forms",
+      "dependsOn": [
+        "file-upload",
+        "progress"
+      ],
+      "fileCount": 6
+    },
+    {
       "slug": "hold-to-confirm",
       "name": "HoldToConfirm",
       "description": "Press-and-hold destructive action button with a keyboard fallback.",
       "category": "Buttons & Actions",
       "dependsOn": [],
       "fileCount": 1
+    },
+    {
+      "slug": "image-crop-modal",
+      "name": "ImageCropModal",
+      "description": "An accessible, aspect-aware image cropper: pointer + keyboard, optional circular preview, returns the cropped image as a File.",
+      "category": "Overlays",
+      "dependsOn": [
+        "dialog",
+        "button"
+      ],
+      "fileCount": 7
     },
     {
       "slug": "input",
@@ -244,6 +304,16 @@
       "fileCount": 3
     },
     {
+      "slug": "multi-step-form",
+      "name": "MultiStepForm",
+      "description": "An accessible wizard that splits a long form into ordered steps with a progress indicator, per-step validation gating, and Back/Next/Finish.",
+      "category": "Forms",
+      "dependsOn": [
+        "button"
+      ],
+      "fileCount": 5
+    },
+    {
       "slug": "page-header",
       "name": "PageHeader",
       "description": "Consistent H1 + description + actions row above page content.",
@@ -258,6 +328,16 @@
       "category": "Navigation",
       "dependsOn": [],
       "fileCount": 1
+    },
+    {
+      "slug": "photo-upload",
+      "name": "PhotoUpload",
+      "description": "Image-only picker with a live thumbnail preview in a square, circular avatar, or wide cover frame, and an optional crop step.",
+      "category": "Forms",
+      "dependsOn": [
+        "image-crop-modal"
+      ],
+      "fileCount": 5
     },
     {
       "slug": "popover",

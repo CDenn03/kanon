@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/components/ui/badge.tsx",
-      "content": "import { cn } from \"@/lib/utils\";\n\ntype BadgeTone = \"pine\" | \"amber\" | \"rose\" | \"neutral\";\n\ninterface BadgeProps {\n  tone?: BadgeTone;\n  className?: string;\n  children: React.ReactNode;\n}\n\nconst TONE_CLASS: Record<BadgeTone, string> = {\n  pine: \"bg-accent-light text-accent\",\n  amber: \"bg-warning-light text-warning\",\n  rose: \"bg-error-light text-error\",\n  neutral: \"bg-bg-secondary text-text-secondary\",\n};\n\nexport function Badge({ tone = \"neutral\", className, children }: BadgeProps) {\n  return (\n    <span\n      className={cn(\n        \"inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium\",\n        TONE_CLASS[tone],\n        className\n      )}\n    >\n      {children}\n    </span>\n  );\n}\n"
+      "content": "import { type ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\ntype BadgeTone = \"pine\" | \"amber\" | \"rose\" | \"neutral\";\n\ninterface BadgeProps {\n  tone?: BadgeTone;\n  className?: string;\n  children: ReactNode;\n}\n\nconst TONE_CLASS: Record<BadgeTone, string> = {\n  pine: \"bg-accent-light text-accent\",\n  amber: \"bg-warning-light text-warning\",\n  rose: \"bg-error-light text-error\",\n  neutral: \"bg-bg-secondary text-text-secondary\",\n};\n\nexport function Badge({ tone = \"neutral\", className, children }: BadgeProps) {\n  return (\n    <span\n      className={cn(\n        \"inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium\",\n        TONE_CLASS[tone],\n        className\n      )}\n    >\n      {children}\n    </span>\n  );\n}\n"
     }
   ]
 }

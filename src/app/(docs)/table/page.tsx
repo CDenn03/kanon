@@ -363,8 +363,8 @@ export default function UsersTablePage() {
                           }}
                           onMouseEnter={(e) => { if (!isSel && !failed) e.currentTarget.style.background = "var(--color-bg-secondary)"; }}
                           onMouseLeave={(e) => { if (!isSel && !failed) e.currentTarget.style.background = ""; }}>
-                          {(isSel || failed) && <span className={`absolute inset-y-0 left-0 w-0.5 ${failed ? "bg-error" : "bg-accent"}`} />}
-                          <td className={`px-4 ${rowPad}`} onClick={(e) => e.stopPropagation()}>
+                          <td className={`relative px-4 ${rowPad}`} onClick={(e) => e.stopPropagation()}>
+                            {(isSel || failed) && <span className={`absolute inset-y-0 left-0 w-0.5 ${failed ? "bg-error" : "bg-accent"}`} />}
                             <Checkbox checked={isSel} disabled={isPending}
                               onChange={() => setSel((s) => (s.includes(r.id) ? s.filter((x) => x !== r.id) : [...s, r.id]))} />
                           </td>
