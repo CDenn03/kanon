@@ -244,7 +244,7 @@ export function DateRangePicker({ id, label, hint, value, onChange }: DateRangeP
       <button ref={anchorRef} id={id} onClick={() => setOpen((o) => !o)} className={cn(controlBase, controlClasses(), "flex h-10 items-center gap-2 px-3 text-left")}>
         <CalIcon size={15} className="text-text-tertiary" aria-hidden />
         <span className={cn("tabular-nums", value ? "text-text" : "text-text-tertiary")}>
-          {value ? `${fmt(value[0])} \u2013 ${fmt(value[1])}` : "Select a range"}
+          {value ? `${fmt(value[0])} – ${fmt(value[1])}` : "Select a range"}
         </span>
       </button>
       {open && position && mounted && createPortal(
@@ -296,7 +296,7 @@ export function DateRangePicker({ id, label, hint, value, onChange }: DateRangeP
             </div>
             <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
               <span className="text-xs tabular-nums text-text-secondary">
-                {start && end ? `${fmt(start)} \u2013 ${fmt(end)} \u00B7 ${nights} days` : start ? `${fmt(start)} \u2013 select an end date` : "Select a start date"}
+                {start && end ? `${fmt(start)} – ${fmt(end)} · ${nights} days` : start ? `${fmt(start)} – select an end date` : "Select a start date"}
               </span>
               <div className="flex gap-2">
                 <Button variant="secondary" size="sm" onClick={() => { setStart(null); setEnd(null); }}>Clear</Button>

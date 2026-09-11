@@ -82,7 +82,7 @@ export function StatCard({
         )}
         {!compact && (
           <span className={cn("mt-0.5 block truncate text-xs", errored ? "text-error" : "text-text-secondary")}>
-            {loading ? "\u00A0" : errored ? "Couldn't load \u00B7 Retry" : sub}
+            {loading ? "\u00A0" : errored ? "Couldn't load · Retry" : sub}
           </span>
         )}
       </span>
