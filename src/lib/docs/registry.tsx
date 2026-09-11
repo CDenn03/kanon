@@ -2313,7 +2313,7 @@ const [open, setOpen] = useState(false);
       purpose:
         "Breaks a long form into ordered steps to respect working-memory limits (Miller's Law) and reduce per-screen choices (Hick's Law), with a visible progress indicator to set expectations. Advancing can be gated per step via canProceed. Controlled (current + onStepChange) or self-managed; mobile-responsive (the indicator collapses to a compact progress bar).",
       props: [
-        { name: "steps", type: "Step[]", required: true, description: "Ordered steps; each has id, title, optional description, content, and an optional canProceed gate." },
+        { name: "steps", type: "Step[]", required: true, description: "Ordered steps; each has id, title, optional description, content, canProceed gate, and disabledReason for the hover tooltip." },
         { name: "current", type: "number", description: "Controlled active step index. Omit to let the component manage it." },
         { name: "onStepChange", type: "(index: number) => void", description: "Notified when the active step changes." },
         { name: "onComplete", type: "() => void", description: "Called when Finish is pressed on the last step." },
@@ -2327,11 +2327,11 @@ const [open, setOpen] = useState(false);
       anatomy: [
         "Step indicator: numbered circles + titles with connectors (desktop); compact 'Step x of n' + progress bar (mobile)",
         "Current step: title, optional description, and the step content",
-        "Footer: Back + Next/Finish, with an optional footerStart slot",
+        "Footer: Back + Next/Finish (with disabledReason tooltip when gated), with an optional footerStart slot",
       ],
       states: [
         "Per step: upcoming / current / completed (check)",
-        "Next/Finish disabled when the current step's canProceed is false",
+        "Next/Finish disabled when the current step's canProceed is false; hover shows disabledReason tooltip",
         "Completed steps are clickable to jump back (when allowStepClick)",
       ],
       accessibility: [
@@ -2349,9 +2349,26 @@ const [open, setOpen] = useState(false);
 
 const [step, setStep] = useState(0);
 
+// Build validation reasons for step 1
+const accountReasons: string[] = [];
+if (!name) accountReasons.push("Enter your name");
+if (!email) accountReasons.push("Enter your email");
+
 const steps: Step[] = [
-  { id: "account", title: "Account", canProceed: valid, content: <AccountFields /> },
-  { id: "plan", title: "Plan", canProceed: !!plan, content: <PlanPicker /> },
+  {
+    id: "account",
+    title: "Account",
+    canProceed: accountReasons.length === 0,
+    disabledReason: accountReasons.join("\\n") || undefined,
+    content: <AccountFields />,
+  },
+  {
+    id: "plan",
+    title: "Plan",
+    canProceed: !!plan,
+    disabledReason: !plan ? "Select a plan to continue" : undefined,
+    content: <PlanPicker />,
+  },
   { id: "review", title: "Review", content: <Summary /> },
 ];
 

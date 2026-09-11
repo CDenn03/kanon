@@ -1042,12 +1042,19 @@ export function MultiStepFormDemo() {
   const [plan, setPlan] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
+  // Build validation reasons for the first step
+  const accountReasons: string[] = [];
+  if (name.trim().length <= 1) accountReasons.push("Enter your full name");
+  if (!/.+@.+\..+/.test(email)) accountReasons.push("Enter a valid email address");
+  const accountValid = accountReasons.length === 0;
+
   const steps: Step[] = [
     {
       id: "account",
       title: "Account",
       description: "Tell us who you are.",
-      canProceed: name.trim().length > 1 && /.+@.+\..+/.test(email),
+      canProceed: accountValid,
+      disabledReason: accountReasons.join("\n") || undefined,
       content: (
         <div className="space-y-4">
           <Input label="Full name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Amina Wanjiru" required />
@@ -1060,6 +1067,7 @@ export function MultiStepFormDemo() {
       title: "Plan",
       description: "Pick a plan to continue.",
       canProceed: plan !== null,
+      disabledReason: plan === null ? "Select a plan to continue" : undefined,
       content: (
         <Select
           label="Plan"

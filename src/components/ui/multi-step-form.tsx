@@ -19,6 +19,12 @@ export interface Step {
    * (e.g. when the step's fields are invalid). Defaults to allowed.
    */
   canProceed?: boolean;
+  /**
+   * Reason why canProceed is false. Shown as a tooltip when hovering/focusing
+   * the disabled Next/Finish button. Supports multi-line via "\n".
+   * Leave undefined when the step is valid.
+   */
+  disabledReason?: string;
 }
 
 interface MultiStepFormProps {
@@ -64,12 +70,42 @@ export function MultiStepForm({
   className,
 }: MultiStepFormProps) {
   const [internal, setInternal] = useState(0);
+  // Track the furthest step the user has reached (for allowing forward navigation)
+  const [furthest, setFurthest] = useState(0);
   const active = current ?? internal;
   const clamped = Math.max(0, Math.min(active, steps.length - 1));
   const step = steps[clamped];
   const isFirst = clamped === 0;
   const isLast = clamped === steps.length - 1;
   const canProceed = step?.canProceed ?? true;
+  const disabledReason = !canProceed ? step?.disabledReason : undefined;
+
+  // Update furthest when user advances
+  if (clamped > furthest) {
+    setFurthest(clamped);
+  }
+
+  /**
+   * Check if we can navigate to a given step.
+   * - Can always go back to any visited step
+   * - Can go forward only if all steps before target are valid
+   */
+  const canNavigateTo = (targetIndex: number): boolean => {
+    if (!allowStepClick) return false;
+    if (targetIndex === clamped) return false; // Already here
+    
+    // Going backward: always allowed to visited steps
+    if (targetIndex < clamped) return true;
+    
+    // Going forward: only if we've been there before AND all intermediate steps are valid
+    if (targetIndex > furthest) return false;
+    
+    // Check all steps from current to target-1 are valid
+    for (let i = clamped; i < targetIndex; i++) {
+      if (!(steps[i]?.canProceed ?? true)) return false;
+    }
+    return true;
+  };
 
   const go = (index: number) => {
     const next = Math.max(0, Math.min(index, steps.length - 1));
@@ -91,8 +127,9 @@ export function MultiStepForm({
       <ol className="mb-6 hidden items-center sm:flex" aria-label="Progress">
         {steps.map((s, i) => {
           const done = i < clamped;
+          const visited = i <= furthest;
           const isCurrent = i === clamped;
-          const clickable = allowStepClick && done;
+          const clickable = canNavigateTo(i);
           return (
             <li key={s.id} className={cn("flex items-center", i < steps.length - 1 && "flex-1")}>
               <button
@@ -102,7 +139,7 @@ export function MultiStepForm({
                 onClick={() => clickable && go(i)}
                 className={cn(
                   "flex items-center gap-2 rounded-md p-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
-                  clickable ? "cursor-pointer" : "cursor-default"
+                  clickable ? "cursor-pointer hover:bg-bg-hover" : "cursor-default"
                 )}
               >
                 <span
@@ -110,7 +147,8 @@ export function MultiStepForm({
                     "flex size-7 shrink-0 items-center justify-center rounded-full border text-xs font-semibold transition-colors",
                     done && "border-accent bg-accent text-on-accent",
                     isCurrent && "border-accent text-accent",
-                    !done && !isCurrent && "border-border text-text-tertiary"
+                    !done && !isCurrent && visited && "border-accent-muted text-accent",
+                    !done && !isCurrent && !visited && "border-border text-text-tertiary"
                   )}
                 >
                   {done ? <Check size={14} aria-hidden /> : i + 1}
@@ -118,7 +156,7 @@ export function MultiStepForm({
                 <span
                   className={cn(
                     "text-sm font-medium",
-                    isCurrent ? "text-text" : done ? "text-text-secondary" : "text-text-tertiary"
+                    isCurrent ? "text-text" : done ? "text-text-secondary" : visited ? "text-text-secondary" : "text-text-tertiary"
                   )}
                 >
                   {s.title}
@@ -168,6 +206,7 @@ export function MultiStepForm({
             iconRight={isLast ? undefined : ChevronRight}
             icon={isLast ? Check : undefined}
             disabled={!canProceed}
+            disabledReason={disabledReason}
             onClick={onNext}
           >
             {isLast ? finishLabel : nextLabel}

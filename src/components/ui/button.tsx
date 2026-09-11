@@ -130,7 +130,7 @@ export function Button({
         createPortal(
           <span
             role="tooltip"
-            className="pointer-events-none z-50 w-max max-w-56 rounded-md bg-surface-dark px-2.5 py-1.5 text-xs leading-snug text-on-dark shadow-lg"
+            className="pointer-events-none z-50 w-max max-w-72 whitespace-pre-line rounded-md bg-surface-dark px-2.5 py-1.5 text-left text-xs leading-snug text-on-dark shadow-lg"
             style={tipPosition.style}
           >
             {disabledReason}
