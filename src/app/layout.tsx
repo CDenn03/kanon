@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { type ReactNode } from "react";
 import "./globals.css";
 
@@ -21,16 +22,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head suppressHydrationWarning>
+      <head>
         {/*
-          Applies the persisted theme before first paint (no flash). Some browser
-          extensions rewrite <script> tags in <head> before React hydrates, which
-          would otherwise trip a hydration mismatch — suppressHydrationWarning on
-          this node ignores such extension-injected attribute changes.
+          Applies the persisted theme before first paint (no flash). Uses
+          beforeInteractive strategy to ensure the script runs before hydration,
+          preventing a flash of wrong theme on page load.
         */}
-        <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <Script id="theme-init" strategy="beforeInteractive">
+          {themeScript}
+        </Script>
       </head>
-      <body suppressHydrationWarning>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }
