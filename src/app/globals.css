@@ -336,41 +336,66 @@ input:-webkit-autofill:focus {
 
 
 
-/* ── Docs: animated collapsible (details/summary) ────────── */
+/* ── Docs: collapsible (details/summary) ─────────────────── */
 /*
- * The panel animates its single grid row 0fr → 1fr (height-agnostic) and is
- * driven entirely by data-open (React state), NOT the native [open] attribute,
- * so both expand and collapse animate. The panel is always `display: grid`
- * (overriding the UA `details:not([open])` hide rule) and collapses to a real
- * zero height via the 0fr track + overflow-clip on its child — so a collapsed
- * section adds no height and no scrollbar.
+ * Closed content is hidden by the native <details> (display:none), so a
+ * collapsed OR expanded section never adds page height or a second scrollbar,
+ * no matter how tall its content is. When opened we play a short, layout-safe
+ * reveal (fade + small slide) — no height animation, so nothing can overflow
+ * the main scroll container. Timing uses the disclosure "sweet spot".
  */
-.collapsible > .collapsible-panel {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition:
-    grid-template-rows var(--duration-normal) var(--ease-out),
-    opacity var(--duration-normal) var(--ease-out);
-  opacity: 0;
+.collapsible[open] > .collapsible-panel {
+  animation: collapsible-reveal var(--duration-normal) var(--ease-out);
 }
 
-.collapsible[data-open="true"] > .collapsible-panel {
-  grid-template-rows: 1fr;
-  opacity: 1;
-}
-
-/* The single grid child must be allowed to shrink to 0 and clip its content. */
-.collapsible > .collapsible-panel > * {
-  min-height: 0;
-  overflow: hidden;
+@keyframes collapsible-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Respect users who prefer reduced motion: snap instead of animate. */
 @media (prefers-reduced-motion: reduce) {
-  .collapsible > .collapsible-panel {
-    transition: none;
+  .collapsible[open] > .collapsible-panel {
+    animation: none;
   }
   .collapsible .transition-transform {
     transition: none;
   }
 }
+
+
+/* ── Docs: rendered document prose (markdown / .docx via DocumentViewer) ── */
+/*
+ * Scoped typographic styles for HTML produced from Markdown or Word. Establishes
+ * a clear hierarchy (size + weight + spacing) using the design tokens, so a
+ * rendered document reads like formatted prose rather than a wall of text.
+ */
+.doc-prose { line-height: 1.65; }
+.doc-prose > :first-child { margin-top: 0; }
+.doc-prose > :last-child { margin-bottom: 0; }
+.doc-prose h1 { font-size: 1.5rem; font-weight: 700; line-height: 1.25; margin: 1.5rem 0 0.75rem; color: var(--color-text); }
+.doc-prose h2 { font-size: 1.25rem; font-weight: 600; line-height: 1.3; margin: 1.25rem 0 0.6rem; color: var(--color-text); }
+.doc-prose h3 { font-size: 1.0625rem; font-weight: 600; margin: 1rem 0 0.5rem; color: var(--color-text); }
+.doc-prose p { margin: 0.6rem 0; color: var(--color-text-secondary); }
+.doc-prose strong { font-weight: 600; color: var(--color-text); }
+.doc-prose em { font-style: italic; }
+.doc-prose a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+.doc-prose ul, .doc-prose ol { margin: 0.6rem 0; padding-left: 1.5rem; color: var(--color-text-secondary); }
+.doc-prose ul { list-style: disc; }
+.doc-prose ol { list-style: decimal; }
+.doc-prose li { margin: 0.25rem 0; }
+.doc-prose blockquote { margin: 0.75rem 0; padding-left: 1rem; border-left: 3px solid var(--color-border); color: var(--color-text-tertiary); }
+.doc-prose code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.85em; background: var(--color-bg-secondary); padding: 0.1em 0.35em; border-radius: 4px; color: var(--color-text); }
+.doc-prose pre { background: var(--color-surface-dark); color: var(--color-on-dark); padding: 0.9rem 1rem; border-radius: 8px; overflow-x: auto; margin: 0.75rem 0; }
+.doc-prose pre code { background: none; padding: 0; color: inherit; }
+.doc-prose hr { border: 0; border-top: 1px solid var(--color-border); margin: 1.25rem 0; }
+.doc-prose img { max-width: 100%; height: auto; border-radius: 8px; }
+.doc-prose table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.9em; }
+.doc-prose th, .doc-prose td { border: 1px solid var(--color-border); padding: 0.4rem 0.6rem; text-align: left; }
+.doc-prose th { background: var(--color-bg-secondary); font-weight: 600; color: var(--color-text); }

@@ -44,6 +44,30 @@ export default async function ComponentPage({
   // Build a recommended folder tree from this component + its deps.
   const folderTree = buildFolderTree(entry, related);
 
+  // Option B: load + highlight each required dependency file so it can be
+  // copied directly. Collect from this component and its related components,
+  // de-duped and sorted; exclude the component's own source (already shown).
+  const requiredPaths = Array.from(
+    new Set(
+      [entry, ...related].flatMap((e) => e.requires ?? [])
+    )
+  )
+    .filter((p) => p !== entry.sourcePath)
+    .sort();
+
+  const dependencyFiles = await Promise.all(
+    requiredPaths.map(async (relPath) => {
+      const raw = await loadSource(relPath);
+      const lang = relPath.endsWith(".css") ? "css" : "tsx";
+      return {
+        path: relPath,
+        filename: relPath.split("/").pop() ?? relPath,
+        raw,
+        html: await highlight(raw, lang),
+      };
+    })
+  );
+
   return (
     <div className="mx-auto max-w-350 px-8 py-6">
       <header className="mb-6">
@@ -163,6 +187,36 @@ export default async function ComponentPage({
               </pre>
             </div>
           </div>
+
+          {dependencyFiles.length > 0 && (
+            <div className="mt-5">
+              <h3 className="mb-2 text-xs font-medium uppercase tracking-wider text-text-tertiary">
+                Dependency files
+              </h3>
+              <p className="mb-3 text-sm text-text-secondary">
+                These supporting files aren&rsquo;t components — copy each one into the matching
+                path above.
+              </p>
+              <div className="space-y-3">
+                {dependencyFiles.map((file) => (
+                  <CollapsibleSection
+                    key={file.path}
+                    title={file.path}
+                    action={
+                      <CopyButton
+                        text={file.raw}
+                        label="Copy file"
+                        stopPropagation
+                        className="text-text-secondary hover:bg-bg-hover hover:text-text focus-visible:ring-accent"
+                      />
+                    }
+                  >
+                    <CodeBlock html={file.html} raw={file.raw} filename={file.filename} />
+                  </CollapsibleSection>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
       )}
     </div>
