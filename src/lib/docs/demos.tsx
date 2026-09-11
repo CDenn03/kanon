@@ -904,6 +904,7 @@ export function DocumentsTableDemo() {
         title="Documents"
         subtitle="4 files"
         documents={DEMO_DOCS}
+        onView={() => {}}
         onDownload={() => {}}
         onActions={() => {}}
       />

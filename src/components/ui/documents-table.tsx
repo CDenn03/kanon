@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { Download, MoreHorizontal, CheckCircle2, Clock, AlertCircle, Loader2 } from "lucide-react";
+import { Eye, Download, MoreHorizontal, CheckCircle2, Clock, AlertCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatFileSize, fileKind, fileIcon } from "@/lib/upload";
 import { DataTable, type DataTableColumn } from "./data-table";
@@ -32,6 +32,8 @@ interface DocumentsTableProps {
   subtitle?: string;
   /** Row click (e.g. open/preview). */
   onOpen?: (doc: DocumentRow) => void;
+  /** View action button per row. Omit to hide the view button. */
+  onView?: (doc: DocumentRow) => void;
   /** Download action per row. Omit to hide the download button. */
   onDownload?: (doc: DocumentRow) => void;
   /** Row actions menu trigger. Omit to hide the actions button. */
@@ -67,6 +69,7 @@ export function DocumentsTable({
   title,
   subtitle,
   onOpen,
+  onView,
   onDownload,
   onActions,
   pagination,
@@ -123,15 +126,20 @@ export function DocumentsTable({
           } satisfies DataTableColumn<DocumentRow>,
         ]
       : []),
-    ...(onDownload || onActions
+    ...(onView || onDownload || onActions
       ? [
           {
             key: "actions",
             header: "",
             align: "right" as const,
-            width: "84px",
+            width: "120px",
             cell: (d: DocumentRow): ReactNode => (
               <div className="flex items-center justify-end gap-1">
+                {onView && (
+                  <IconButton label={`View ${d.name}`} onClick={() => onView(d)}>
+                    <Eye size={15} aria-hidden />
+                  </IconButton>
+                )}
                 {onDownload && (
                   <IconButton label={`Download ${d.name}`} onClick={() => onDownload(d)}>
                     <Download size={15} aria-hidden />
