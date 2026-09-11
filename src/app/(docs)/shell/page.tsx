@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, type ReactNode, type RefObject, type FormEvent } from "react";
 import {
   LayoutGrid, Users, Wallet, Settings, Building2, ShieldCheck,
-  Plus, Eye, Pencil, Trash2, MoreHorizontal, Bell, X,
+  Plus, Eye, Pencil, MoreHorizontal, Bell, X,
   CheckCircle2, AlertCircle, Info, ChevronDown, Mail, User as UserIcon,
 } from "lucide-react";
 import {
@@ -11,7 +11,7 @@ import {
   Card, CardHeader,
   Breadcrumb, PageHeader,
   Pagination, type PaginationMeta,
-  Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuSeparator, MenuLabel,
+  Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuLabel,
   Sidebar, SidebarNav, SidebarSection, SidebarItem, SidebarGroup,
   SidebarFooter, SidebarLogoutButton,
   Navbar,
@@ -30,7 +30,7 @@ import { KanonLogo } from "@/components/ui/kanon-logo";
 const SAMPLE_USERS = [
   { id: "u1", name: "Amina Wanjiru",   email: "amina.w@steward.co.ke",  role: "Controller" as const },
   { id: "u2", name: "Brian Otieno",    email: "b.otieno@steward.co.ke", role: "Approver" as const },
-  { id: "u3", name: "Dennis Ndung\u2019u", email: "dennis@steward.co.ke",    role: "Owner" as const },
+  { id: "u3", name: "Dennis Ndung'u", email: "dennis@steward.co.ke",    role: "Owner" as const },
   { id: "u4", name: "Faith Kamau",     email: "faith.k@steward.co.ke",  role: "Preparer" as const },
 ];
 
@@ -135,8 +135,6 @@ function UserRow({ user, colourful }: { user: typeof SAMPLE_USERS[number]; colou
         <MenuContent align="end">
           <MenuItem icon={<Eye size={15} />}>View details</MenuItem>
           <MenuItem icon={<Pencil size={15} />}>Edit profile</MenuItem>
-          <MenuSeparator />
-          <MenuItem icon={<Trash2 size={15} />} destructive>Suspend access</MenuItem>
         </MenuContent>
       </Menu>
     </div>
@@ -221,7 +219,7 @@ function MobilePreview() {
 const NOTIFICATIONS = [
   { id: 1, icon: AlertCircle, tone: "amber" as const,  title: "MFA not enrolled",        body: "Faith Kamau has not enrolled MFA. Remind them.", time: "5 min ago",  unread: true  },
   { id: 2, icon: CheckCircle2, tone: "pine" as const,  title: "Role change applied",      body: "Brian Otieno is now Approver.",                   time: "1 hour ago", unread: true  },
-  { id: 3, icon: Info,         tone: "neutral" as const, title: "New login from Nairobi", body: "Dennis Ndung\u2019u signed in from a new device.", time: "2 hours ago", unread: false },
+  { id: 3, icon: Info,         tone: "neutral" as const, title: "New login from Nairobi", body: "Dennis Ndung'u signed in from a new device.", time: "2 hours ago", unread: false },
 ];
 const NOTIF_ICON_COLOR = { amber: "text-warning", pine: "text-accent", neutral: "text-text-tertiary" };
 
@@ -479,7 +477,7 @@ export default function ShellPage() {
   }));
 
   return (
-    <div className="mx-auto max-w-[1400px] px-6 py-6 sm:px-10">
+    <div className="mx-auto max-w-[1400px] p-2">
       <PageHeader
         title="App Shell"
         description="A full application shell pattern — Sidebar + Navbar + PageHeader + content, with permission-aware nav, collapse, and a mobile overlay."
@@ -559,7 +557,7 @@ export default function ShellPage() {
               onMenuClick={() => setMobileOpen(true)}
               notificationCount={notifOpen ? 0 : 3}
               onNotificationsClick={() => setNotifOpen((o) => !o)}
-              account={{ name: "Dennis Ndung\u2019u", email: "dennis@steward.co.ke" }}
+              account={{ name: "Dennis Ndung'u", email: "dennis@steward.co.ke" }}
               onAccountSettings={() => {}}
               onSignOut={() => {}}
             />
@@ -572,7 +570,7 @@ export default function ShellPage() {
 
           {/* Page content */}
           <div className="flex-1 overflow-y-auto">
-            <div className="mx-auto max-w-4xl px-6 py-8">
+            <div className="p-4">
 
               <PageHeader
                 title="Users"

@@ -37,7 +37,7 @@ const TAB_NOUNS: Record<string, string> = {
 const ROWS = [
   { id: 1, name: "Amina Wanjiru", email: "amina.w@steward.co.ke", role: "Controller", mfa: true, last: "4 minutes ago", lastExact: "30 Jul 2026, 09:41 EAT", created: "12 Jan 2025", init: "AW" },
   { id: 2, name: "Brian Otieno", email: "b.otieno@steward.co.ke", role: "Approver", mfa: true, last: "2 hours ago", lastExact: "30 Jul 2026, 07:20 EAT", created: "03 Mar 2025", init: "BO" },
-  { id: 3, name: "Dennis Ndung\u2019u", email: "dennis@steward.co.ke", role: "Owner", mfa: true, last: "Just now", lastExact: "30 Jul 2026, 09:45 EAT", created: "02 Jan 2025", init: "DN", self: true },
+  { id: 3, name: "Dennis Ndung'u", email: "dennis@steward.co.ke", role: "Owner", mfa: true, last: "Just now", lastExact: "30 Jul 2026, 09:45 EAT", created: "02 Jan 2025", init: "DN", self: true },
   { id: 4, name: "Faith Kamau", email: "faith.k@steward.co.ke", role: "Preparer", mfa: false, last: "6 days ago", lastExact: "24 Jul 2026, 16:02 EAT", created: "18 Apr 2025", init: "FK" },
   { id: 5, name: "Grace Mwende", email: "g.mwende@steward.co.ke", role: "Auditor", mfa: true, last: "Yesterday", lastExact: "29 Jul 2026, 11:38 EAT", created: "21 May 2025", init: "GM" },
   { id: 6, name: "Hassan Ali", email: "h.ali@steward.co.ke", role: "Preparer", mfa: false, last: "3 weeks ago", lastExact: "08 Jul 2026, 08:14 EAT", created: "02 Jun 2025", init: "HA" },
@@ -140,13 +140,13 @@ export default function UsersTablePage() {
 
   const captionSub = () => {
     if (view === "loading") return "Loading\u2026";
-    if (view === "error") return "Couldn\u2019t load";
-    if (view === "searchEmpty") return `No matches for \u201cotieno\u201d`;
+    if (view === "error") return "Couldn't load";
+    if (view === "searchEmpty") return `No matches for "otieno"`;
     const bits: string[] = [];
     if (roleFilter) bits.push(`Role: ${roleFilter}`);
-    if (query) bits.push(`matching \u201c${query}\u201d`);
-    if (bits.length) return `${bits.join(" \u00B7 ")} \u00B7 42 of ${total.toLocaleString()}`;
-    return `${total.toLocaleString()} people \u00B7 as of 09:45 EAT`;
+    if (query) bits.push(`matching "${query}"`);
+    if (bits.length) return `${bits.join(" · ")} · 42 of ${total.toLocaleString()}`;
+    return `${total.toLocaleString()} people · as of 09:45 EAT`;
   };
 
   return (
@@ -195,7 +195,7 @@ export default function UsersTablePage() {
             {cardsMode !== "strip" && (
               <div className="hidden gap-4 sm:grid sm:grid-cols-3">
                 <StatCard compact={cardsMode === "compact"} label="MFA coverage" ring={96} value="96%" sub="1,277 of 1,284 enrolled" tone="pine" loading={cardsLoading} errored={cardsErrored} />
-                <StatCard compact={cardsMode === "compact"} label="Privileged accounts" value="12" sub="Owner + Approver \u00B7 review quarterly" loading={cardsLoading} errored={cardsErrored} />
+                <StatCard compact={cardsMode === "compact"} label="Privileged accounts" value="12" sub="Owner + Approver · review quarterly" loading={cardsLoading} errored={cardsErrored} />
                 <StatCard compact={cardsMode === "compact"} label="Dormant over 90 days" value="4" sub="1 of them privileged" tone="amber" loading={cardsLoading} errored={cardsErrored} />
               </div>
             )}
@@ -278,9 +278,7 @@ export default function UsersTablePage() {
                   {moreOpen && (
                     <div className="absolute right-0 top-full z-30 mt-1 w-48 overflow-hidden rounded-md border border-border bg-surface py-1 shadow-lg">
                       <button className="cursor-pointer block w-full px-3 py-1.5 text-left text-sm hover:bg-bg-hover">Export selected</button>
-                      <button className="cursor-pointer block w-full px-3 py-1.5 text-left text-sm hover:bg-bg-hover">Revoke sessions</button>
-                      <div className="my-1 h-px bg-border" />
-                      <button onClick={() => setMoreOpen(false)} className="cursor-pointer block w-full px-3 py-1.5 text-left text-sm text-error hover:bg-bg-hover">Suspend access</button>
+                      <button onClick={() => setMoreOpen(false)} className="cursor-pointer block w-full px-3 py-1.5 text-left text-sm hover:bg-bg-hover">Revoke sessions</button>
                     </div>
                   )}
                 </div>
@@ -322,13 +320,13 @@ export default function UsersTablePage() {
             ) : view === "emptyFiltered" ? (
               <Blank title="No users match these filters" body={`No ${meta.label.toLowerCase()} users with role ${roleFilter || "Auditor"}. Clear the filter to see all.`} />
             ) : view === "searchEmpty" ? (
-              <Blank icon={Search} title={`No ${meta.label.toLowerCase()} users match \u201cotieno\u201d`}
+              <Blank icon={Search} title={`No ${meta.label.toLowerCase()} users match "otieno"`}
                 body="They may have a different status. Searching across every status usually finds them." />
             ) : view === "forbidden" ? (
-              <Blank icon={Lock} title="You don\u2019t have access to user management" tone="rose"
+              <Blank icon={Lock} title="You don't have access to user management" tone="rose"
                 body="This needs the Owner or Controller role. Ask an owner to grant it." />
             ) : (
-              <Blank icon={AlertTriangle} tone="rose" title="Couldn\u2019t load users"
+              <Blank icon={AlertTriangle} tone="rose" title="Couldn't load users"
                 body="The request failed. Your filters are still applied — retrying keeps them."
                 mono="ref 7f3a9c21" />
             )
@@ -415,11 +413,6 @@ export default function UsersTablePage() {
                                 {["View details", "Edit profile", "Manage roles", "Reset password", "Revoke sessions"].map((a) => (
                                   <button key={a} className="cursor-pointer block w-full px-3 py-1.5 text-left text-sm text-text hover:bg-bg-hover">{a}</button>
                                 ))}
-                                <div className="my-1 h-px bg-border" />
-                                <button disabled={r.self} className={`cursor-pointer block w-full px-3 py-1.5 text-left text-sm disabled:cursor-not-allowed ${r.self ? "text-text-tertiary" : "text-error"}`}>
-                                  Suspend access
-                                </button>
-                                {r.self && <p className="px-3 pb-1 pt-0.5 text-[11px] text-text-tertiary">Unavailable on your own account</p>}
                               </div>
                             )}
                           </td>
