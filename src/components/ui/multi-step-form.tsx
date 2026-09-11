@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
@@ -19,6 +19,14 @@ export interface Step {
    * (e.g. when the step's fields are invalid). Defaults to allowed.
    */
   canProceed?: boolean;
+  /**
+   * Whether this step is complete/valid. Drives the green check in the
+   * indicator so it reflects actual completion rather than mere position —
+   * important when returning to the wizard on a later step, where earlier
+   * steps should show green only if their data is still valid. When omitted,
+   * falls back to `canProceed`, then to positional completion (before current).
+   */
+  completed?: boolean;
   /**
    * Reason why canProceed is false. Shown as a tooltip when hovering/focusing
    * the disabled Next/Finish button. Supports multi-line via "\n".
@@ -80,10 +88,10 @@ export function MultiStepForm({
   const canProceed = step?.canProceed ?? true;
   const disabledReason = !canProceed ? step?.disabledReason : undefined;
 
-  // Update furthest when user advances
-  if (clamped > furthest) {
-    setFurthest(clamped);
-  }
+  // Track the furthest reached step in an effect (never during render).
+  useEffect(() => {
+    setFurthest((f) => (clamped > f ? clamped : f));
+  }, [clamped]);
 
   /**
    * Check if we can navigate to a given step.
@@ -126,7 +134,9 @@ export function MultiStepForm({
       {/* Step indicator — full on ≥sm, compact on mobile. */}
       <ol className="mb-6 hidden items-center sm:flex" aria-label="Progress">
         {steps.map((s, i) => {
-          const done = i < clamped;
+          // Green/check reflects completion validity, not mere position: prefer
+          // an explicit `completed`, then `canProceed`, then positional (passed).
+          const done = s.completed ?? s.canProceed ?? i < clamped;
           const visited = i <= furthest;
           const isCurrent = i === clamped;
           const clickable = canNavigateTo(i);
@@ -145,13 +155,13 @@ export function MultiStepForm({
                 <span
                   className={cn(
                     "flex size-7 shrink-0 items-center justify-center rounded-full border text-xs font-semibold transition-colors",
-                    done && "border-accent bg-accent text-on-accent",
+                    done && !isCurrent && "border-accent bg-accent text-on-accent",
                     isCurrent && "border-accent text-accent",
                     !done && !isCurrent && visited && "border-accent-muted text-accent",
                     !done && !isCurrent && !visited && "border-border text-text-tertiary"
                   )}
                 >
-                  {done ? <Check size={14} aria-hidden /> : i + 1}
+                  {done && !isCurrent ? <Check size={14} aria-hidden /> : i + 1}
                 </span>
                 <span
                   className={cn(
@@ -163,7 +173,7 @@ export function MultiStepForm({
                 </span>
               </button>
               {i < steps.length - 1 && (
-                <span className={cn("mx-2 h-px flex-1 transition-colors", i < clamped ? "bg-accent" : "bg-border")} aria-hidden />
+                <span className={cn("mx-2 h-px flex-1 transition-colors", done ? "bg-accent" : "bg-border")} aria-hidden />
               )}
             </li>
           );
