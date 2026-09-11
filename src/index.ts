@@ -7,6 +7,16 @@
 export * from "./components/ui";
 export { cn, cx } from "./lib/utils";
 export {
+  formatFileSize,
+  fileExtension,
+  fileKind,
+  fileIcon,
+  validateFile,
+  matchesAccept,
+  type FileKind,
+  type FileConstraints,
+} from "./lib/upload";
+export {
   enforceInputRule,
   formatOnBlur,
   normalizeForSubmit,

@@ -62,6 +62,16 @@ import {
   Toolbar,
   Chip,
   TagInput,
+  FileUpload,
+  FileUploadMultiple,
+  PhotoUpload,
+  DocumentsTable,
+  DocumentRequestList,
+  DocumentViewer,
+  ImageCropModal,
+  type UploadItem,
+  type DocumentRow,
+  type DocumentRequest,
   type ComboboxOption,
   type SelectOption,
   type DataTableColumn,
@@ -820,6 +830,201 @@ export function ChipDemo() {
         <Chip onRemove={() => {}}>Removable</Chip>
       </div>
       <TagInput label="Tags" value={tags} onChange={setTags} hint="Enter or comma to add." />
+    </div>
+  );
+}
+
+
+/* ── FileUpload (single) ──────────────────────────────────── */
+export function FileUploadDemo() {
+  const [file, setFile] = useState<File | null>(null);
+  return (
+    <div className="w-full max-w-md">
+      <FileUpload
+        label="Attach document"
+        hint="PDF or Word, up to 10 MB"
+        accept=".pdf,.doc,.docx"
+        maxSize={10 * 1024 * 1024}
+        value={file}
+        onSelect={setFile}
+      />
+    </div>
+  );
+}
+
+/* ── FileUploadMultiple ───────────────────────────────────── */
+export function FileUploadMultipleDemo() {
+  const [items, setItems] = useState<UploadItem[]>([]);
+  return (
+    <div className="w-full max-w-md">
+      <FileUploadMultiple
+        label="Attachments"
+        accept=".pdf,.png,.jpg,.jpeg,.csv,.xlsx"
+        maxSize={10 * 1024 * 1024}
+        maxFiles={5}
+        items={items}
+        onAdd={(files) =>
+          setItems((prev) => [
+            ...prev,
+            ...files.map((file) => ({ id: `${file.name}-${Date.now()}-${Math.random()}`, file, status: "complete" as const })),
+          ])
+        }
+        onRemove={(id) => setItems((prev) => prev.filter((it) => it.id !== id))}
+      />
+    </div>
+  );
+}
+
+/* ── PhotoUpload ──────────────────────────────────────────── */
+export function PhotoUploadDemo() {
+  const [avatar, setAvatar] = useState<File | null>(null);
+  const [cover, setCover] = useState<File | null>(null);
+  return (
+    <div className="w-full max-w-md space-y-6">
+      <PhotoUpload label="Profile photo" variant="avatar" value={avatar} onSelect={setAvatar} maxSize={5 * 1024 * 1024} crop />
+      <PhotoUpload label="Cover image" variant="cover" value={cover} onSelect={setCover} maxSize={5 * 1024 * 1024} crop />
+    </div>
+  );
+}
+
+/* ── DocumentsTable ───────────────────────────────────────── */
+const DEMO_DOCS: DocumentRow[] = [
+  { id: "1", name: "Loan-agreement.pdf", size: 248_000, uploadedBy: "Amina Wanjiru", uploadedAt: new Date(2026, 1, 12), status: "ready" },
+  { id: "2", name: "Member-roster.xlsx", size: 1_240_000, uploadedBy: "Brian Otieno", uploadedAt: new Date(2026, 1, 10), status: "processing" },
+  { id: "3", name: "ID-scan.jpg", size: 820_000, uploadedBy: "Faith Kamau", uploadedAt: new Date(2026, 1, 9), status: "ready" },
+  { id: "4", name: "Statement-Q1.csv", size: 44_000, uploadedBy: "Dennis Ndung'u", uploadedAt: new Date(2026, 1, 8), status: "failed" },
+];
+
+export function DocumentsTableDemo() {
+  return (
+    <div className="w-full max-w-2xl">
+      <DocumentsTable
+        title="Documents"
+        subtitle="4 files"
+        documents={DEMO_DOCS}
+        onDownload={() => {}}
+        onActions={() => {}}
+      />
+    </div>
+  );
+}
+
+
+/* ── DocumentRequestList ──────────────────────────────────── */
+export function DocumentRequestListDemo() {
+  const [requests, setRequests] = useState<DocumentRequest[]>([
+    { id: "id", name: "National ID (front & back)", description: "Clear photo or scan, both sides.", required: true, accept: ".pdf,image/*", state: "uploaded", file: new File([""], "national-id.pdf") },
+    { id: "kra", name: "KRA PIN certificate", description: "PDF from the iTax portal.", required: true, accept: ".pdf", state: "missing" },
+    { id: "photo", name: "Passport photo", description: "Recent, plain background.", required: true, accept: "image/*", state: "missing" },
+    { id: "bank", name: "Bank statement", description: "Last 3 months (optional).", required: false, accept: ".pdf", state: "rejected", error: "File was unreadable — please re-scan and upload again." },
+  ]);
+  const set = (id: string, patch: Partial<DocumentRequest>) =>
+    setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+  return (
+    <div className="w-full max-w-2xl">
+      <DocumentRequestList
+        title="Required documents"
+        requests={requests}
+        onUpload={(id, file) => set(id, { state: "uploaded", file, error: undefined })}
+        onRemove={(id) => set(id, { state: "missing", file: null })}
+        onView={() => {}}
+      />
+    </div>
+  );
+}
+
+/* ── DocumentViewer ───────────────────────────────────────── */
+const SAMPLE_CSV = `Name,Role,Balance
+Amina Wanjiru,Owner,12500
+Brian Otieno,Approver,4300
+Faith Kamau,Member,980`;
+
+const SAMPLE_TEXT = `# Meeting notes — Q1 review
+
+- Onboarding flow shipped (KYC docs + photo)
+- DocumentViewer now previews images, PDFs, CSV/Excel, text
+- Next: bulk export
+
+Owner: Dennis
+Status: Final`;
+
+const SAMPLE_MD = `# Project brief
+
+A **DocumentViewer** now previews many formats inline.
+
+## Highlights
+- Images, PDF, video & audio
+- CSV & Excel → a bordered table
+- Markdown & Word → *formatted* prose
+- JSON → pretty-printed
+
+> Everything else falls back to a clean download card.
+
+\`\`\`ts
+const preview = <DocumentViewer file={file} />;
+\`\`\`
+`;
+
+export function DocumentViewerDemo() {
+  const [tab, setTab] = useState("image");
+
+  // Build sample files/URLs once.
+  const csvFile = useState(() => new File([SAMPLE_CSV], "members.csv", { type: "text/csv" }))[0];
+  const mdFile = useState(() => new File([SAMPLE_MD], "brief.md", { type: "text/markdown" }))[0];
+  const txtFile = useState(() => new File([SAMPLE_TEXT], "notes.txt", { type: "text/plain" }))[0];
+
+  const tabs = [
+    { id: "image", label: "Image" },
+    { id: "pdf", label: "PDF" },
+    { id: "spreadsheet", label: "Spreadsheet" },
+    { id: "markdown", label: "Markdown" },
+    { id: "word", label: "Word" },
+    { id: "text", label: "Text" },
+  ];
+
+  return (
+    <div className="w-full max-w-2xl space-y-3">
+      <Tabs items={tabs} value={tab} onChange={setTab} variant="segmented" />
+      {tab === "image" && <DocumentViewer src="/samples/sample.jpg.svg" name="photo.svg" type="image/svg+xml" maxHeight={320} />}
+      {tab === "pdf" && <DocumentViewer src="/samples/sample.pdf" name="sample.pdf" type="application/pdf" maxHeight={360} />}
+      {tab === "spreadsheet" && <DocumentViewer file={csvFile} maxHeight={280} />}
+      {tab === "markdown" && <DocumentViewer file={mdFile} maxHeight={340} />}
+      {tab === "word" && <DocumentViewer src="/samples/sample.docx" name="contract.docx" maxHeight={340} />}
+      {tab === "text" && <DocumentViewer file={txtFile} maxHeight={280} />}
+    </div>
+  );
+}
+
+
+/* ── ImageCropModal ───────────────────────────────────────── */
+// A small sample image (data URL) so the demo works with no assets.
+const SAMPLE_IMG =
+  "data:image/svg+xml," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6FD0B4"/><stop offset="1" stop-color="#3B6E7D"/></linearGradient></defs><rect width="480" height="360" fill="url(#g)"/><circle cx="150" cy="140" r="70" fill="#fff" opacity="0.9"/><rect x="60" y="250" width="360" height="60" rx="12" fill="#fff" opacity="0.8"/></svg>`
+  );
+
+export function ImageCropModalDemo() {
+  const [open, setOpen] = useState(false);
+  const [result, setResult] = useState<string | null>(null);
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <Button onClick={() => setOpen(true)}>Open cropper</Button>
+      {result && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={result} alt="Cropped result" className="size-24 rounded-full border border-border object-cover" />
+      )}
+      <ImageCropModal
+        open={open}
+        imageSrc={SAMPLE_IMG}
+        aspect={1}
+        circular
+        onConfirm={(file) => {
+          setResult(URL.createObjectURL(file));
+          setOpen(false);
+        }}
+        onCancel={() => setOpen(false)}
+      />
     </div>
   );
 }

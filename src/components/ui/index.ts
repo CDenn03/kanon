@@ -16,6 +16,19 @@ export { ConfirmDialog } from "./confirm-dialog";
 export { Switch, SwitchRow } from "./switch";
 export type { SwitchProps } from "./switch";
 
+// ── Uploads ─────────────────────────────────────────────────────
+export { FileUpload } from "./file-upload";
+export type { UploadStatus } from "./file-upload";
+export { FileUploadMultiple } from "./file-upload-multiple";
+export type { UploadItem } from "./file-upload-multiple";
+export { PhotoUpload } from "./photo-upload";
+export type { PhotoVariant } from "./photo-upload";
+export { ImageCropModal } from "./image-crop-modal";
+export type { ImageCropModalProps } from "./image-crop-modal";
+export { DocumentRequestList } from "./document-request-list";
+export type { DocumentRequest, RequestState } from "./document-request-list";
+export { DocumentViewer } from "./document-viewer";
+
 // ── Table primitives ───────────────────────────────────────────
 export { Badge } from "./badge";
 export { Checkbox } from "./checkbox";
@@ -61,6 +74,8 @@ export { RadioGroup } from "./radio-group";
 export type { RadioOption } from "./radio-group";
 export { DataTable } from "./data-table";
 export type { DataTableColumn } from "./data-table";
+export { DocumentsTable } from "./documents-table";
+export type { DocumentRow, DocumentStatus } from "./documents-table";
 
 // ── Tier 2: feedback, layout, forms ────────────────────────────
 export { Alert } from "./alert";

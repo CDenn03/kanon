@@ -46,6 +46,13 @@ import {
   SpinnerDemo,
   ButtonGroupDemo,
   ChipDemo,
+  FileUploadDemo,
+  FileUploadMultipleDemo,
+  PhotoUploadDemo,
+  DocumentsTableDemo,
+  DocumentRequestListDemo,
+  DocumentViewerDemo,
+  ImageCropModalDemo,
 } from "./demos";
 
 /*
@@ -1850,6 +1857,443 @@ import { Inbox } from "lucide-react";
 <Chip onRemove={() => {}}>Removable</Chip>
 
 <TagInput label="Tags" value={tags} onChange={setTags} hint="Enter or comma to add." />`,
+      },
+    ],
+  },
+  {
+    slug: "file-upload",
+    name: "FileUpload",
+    description: "Single-file drag-and-drop + click picker with a type-aware preview, validation, progress and error states.",
+    category: "Forms",
+    sourcePath: "src/components/ui/file-upload.tsx",
+    exports: ["FileUpload"],
+    dependsOn: ["progress"],
+    requires: ["src/lib/utils.ts", "src/lib/upload.ts", "src/components/ui/field.tsx"],
+    spec: {
+      source: "mathesis ui-component/file-upload",
+      purpose:
+        "Lets a user attach one file by drag-and-drop or click. Shows accepted types and max size upfront, validates on select, and previews the file (image thumbnail or type icon + name/size). Presentational — wire the upload via onSelect and drive status/progress.",
+      props: [
+        { name: "value", type: "File | null", description: "The selected file (controlled). Pass null for empty." },
+        { name: "onSelect", type: "(file: File | null) => void", description: "Called with a valid file, or null when removed." },
+        { name: "onError", type: "(message: string) => void", description: "Called when a dropped/picked file fails validation." },
+        { name: "accept", type: "string", description: "Accepted types — extensions, MIME types, or wildcards (e.g. .pdf,image/*). Shown as a constraint and enforced." },
+        { name: "maxSize", type: "number", description: "Max size per file in bytes; shown upfront and enforced on select." },
+        { name: "status", type: '"idle" | "uploading" | "complete" | "error"', default: '"idle"', description: "Upload lifecycle, driven by the parent's upload logic." },
+        { name: "progress", type: "number", default: "0", description: "Upload progress 0–100 while status is \"uploading\"." },
+        { name: "label", type: "string", description: "Field label shown above the zone." },
+        { name: "hint", type: "string", description: "Helper text below the field." },
+        { name: "error", type: "string", description: "External error (e.g. server rejection); overrides internal validation error." },
+        { name: "required", type: "boolean", description: "Shows the required marker." },
+        { name: "disabled", type: "boolean", description: "Disables the picker and drop zone." },
+      ],
+      anatomy: [
+        "Drop zone: dashed border, upload icon, click/drag instruction",
+        "Constraints line: accepted types + max size (13px tertiary)",
+        "Preview: image thumbnail or file-type icon + name/size",
+        "Progress bar while uploading; remove button when idle/complete",
+      ],
+      states: [
+        "Idle: dashed border, grey icon",
+        "Drag over: accent border + light accent background",
+        "Selected: preview row replaces the zone",
+        "Uploading: progress bar + percentage",
+        "Complete: check icon; Error: red border + message",
+      ],
+      accessibility: [
+        "Hidden but focusable <input type=file>",
+        "Drop zone is role=button, tabindex=0, keyboard-activated (Enter/Space)",
+        "Progress announced via aria-live",
+        "Errors shown as text + icon, never color alone",
+      ],
+    },
+    examples: [
+      {
+        title: "Single document",
+        description: "Accepts PDF/Word up to 10 MB; previews the selected file.",
+        node: <FileUploadDemo />,
+        code: `import { FileUpload } from "@/components/ui";
+
+const [file, setFile] = useState<File | null>(null);
+
+<FileUpload
+  label="Attach document"
+  hint="PDF or Word, up to 10 MB"
+  accept=".pdf,.doc,.docx"
+  maxSize={10 * 1024 * 1024}
+  value={file}
+  onSelect={setFile}
+/>`,
+      },
+    ],
+  },
+  {
+    slug: "file-upload-multiple",
+    name: "FileUploadMultiple",
+    description: "Drag-and-drop + click picker for many files, each with a type-aware preview, per-file progress and per-file error.",
+    category: "Forms",
+    sourcePath: "src/components/ui/file-upload-multiple.tsx",
+    exports: ["FileUploadMultiple"],
+    dependsOn: ["file-upload", "progress"],
+    requires: ["src/lib/utils.ts", "src/lib/upload.ts", "src/components/ui/field.tsx"],
+    spec: {
+      source: "mathesis ui-component/file-upload",
+      purpose:
+        "Uploads multiple files. Each file gets its own row with a preview, progress, and error. The drop zone stays visible so users can keep adding files. The parent owns the items list and drives per-file status/progress.",
+      props: [
+        { name: "items", type: "UploadItem[]", required: true, description: "Current files (controlled). Each item carries file, status, progress, error." },
+        { name: "onAdd", type: "(files: File[]) => void", description: "Called with newly accepted files to append." },
+        { name: "onRemove", type: "(id: string) => void", description: "Called to remove an item by id." },
+        { name: "onReject", type: "(rejections: { file: File; reason: string }[]) => void", description: "Called with files that failed validation and why." },
+        { name: "maxFiles", type: "number", description: "Cap on total files; extra dropped files are rejected." },
+        { name: "accept", type: "string", description: "Accepted types (extensions/MIME/wildcards)." },
+        { name: "maxSize", type: "number", description: "Max size per file in bytes." },
+        { name: "label", type: "string", description: "Field label." },
+        { name: "hint", type: "string", description: "Helper text below the field." },
+        { name: "error", type: "string", description: "Field-level error." },
+        { name: "disabled", type: "boolean", description: "Disables the picker and drop zone." },
+      ],
+      anatomy: [
+        "Persistent drop zone with count (e.g. 2/5 files)",
+        "One row per file: preview, name, size, per-file progress/error, remove",
+      ],
+      states: [
+        "Idle / drag over (accent border)",
+        "At limit: zone disabled once maxFiles reached",
+        "Per-file: uploading (progress), complete (check), error (red row + reason)",
+      ],
+      accessibility: [
+        "Hidden multiple <input type=file>",
+        "Drop zone role=button, tabindex=0, keyboard-activated",
+        "Per-file progress and errors announced via aria-live",
+      ],
+    },
+    examples: [
+      {
+        title: "Multiple attachments",
+        description: "Up to 5 files; each row has its own remove control.",
+        node: <FileUploadMultipleDemo />,
+        code: `import { FileUploadMultiple, type UploadItem } from "@/components/ui";
+
+const [items, setItems] = useState<UploadItem[]>([]);
+
+<FileUploadMultiple
+  label="Attachments"
+  accept=".pdf,.png,.jpg,.csv,.xlsx"
+  maxSize={10 * 1024 * 1024}
+  maxFiles={5}
+  items={items}
+  onAdd={(files) =>
+    setItems((prev) => [
+      ...prev,
+      ...files.map((file) => ({ id: crypto.randomUUID(), file, status: "complete" as const })),
+    ])
+  }
+  onRemove={(id) => setItems((prev) => prev.filter((it) => it.id !== id))}
+/>`,
+      },
+    ],
+  },
+  {
+    slug: "photo-upload",
+    name: "PhotoUpload",
+    description: "Image-only picker with a live thumbnail preview in a square, circular avatar, or wide cover frame, and an optional crop step.",
+    category: "Forms",
+    sourcePath: "src/components/ui/photo-upload.tsx",
+    exports: ["PhotoUpload"],
+    dependsOn: ["image-crop-modal"],
+    requires: ["src/lib/utils.ts", "src/lib/upload.ts", "src/components/ui/field.tsx"],
+    spec: {
+      source: "mathesis ui-component/photo-upload",
+      purpose:
+        "Uploads a single image with an immediate preview. Use the avatar variant for profile photos, square for thumbnails, cover for banners. Validates image type + size, offers an optional crop step, and shows an uploading overlay.",
+      props: [
+        { name: "value", type: "File | null", description: "Selected image file (controlled), or null." },
+        { name: "previewUrl", type: "string", description: "Existing image URL to show when there is no freshly-selected file (e.g. a saved avatar)." },
+        { name: "variant", type: '"square" | "avatar" | "cover"', default: '"square"', description: "Preview frame shape." },
+        { name: "onSelect", type: "(file: File | null) => void", description: "Called with a valid image (cropped, if crop is enabled), or null when removed." },
+        { name: "onError", type: "(message: string) => void", description: "Called when a file fails image/size validation." },
+        { name: "accept", type: "string", default: '"image/*"', description: "Accepted image types." },
+        { name: "maxSize", type: "number", description: "Max size in bytes." },
+        { name: "crop", type: "boolean", default: "false", description: "Enable an optional crop step after selecting an image; onSelect then receives the cropped image." },
+        { name: "cropAspect", type: "number", description: "Override the crop aspect (width / height). Defaults from variant (avatar/square = 1, cover = 3)." },
+        { name: "cropMinWidth", type: "number", description: "Minimum cropped width in source pixels; blocks tiny crops." },
+        { name: "status", type: '"idle" | "uploading" | "complete" | "error"', default: '"idle"', description: "Upload lifecycle; shows an overlay while uploading." },
+        { name: "progress", type: "number", default: "0", description: "Upload progress 0–100." },
+        { name: "label", type: "string", description: "Field label." },
+        { name: "hint", type: "string", description: "Helper text below the field." },
+        { name: "error", type: "string", description: "External error; overrides internal validation error." },
+        { name: "disabled", type: "boolean", description: "Disables the picker." },
+      ],
+      anatomy: [
+        "Preview frame (square / circular / cover) with the image or a placeholder icon",
+        "Hover overlay with a camera icon to replace",
+        "Upload / Replace + Remove buttons and a constraints line",
+        "Optional crop modal (canvas cropper) shown after selection when crop is enabled",
+      ],
+      states: [
+        "Empty (placeholder icon), drag over (accent), preview (image fills frame)",
+        "Cropping: crop modal open (when crop enabled)",
+        "Uploading: spinner overlay; error: red frame + message",
+      ],
+      accessibility: [
+        "Hidden <input type=file accept=image/*>",
+        "Frame is role=button, tabindex=0, keyboard-activated",
+        "Crop step is pointer + keyboard operable (see ImageCropModal)",
+        "Uploading state announced via aria-live",
+      ],
+    },
+    examples: [
+      {
+        title: "Avatar & cover, with crop",
+        description: "Circular avatar and wide cover variants. Selecting an image opens the optional cropper.",
+        node: <PhotoUploadDemo />,
+        code: `import { PhotoUpload } from "@/components/ui";
+
+const [avatar, setAvatar] = useState<File | null>(null);
+
+// crop enabled — avatar locks the crop to 1:1 and previews as a circle
+<PhotoUpload label="Profile photo" variant="avatar" value={avatar} onSelect={setAvatar} maxSize={5 * 1024 * 1024} crop />
+<PhotoUpload label="Cover image" variant="cover" value={cover} onSelect={setCover} crop />`,
+      },
+    ],
+  },
+  {
+    slug: "documents-table",
+    name: "DocumentsTable",
+    description: "A DataTable preset for stored files: type icon + name, type, size, uploader/date, an accessible status badge, and row actions.",
+    category: "Data Display",
+    sourcePath: "src/components/ui/documents-table.tsx",
+    exports: ["DocumentsTable"],
+    dependsOn: ["data-table"],
+    requires: ["src/lib/utils.ts", "src/lib/upload.ts"],
+    spec: {
+      source: "mathesis ui-component/data-table",
+      purpose:
+        "Displays a list of documents with sensible defaults for files: a type icon + name, extension, human-readable size, uploader and date, and a status shown as icon + label (never color alone). Presentational — pass documents and wire the row callbacks.",
+      props: [
+        { name: "documents", type: "DocumentRow[]", required: true, description: "The files to display; each has id, name, size, optional mimeType/uploadedBy/uploadedAt/status." },
+        { name: "onOpen", type: "(doc: DocumentRow) => void", description: "Row click, e.g. to open/preview the document." },
+        { name: "onDownload", type: "(doc: DocumentRow) => void", description: "Download action per row; omit to hide the download button." },
+        { name: "onActions", type: "(doc: DocumentRow) => void", description: "Row actions trigger; omit to hide the actions button." },
+        { name: "showStatus", type: "boolean", default: "true", description: "Show the status column." },
+        { name: "loading", type: "boolean", description: "Shows skeleton rows." },
+        { name: "title", type: "string", description: "Table title." },
+        { name: "subtitle", type: "string", description: "Table subtitle (e.g. a count)." },
+        { name: "pagination", type: "PaginationProps", description: "Pagination config, forwarded to DataTable." },
+        { name: "empty", type: "{ title: string; body: string }", description: "Empty-state copy when there are no documents." },
+      ],
+      anatomy: [
+        "Columns: Name (icon + filename), Type, Size, Uploaded (date + by), Status, Actions",
+        "Status: icon + label (Ready / Processing / Uploading / Failed)",
+        "Row actions: download and a more-actions button",
+      ],
+      states: [
+        "Loading (skeleton rows), empty (blank state)",
+        "Per-row status conveyed by icon + text + color",
+      ],
+      accessibility: [
+        "Status uses icon + label, not color alone",
+        "Action buttons have descriptive aria-labels and stop row-click propagation",
+        "Table caption for screen readers",
+      ],
+    },
+    examples: [
+      {
+        title: "Documents list",
+        description: "Type icons, sizes, dates, status, and per-row actions.",
+        node: <DocumentsTableDemo />,
+        code: `import { DocumentsTable, type DocumentRow } from "@/components/ui";
+
+const docs: DocumentRow[] = [
+  { id: "1", name: "Loan-agreement.pdf", size: 248000, uploadedBy: "Amina", uploadedAt: new Date(), status: "ready" },
+  { id: "2", name: "Roster.xlsx", size: 1240000, uploadedBy: "Brian", uploadedAt: new Date(), status: "processing" },
+];
+
+<DocumentsTable
+  title="Documents"
+  subtitle={\`\${docs.length} files\`}
+  documents={docs}
+  onDownload={(d) => download(d.id)}
+  onActions={(d) => openMenu(d)}
+/>`,
+      },
+    ],
+  },
+  {
+    slug: "document-request-list",
+    name: "DocumentRequestList",
+    description: "A predefined checklist of required documents with a per-row upload control, status, and preview — for onboarding / KYC flows.",
+    category: "Forms",
+    sourcePath: "src/components/ui/document-request-list.tsx",
+    exports: ["DocumentRequestList"],
+    dependsOn: ["file-upload"],
+    requires: ["src/lib/utils.ts", "src/lib/upload.ts"],
+    spec: {
+      source: "mathesis ui-component/file-upload",
+      purpose:
+        "Presents a known set of documents the user must provide (e.g. KYC/onboarding), each row with its own upload button, status (Not uploaded / Uploading / Uploaded / Needs attention), and optional preview. Rows stack responsively on mobile. Presentational — the parent owns the requests and drives per-row state via callbacks.",
+      props: [
+        { name: "requests", type: "DocumentRequest[]", required: true, description: "The predefined documents to collect; each has id, name, optional description/required/accept/maxSize, and controlled state/file/progress/error." },
+        { name: "onUpload", type: "(requestId: string, file: File) => void", description: "Called with a valid file for a row." },
+        { name: "onRemove", type: "(requestId: string) => void", description: "Called to clear an uploaded file for a row." },
+        { name: "onView", type: "(request: DocumentRequest) => void", description: "Called to preview an uploaded file; omit to hide the View button." },
+        { name: "onError", type: "(requestId: string, message: string) => void", description: "Called when a file fails validation for a row." },
+        { name: "title", type: "string", description: "Optional header title; a uploaded/total counter is always shown." },
+        { name: "disabled", type: "boolean", description: "Disables all row controls." },
+      ],
+      anatomy: [
+        "Header: title + uploaded/total counter",
+        "One row per required document: name + required badge + description",
+        "Uploaded file line (icon + name + size); status pill; row actions",
+        "Actions: Upload, or View / Replace / Remove once uploaded",
+      ],
+      states: [
+        "Per row: missing (Not uploaded), uploading (progress), uploaded (check), rejected (red row + reason)",
+        "Responsive: label / status / actions stack on small screens",
+      ],
+      accessibility: [
+        "Each row has its own labelled <input type=file>",
+        "Status conveyed by icon + label, not color alone",
+        "Progress and rejection reasons announced via aria-live",
+      ],
+    },
+    examples: [
+      {
+        title: "Required documents",
+        description: "A KYC-style checklist: uploaded, missing, and rejected rows.",
+        node: <DocumentRequestListDemo />,
+        code: `import { DocumentRequestList, type DocumentRequest } from "@/components/ui";
+
+const [requests, setRequests] = useState<DocumentRequest[]>([
+  { id: "id", name: "National ID", required: true, accept: ".pdf,image/*", state: "missing" },
+  { id: "kra", name: "KRA PIN certificate", required: true, accept: ".pdf", state: "missing" },
+]);
+
+const set = (id, patch) =>
+  setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+
+<DocumentRequestList
+  title="Required documents"
+  requests={requests}
+  onUpload={(id, file) => set(id, { state: "uploaded", file })}
+  onRemove={(id) => set(id, { state: "missing", file: null })}
+  onView={(req) => preview(req.file)}
+/>`,
+      },
+    ],
+  },
+  {
+    slug: "document-viewer",
+    name: "DocumentViewer",
+    description: "Responsive, type-aware preview: images, PDFs, CSV/Excel (bordered table), Markdown & Word (formatted), JSON, text, and media — with a download fallback.",
+    category: "Data Display",
+    sourcePath: "src/components/ui/document-viewer.tsx",
+    exports: ["DocumentViewer"],
+    requires: ["src/lib/utils.ts", "src/lib/upload.ts"],
+    spec: {
+      source: "mathesis ui-component/document-viewer",
+      purpose:
+        "Previews a single document by type — image, PDF, CSV/Excel spreadsheet (a bordered table with a tinted header and row-number gutter), Markdown and Word (.docx) as formatted prose, JSON pretty-printed, plain text, and video/audio — and falls back to a download card for anything else. Works with a client File or a stored src URL and is mobile-responsive via a capped, scrollable frame. Heavy parsers (Excel, Word, Markdown) are lazy-loaded only when their type is previewed; Word/Markdown HTML is sanitized.",
+      props: [
+        { name: "file", type: "File | null", description: "A File to preview (client-side). Takes precedence over src." },
+        { name: "src", type: "string", description: "A URL to preview (e.g. a stored document)." },
+        { name: "name", type: "string", description: "File name; drives the type when previewing by src." },
+        { name: "type", type: "string", description: "MIME type hint (inferred from name/File otherwise)." },
+        { name: "downloadUrl", type: "string", description: "Download URL for the toolbar/fallback; defaults to src/file." },
+        { name: "maxHeight", type: "number | string", default: '"min(70vh, 640px)"', description: "Caps the preview height; the frame scrolls within it (mobile-friendly)." },
+        { name: "className", type: "string", description: "Extra classes on the wrapper." },
+      ],
+      anatomy: [
+        "Toolbar: type icon + name + size + download",
+        "Body (capped, scrollable): image / PDF frame / bordered spreadsheet table / formatted prose (md, docx) / text / media / fallback",
+        "Spreadsheet: cell borders, tinted header (X axis) and row-number gutter (Y axis)",
+      ],
+      states: [
+        "Loading (spinner) while content is read/parsed",
+        "Rendered by type: image, PDF, CSV/Excel table, Markdown/Word prose, JSON, text, video, audio",
+        "Too large (>8MB) or unsupported: file card with a download action",
+      ],
+      accessibility: [
+        "Image has descriptive alt; PDF iframe is titled",
+        "Spreadsheets render as a real <table> with row headers + sticky header",
+        "Markdown/Word HTML is sanitized (DOMPurify) before rendering",
+        "Video/audio use native controls; download is a real <a download>",
+      ],
+    },
+    examples: [
+      {
+        title: "All document types",
+        description: "Switch between an image, PDF, spreadsheet, Markdown, Word, and text — each rendered by type. Word/Markdown show as formatted prose; spreadsheets get a bordered, axis-tinted table.",
+        node: <DocumentViewerDemo />,
+        code: `import { DocumentViewer } from "@/components/ui";
+
+<DocumentViewer src="/photo.jpg" name="photo.jpg" />       // image
+<DocumentViewer src="/agreement.pdf" name="a.pdf" />        // PDF (frame)
+<DocumentViewer file={csvOrXlsxFile} />                     // spreadsheet → table
+<DocumentViewer file={markdownFile} />                      // .md → formatted
+<DocumentViewer src="/contract.docx" name="contract.docx" />// Word → formatted
+<DocumentViewer file={textOrJsonFile} />                    // text / JSON`,
+      },
+    ],
+  },
+  {
+    slug: "image-crop-modal",
+    name: "ImageCropModal",
+    description: "An accessible, aspect-aware image cropper: pointer + keyboard, optional circular preview, returns the cropped image as a File.",
+    category: "Overlays",
+    sourcePath: "src/components/ui/image-crop-modal.tsx",
+    exports: ["ImageCropModal"],
+    dependsOn: ["dialog", "button"],
+    requires: ["src/lib/utils.ts"],
+    spec: {
+      source: "mathesis ui-component/photo-upload",
+      purpose:
+        "Crops an image before use. Drag inside the box to reposition and drag the handle to resize; the crop can be locked to an aspect ratio and previewed as a circle. Used by PhotoUpload's optional crop step, but standalone too. Returns the cropped image as a File.",
+      props: [
+        { name: "open", type: "boolean", required: true, description: "Whether the modal is open." },
+        { name: "imageSrc", type: "string", required: true, description: "URL/object URL of the image to crop (caller owns revoking object URLs)." },
+        { name: "aspect", type: "number", description: "Lock the crop to width / height (e.g. 1 for square, 16/9). Omit for free-form." },
+        { name: "circular", type: "boolean", description: "Preview the crop as a circle (avatars). Visual only." },
+        { name: "minWidth", type: "number", description: "Minimum exported width in source pixels; smaller crops are blocked." },
+        { name: "outputType", type: "string", default: '"image/png"', description: "Output MIME type." },
+        { name: "outputName", type: "string", default: '"cropped.png"', description: "Output file name." },
+        { name: "onConfirm", type: "(file: File) => void", required: true, description: "Called with the cropped image as a File." },
+        { name: "onCancel", type: "() => void", required: true, description: "Called when the user cancels or dismisses the modal." },
+      ],
+      anatomy: [
+        "Dialog with title + short instructions",
+        "Canvas: image with a dimmed overlay, crop border, rule-of-thirds grid, and a resize handle",
+        "Live dimension/validity readout; Cancel / Use image actions",
+      ],
+      states: [
+        "Idle (crop centered), dragging (move), resizing (handle)",
+        "Invalid: crop below minWidth — confirm disabled, reason shown",
+      ],
+      accessibility: [
+        "Pointer Events unify mouse + touch; the canvas is a keyboard-operable slider (arrows move, Alt+arrows resize)",
+        "The resize handle is a large, visible target (Fitts's Law)",
+        "Dimensions + validity announced via aria-live with an icon + text (not color alone)",
+      ],
+    },
+    examples: [
+      {
+        title: "Crop to a circle (1:1)",
+        description: "Opens a cropper locked to 1:1 with a circular preview; returns a File.",
+        center: true,
+        node: <ImageCropModalDemo />,
+        code: `import { ImageCropModal } from "@/components/ui";
+
+const [open, setOpen] = useState(false);
+
+<ImageCropModal
+  open={open}
+  imageSrc={objectUrl}
+  aspect={1}
+  circular
+  onConfirm={(file) => { save(file); setOpen(false); }}
+  onCancel={() => setOpen(false)}
+/>`,
       },
     ],
   },

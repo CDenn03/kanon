@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3B6E7D"/>
+      <stop offset="1" stop-color="#6FD0B4"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="420" fill="url(#sky)"/>
+  <circle cx="500" cy="90" r="46" fill="#FFF3D6"/>
+  <path d="M0 300 L160 200 L300 280 L440 180 L640 300 L640 420 L0 420 Z" fill="#2C4A3B" opacity="0.85"/>
+  <path d="M0 340 L200 270 L360 330 L520 260 L640 340 L640 420 L0 420 Z" fill="#1E3329"/>
+  <text x="32" y="60" font-family="system-ui, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Sample image</text>
+  <text x="32" y="90" font-family="system-ui, sans-serif" font-size="15" fill="#ffffff" opacity="0.85">Rendered inline by DocumentViewer</text>
+</svg>
