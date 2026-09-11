@@ -152,7 +152,7 @@ export function DataTable<T>({
                       onRowClick && "cursor-pointer",
 
                       (status === "selected" || status === "error") &&
-                        "before:absolute before:inset-y-0 before:left-0 before:w-0.5",
+                        "before:absolute before:inset-y-0 before:left-0 before:w-0.5 before:content-['']",
                       status === "selected" && "before:bg-accent",
                       status === "error" && "before:bg-error"
                     )}
