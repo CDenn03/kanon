@@ -199,6 +199,13 @@ button:disabled,
   outline-offset: 2px;
 }
 
+/* Form controls use border-based focus indicators instead of outline */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+}
+
 ::selection {
   background-color: var(--color-accent-muted);
   color: var(--color-text);

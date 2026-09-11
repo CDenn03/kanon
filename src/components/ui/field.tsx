@@ -72,7 +72,7 @@ export function Field({
 export const controlBase = cn(
   "w-full rounded-lg border text-sm bg-surface text-text transition-colors",
   "placeholder:text-text-tertiary",
-  "focus:outline-none focus-visible:border-accent",
+  "focus:outline-none focus-visible:outline-none focus-visible:border-accent",
   "disabled:cursor-not-allowed disabled:bg-bg-secondary disabled:opacity-60",
   "read-only:bg-bg-secondary"
 );
