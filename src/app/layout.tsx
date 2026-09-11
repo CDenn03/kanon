@@ -21,10 +21,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      <head suppressHydrationWarning>
+        {/*
+          Applies the persisted theme before first paint (no flash). Some browser
+          extensions rewrite <script> tags in <head> before React hydrates, which
+          would otherwise trip a hydration mismatch — suppressHydrationWarning on
+          this node ignores such extension-injected attribute changes.
+        */}
+        <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body>{children}</body>
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }
