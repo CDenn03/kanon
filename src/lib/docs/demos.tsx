@@ -69,9 +69,11 @@ import {
   DocumentRequestList,
   DocumentViewer,
   ImageCropModal,
+  MultiStepForm,
   type UploadItem,
   type DocumentRow,
   type DocumentRequest,
+  type Step,
   type ComboboxOption,
   type SelectOption,
   type DataTableColumn,
@@ -977,6 +979,7 @@ export function DocumentViewerDemo() {
     { id: "image", label: "Image" },
     { id: "pdf", label: "PDF" },
     { id: "spreadsheet", label: "Spreadsheet" },
+    { id: "workbook", label: "Workbook" },
     { id: "markdown", label: "Markdown" },
     { id: "word", label: "Word" },
     { id: "text", label: "Text" },
@@ -988,6 +991,7 @@ export function DocumentViewerDemo() {
       {tab === "image" && <DocumentViewer src="/samples/sample.jpg.svg" name="photo.svg" type="image/svg+xml" maxHeight={320} />}
       {tab === "pdf" && <DocumentViewer src="/samples/sample.pdf" name="sample.pdf" type="application/pdf" maxHeight={360} />}
       {tab === "spreadsheet" && <DocumentViewer file={csvFile} maxHeight={280} />}
+      {tab === "workbook" && <DocumentViewer src="/samples/workbook.xlsx" name="report.xlsx" maxHeight={320} />}
       {tab === "markdown" && <DocumentViewer file={mdFile} maxHeight={340} />}
       {tab === "word" && <DocumentViewer src="/samples/sample.docx" name="contract.docx" maxHeight={340} />}
       {tab === "text" && <DocumentViewer file={txtFile} maxHeight={280} />}
@@ -1025,6 +1029,83 @@ export function ImageCropModalDemo() {
         }}
         onCancel={() => setOpen(false)}
       />
+    </div>
+  );
+}
+
+
+/* ── MultiStepForm ────────────────────────────────────────── */
+export function MultiStepFormDemo() {
+  const [step, setStep] = useState(0);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [plan, setPlan] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
+
+  const steps: Step[] = [
+    {
+      id: "account",
+      title: "Account",
+      description: "Tell us who you are.",
+      canProceed: name.trim().length > 1 && /.+@.+\..+/.test(email),
+      content: (
+        <div className="space-y-4">
+          <Input label="Full name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Amina Wanjiru" required />
+          <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="amina@example.com" required />
+        </div>
+      ),
+    },
+    {
+      id: "plan",
+      title: "Plan",
+      description: "Pick a plan to continue.",
+      canProceed: plan !== null,
+      content: (
+        <Select
+          label="Plan"
+          value={plan}
+          onChange={setPlan}
+          placeholder="Choose a plan…"
+          options={[
+            { value: "starter", label: "Starter" },
+            { value: "team", label: "Team" },
+            { value: "enterprise", label: "Enterprise" },
+          ]}
+        />
+      ),
+    },
+    {
+      id: "review",
+      title: "Review",
+      description: "Confirm your details.",
+      content: (
+        <div className="rounded-lg border border-border bg-bg-secondary p-4 text-sm">
+          <dl className="space-y-1.5">
+            <div className="flex justify-between gap-4"><dt className="text-text-secondary">Name</dt><dd className="font-medium text-text">{name || "—"}</dd></div>
+            <div className="flex justify-between gap-4"><dt className="text-text-secondary">Email</dt><dd className="font-medium text-text">{email || "—"}</dd></div>
+            <div className="flex justify-between gap-4"><dt className="text-text-secondary">Plan</dt><dd className="font-medium text-text capitalize">{plan ?? "—"}</dd></div>
+          </dl>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="w-full max-w-xl">
+      {done ? (
+        <div className="rounded-xl border border-accent-muted bg-accent-light p-6 text-center">
+          <p className="text-sm font-semibold text-accent">All set! 🎉</p>
+          <p className="mt-1 text-sm text-text-secondary">Welcome aboard, {name || "friend"}.</p>
+          <button
+            className="mt-3 text-xs font-medium text-accent underline"
+            onClick={() => { setDone(false); setStep(0); }}
+          >
+            Start over
+          </button>
+        </div>
+      ) : (
+        <MultiStepForm steps={steps} current={step} onStepChange={setStep} onComplete={() => setDone(true)} />
+      )}
     </div>
   );
 }

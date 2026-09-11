@@ -25,6 +25,8 @@ export { PhotoUpload } from "./photo-upload";
 export type { PhotoVariant } from "./photo-upload";
 export { ImageCropModal } from "./image-crop-modal";
 export type { ImageCropModalProps } from "./image-crop-modal";
+export { MultiStepForm } from "./multi-step-form";
+export type { Step } from "./multi-step-form";
 export { DocumentRequestList } from "./document-request-list";
 export type { DocumentRequest, RequestState } from "./document-request-list";
 export { DocumentViewer } from "./document-viewer";

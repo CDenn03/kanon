@@ -53,6 +53,7 @@ import {
   DocumentRequestListDemo,
   DocumentViewerDemo,
   ImageCropModalDemo,
+  MultiStepFormDemo,
 } from "./demos";
 
 /*
@@ -2208,6 +2209,7 @@ const set = (id, patch) =>
         "Toolbar: type icon + name + size + download",
         "Body (capped, scrollable): image / PDF frame / bordered spreadsheet table / formatted prose (md, docx) / text / media / fallback",
         "Spreadsheet: cell borders, tinted header (X axis) and row-number gutter (Y axis)",
+        "Workbook: a sheet switcher (tabs) above the table for files with multiple sheets",
       ],
       states: [
         "Loading (spinner) while content is read/parsed",
@@ -2293,6 +2295,71 @@ const [open, setOpen] = useState(false);
   circular
   onConfirm={(file) => { save(file); setOpen(false); }}
   onCancel={() => setOpen(false)}
+/>`,
+      },
+    ],
+  },
+  {
+    slug: "multi-step-form",
+    name: "MultiStepForm",
+    description: "An accessible wizard that splits a long form into ordered steps with a progress indicator, per-step validation gating, and Back/Next/Finish.",
+    category: "Forms",
+    sourcePath: "src/components/ui/multi-step-form.tsx",
+    exports: ["MultiStepForm"],
+    dependsOn: ["button"],
+    requires: ["src/lib/utils.ts"],
+    spec: {
+      source: "mathesis ui-component/multi-step-form",
+      purpose:
+        "Breaks a long form into ordered steps to respect working-memory limits (Miller's Law) and reduce per-screen choices (Hick's Law), with a visible progress indicator to set expectations. Advancing can be gated per step via canProceed. Controlled (current + onStepChange) or self-managed; mobile-responsive (the indicator collapses to a compact progress bar).",
+      props: [
+        { name: "steps", type: "Step[]", required: true, description: "Ordered steps; each has id, title, optional description, content, and an optional canProceed gate." },
+        { name: "current", type: "number", description: "Controlled active step index. Omit to let the component manage it." },
+        { name: "onStepChange", type: "(index: number) => void", description: "Notified when the active step changes." },
+        { name: "onComplete", type: "() => void", description: "Called when Finish is pressed on the last step." },
+        { name: "allowStepClick", type: "boolean", default: "true", description: "Allow clicking a completed step in the indicator to jump back." },
+        { name: "backLabel", type: "string", default: '"Back"', description: "Back button label." },
+        { name: "nextLabel", type: "string", default: '"Next"', description: "Next button label." },
+        { name: "finishLabel", type: "string", default: '"Finish"', description: "Last-step button label." },
+        { name: "footerStart", type: "ReactNode", description: "Extra content in the footer, left of the nav buttons." },
+        { name: "className", type: "string", description: "Extra classes on the wrapper." },
+      ],
+      anatomy: [
+        "Step indicator: numbered circles + titles with connectors (desktop); compact 'Step x of n' + progress bar (mobile)",
+        "Current step: title, optional description, and the step content",
+        "Footer: Back + Next/Finish, with an optional footerStart slot",
+      ],
+      states: [
+        "Per step: upcoming / current / completed (check)",
+        "Next/Finish disabled when the current step's canProceed is false",
+        "Completed steps are clickable to jump back (when allowStepClick)",
+      ],
+      accessibility: [
+        "Indicator is an ordered list; the current step marks aria-current=step",
+        "Step navigation is via real <button>s with focus rings",
+        "Progress is conveyed by text ('Step x of n') as well as the bar, not color alone",
+      ],
+    },
+    examples: [
+      {
+        title: "3-step signup wizard",
+        description: "Account → Plan → Review, with per-step validation gating Next and a Finish state.",
+        node: <MultiStepFormDemo />,
+        code: `import { MultiStepForm, type Step } from "@/components/ui";
+
+const [step, setStep] = useState(0);
+
+const steps: Step[] = [
+  { id: "account", title: "Account", canProceed: valid, content: <AccountFields /> },
+  { id: "plan", title: "Plan", canProceed: !!plan, content: <PlanPicker /> },
+  { id: "review", title: "Review", content: <Summary /> },
+];
+
+<MultiStepForm
+  steps={steps}
+  current={step}
+  onStepChange={setStep}
+  onComplete={submit}
 />`,
       },
     ],

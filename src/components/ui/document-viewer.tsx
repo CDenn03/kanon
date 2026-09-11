@@ -49,6 +49,9 @@ export function DocumentViewer({
   const [text, setText] = useState<string | null>(null);
   const [html, setHtml] = useState<string | null>(null);
   const [rows, setRows] = useState<string[][] | null>(null);
+  // Multi-sheet workbooks: parsed sheets (name → rows) + the active sheet name.
+  const [sheets, setSheets] = useState<{ name: string; rows: string[][] }[] | null>(null);
+  const [activeSheet, setActiveSheet] = useState(0);
   const [loading, setLoading] = useState(false);
   const [tooLarge, setTooLarge] = useState(false);
 
@@ -87,6 +90,8 @@ export function DocumentViewer({
     setText(null);
     setHtml(null);
     setRows(null);
+    setSheets(null);
+    setActiveSheet(0);
     setTooLarge(false);
 
     const needsParse = isCsv || isExcel || isMarkdown || isDocx || isJson || isPlainText;
@@ -104,9 +109,11 @@ export function DocumentViewer({
           const XLSX = await import("xlsx");
           const buf = file ? await file.arrayBuffer() : await fetch(src!).then((r) => r.arrayBuffer());
           const wb = XLSX.read(buf, { type: "array" });
-          const sheet = wb.Sheets[wb.SheetNames[0]];
-          const aoa = XLSX.utils.sheet_to_json<string[]>(sheet, { header: 1, blankrows: false, defval: "" });
-          if (!cancelled) setRows(aoa.map((r) => r.map((c) => String(c ?? ""))).slice(0, 500));
+          const parsed = wb.SheetNames.map((sheetName) => {
+            const aoa = XLSX.utils.sheet_to_json<string[]>(wb.Sheets[sheetName], { header: 1, blankrows: false, defval: "" });
+            return { name: sheetName, rows: aoa.map((r) => r.map((c) => String(c ?? ""))).slice(0, 500) };
+          });
+          if (!cancelled) setSheets(parsed.length ? parsed : [{ name: "Sheet1", rows: [] }]);
         } else if (isDocx) {
           // Word → HTML via mammoth, then sanitize before rendering.
           const [mammoth, DOMPurify] = await Promise.all([
@@ -134,6 +141,7 @@ export function DocumentViewer({
           setText(null);
           setHtml(null);
           setRows(null);
+          setSheets(null);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -165,7 +173,7 @@ export function DocumentViewer({
             style={frameStyle}
             message="File is too large to preview here."
           />
-        ) : !url && !text && !rows && !html ? (
+        ) : !url && !text && !rows && !html && !sheets ? (
           <Centered style={frameStyle}>
             <FileQuestion size={22} className="text-text-tertiary" aria-hidden />
             <p className="text-sm text-text-secondary">Nothing to preview.</p>
@@ -187,7 +195,9 @@ export function DocumentViewer({
             {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <audio src={url} controls className="w-full max-w-md" />
           </div>
-        ) : (isCsv || isExcel) && rows != null ? (
+        ) : isExcel && sheets != null ? (
+          <Workbook sheets={sheets} active={activeSheet} onSelect={setActiveSheet} maxHeight={maxHeight} />
+        ) : isCsv && rows != null ? (
           <SheetTable rows={rows} maxHeight={maxHeight} />
         ) : (isMarkdown || isDocx) && html != null ? (
           <div className="overflow-auto bg-surface" style={{ maxHeight }}>
@@ -272,6 +282,56 @@ function parseCsv(text: string): string[][] {
     rows.push(row);
   }
   return rows.filter((r) => r.some((v) => v.trim() !== ""));
+}
+
+/** A multi-sheet workbook: a sheet switcher + the active sheet's table. */
+function Workbook({
+  sheets,
+  active,
+  onSelect,
+  maxHeight,
+}: {
+  sheets: { name: string; rows: string[][] }[];
+  active: number;
+  onSelect: (i: number) => void;
+  maxHeight: number | string;
+}) {
+  const current = sheets[Math.min(active, sheets.length - 1)] ?? sheets[0];
+  const multi = sheets.length > 1;
+  // Reserve ~40px for the sheet tab bar so the table still fits the frame.
+  const tableMax = multi ? `calc(${typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight} - 40px)` : maxHeight;
+
+  return (
+    <div>
+      {multi && (
+        <div
+          role="tablist"
+          aria-label="Sheets"
+          className="flex items-center gap-1 overflow-x-auto border-b border-border bg-surface px-2 py-1.5"
+        >
+          {sheets.map((s, i) => {
+            const on = i === active;
+            return (
+              <button
+                key={`${s.name}-${i}`}
+                type="button"
+                role="tab"
+                aria-selected={on}
+                onClick={() => onSelect(i)}
+                className={cn(
+                  "shrink-0 rounded-md px-2.5 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                  on ? "bg-accent-light text-accent" : "text-text-secondary hover:bg-bg-hover hover:text-text"
+                )}
+              >
+                {s.name}
+              </button>
+            );
+          })}
+        </div>
+      )}
+      <SheetTable rows={current.rows} maxHeight={tableMax} />
+    </div>
+  );
 }
 
 function SheetTable({ rows, maxHeight }: { rows: string[][]; maxHeight: number | string }) {
